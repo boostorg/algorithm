@@ -584,7 +584,7 @@ namespace boost {
 
             // Construct container to hold the result
             ResultT Result;
-
+                               
 
             // Roll to the first element that will be added
             while(
@@ -629,6 +629,14 @@ namespace boost {
     using algorithm::erase_all_regex_copy;
     using algorithm::find_all_regex;
     using algorithm::split_regex;
+
+#ifndef BOOST_NO_FUNCTION_TEMPLATE_ORDERING
+    using algorithm::join_if;
+#else  // BOOST_NO_FUNCTION_TEMPLATE_ORDERING
+    using algorithm::join_if_regex;
+#endif // BOOST_NO_FUNCTION_TEMPLATE_ORDERING
+
+
 
 } // namespace boost
 
