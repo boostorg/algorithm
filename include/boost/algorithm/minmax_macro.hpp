@@ -14,6 +14,7 @@
 
 #ifndef BOOST_MIN
 
+#include <boost/config.hpp>
 #include <boost/detail/workaround.hpp>
 
 #if BOOST_WORKAROUND(__COMO_VERSION__, BOOST_TESTED_AT(4245))
