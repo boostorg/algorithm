@@ -8,6 +8,10 @@
 -->
 
 <section id="string_algo.release_notes" last-revision="$Date$">
+
+    <using-namespace name="boost"/>
+    <using-namespace name="boost::algorithm"/>
+
     <title>Release Notes</title>
 
     <itemizedlist>
@@ -26,7 +30,7 @@
                     <functionname>lexicographical_compare()</functionname>
                 </listitem>
                 <listitem>
-                    <functionname>join</functionname>
+                    <functionname>join()</functionname> and <functionname>join_if()</functionname> 
                 </listitem>
                 <listitem>
                     New comparison predicates <code>is_less</code>, <code>is_not_greater</code>
