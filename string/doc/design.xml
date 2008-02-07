@@ -217,7 +217,7 @@
         </para>
         <para>
             For more information about the exception safety topics, follow this 
-            <ulink url="http://beta.boost.org/community/exception_safety.html">link</ulink>
+            <ulink url="../../more/generic_exception_safety.html">link</ulink>
         </para>        
     </section>
 </section>
