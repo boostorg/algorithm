@@ -8,6 +8,7 @@
 
 #include <boost/algorithm/cluster/cluster_data.hpp>
 #include <boost/algorithm/cluster/concept.hpp>
+#include <boost/algorithm/cluster/detail/naive_query.hpp>
 #include <vector>
 
 namespace boost
@@ -22,29 +23,6 @@ namespace detail
 // TODO: Where should we put these?
 int const UNCLASSIFIED = -1;
 int const NOISE = 0;
-
-// TODO: Replace this naive query function w/ R*-tree or fractional cascading.
-// This query mechanism makes the runtime quadratic.
-template<typename NTupleIterT, typename DistFunT>
-static void query(
-  NTupleIterT const & query_pt,
-  NTupleIterT const & begin,
-  NTupleIterT const & end,
-  typename NTupleIterT::difference_type eps,
-  DistFunT const & d,
-  std::vector<NTupleIterT> & v)
-{
-  for(NTupleIterT cur_pt = begin; cur_pt != end; ++cur_pt)
-  {
-    if (query_pt == cur_pt)
-      continue;
-
-    if (d(*query_pt->tuple, *cur_pt->tuple) > eps)
-      continue;
-
-    v.push_back(cur_pt);
-  }
-}
 
 // TODO: Replace this so we don't have to store the cluster info for each tuple?
 template<typename NTupleIterT>
@@ -107,7 +85,7 @@ dbscan(NTupleIterT const & begin,
     // Expand cluster.
 
     std::vector<ntuple_nodes::iterator> seeds;
-    detail::query(it, tuples.begin(), tuples.end(), eps, d, seeds);
+    detail::naive_query(it, tuples.begin(), tuples.end(), eps, d, seeds);
     // If the neighborhood of this tuple is too small, then mark it as noise.
     if (seeds.size() < min_points)
     {
@@ -137,7 +115,7 @@ dbscan(NTupleIterT const & begin,
       seeds.pop_back();
 
       std::vector<ntuple_nodes::iterator> results;
-      detail::query(cur, tuples.begin(), tuples.end(), eps, d, results);
+      detail::naive_query(cur, tuples.begin(), tuples.end(), eps, d, results);
 
       if (results.size() >= min_points)
       {
