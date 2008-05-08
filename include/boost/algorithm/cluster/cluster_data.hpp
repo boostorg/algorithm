@@ -1,3 +1,8 @@
+//  (C) Copyright Jonathan Franklin 2008.
+//  Use, modification and distribution are subject to the
+//  Boost Software License, Version 1.0. (See accompanying file
+//  LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+
 #if ! defined BOOST_ALGORITHM_CLUSTER_CLUSTER_DATA_HPP
 #define BOOST_ALGORITHM_CLUSTER_CLUSTER_DATA_HPP
 
@@ -13,10 +18,10 @@ namespace cluster
 
 /*! TODO: Document this type.
  */
-template<typename Cluster>
+template<typename ClusterT>
 struct cluster_data
 {
-  typedef Cluster value_type;
+  typedef ClusterT value_type;
   typedef std::vector<value_type> clusters;
   cluster_data() : m_pClusters(new clusters) {}
   ~cluster_data() {}
