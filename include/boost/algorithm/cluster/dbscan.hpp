@@ -9,6 +9,7 @@
 #include <boost/algorithm/cluster/cluster_data.hpp>
 #include <boost/algorithm/cluster/concept.hpp>
 #include <boost/algorithm/cluster/detail/naive_query.hpp>
+#include <boost/utility/result_of.hpp>
 #include <vector>
 
 namespace boost
@@ -45,11 +46,12 @@ struct node
  * \param[in] d
  * \return The cluster data (partitioning of the tuples).
  */
-template<typename ClusterT, typename NTupleIterT, typename DistFunT>
+template<typename ClusterT, typename NTupleIterT,
+         typename DistanceT, typename DistFunT>
 cluster_data<ClusterT>
 dbscan(NTupleIterT const & begin,
        NTupleIterT const & end, 
-       typename NTupleIterT::difference_type const & eps,
+       DistanceT const & eps,
        size_t min_points,
        DistFunT const & d)
 {
@@ -57,6 +59,8 @@ dbscan(NTupleIterT const & begin,
   function_requires<
     DistanceComparableConcept<typename NTupleIterT::value_type, DistFunT> >();
     //DistanceComparableConcept<int, DistFunT> >();
+  function_requires<
+    DistanceComparableConcept<DistanceT, DistFunT> >();
 
   // TODO: Rework the algorithm to NOT make this extra collection?
   typedef detail::node<NTupleIterT> node;

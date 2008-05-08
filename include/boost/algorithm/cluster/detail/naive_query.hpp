@@ -21,12 +21,12 @@ namespace detail
 
 // TODO: Replace this naive query function w/ R*-tree or fractional cascading.
 // This query mechanism makes the runtime quadratic.
-template<typename NTupleIterT, typename DistFunT>
+template<typename NTupleIterT, typename DistanceT, typename DistFunT>
 static void naive_query(
   NTupleIterT const & query_pt,
   NTupleIterT const & begin,
   NTupleIterT const & end,
-  typename NTupleIterT::difference_type eps,
+  DistanceT const & eps,
   DistFunT const & d,
   std::vector<NTupleIterT> & v)
 {
