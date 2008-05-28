@@ -171,7 +171,7 @@ template<typename I,typename O>
 /// \return      The (modified) output iterator
 ///
   template<typename Range, typename O, typename Pred> 
-  O copy_while_backward ( Range range, O res, Pred p ) 
+  O copy_backward_while ( Range range, O res, Pred p ) 
   {
     return copy_backward_while ( boost::begin ( range ), boost::end ( range ), res, p );
   } 
@@ -188,7 +188,7 @@ template<typename I,typename O>
 // 
 // No range-based version here
 
-/// \fn copy_n ( I first, Size count, O res )
+/// \fn copy_n ( I first, typename iterator_traits<I>::difference_type count, O res )
 /// \brief Copies n elements starting at 'first' into 'res'.
 ///
 /// \param first The start of the input sequence
