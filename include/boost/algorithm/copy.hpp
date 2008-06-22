@@ -12,6 +12,7 @@
 #define BOOST_ALGORITHM_SEQUENCE_COPY_HPP
 
 #include <boost/range.hpp>		// For boost::begin and boost::end
+#include <iterator>				// for std::iterator_traits<>
 
 /// \file copy.hpp
 /// \brief Boost implementation of various STL-type copying algorithms
@@ -199,7 +200,7 @@ template<typename I,typename O>
 //  template <typename I, typename Size, typename O>
 //  O copy_n ( I first, Size count, O res )
   template <typename I, typename O>
-  O copy_n ( I first, typename iterator_traits<I>::difference_type count, O res )
+  O copy_n ( I first, typename std::iterator_traits<I>::difference_type count, O res )
   {
     while ( count-- > 0 )
       *res++ = *first++;
