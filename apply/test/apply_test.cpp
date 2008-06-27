@@ -1,7 +1,3 @@
-/*** show that you have a forward iterator
-* more types
-* more containers*/
-
 /*
  Copyright (C) 2008 Jesse Williamson 
 
