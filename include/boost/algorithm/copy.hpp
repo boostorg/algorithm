@@ -6,6 +6,9 @@
 
   Revision history:
    05 May 2008 mtc First version - as part of BoostCon 2008
+   07 Jul 2008 mtc Added more algorithms proposed by Matt Austern as part of C++Ox
+       <http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2666.pdf>
+   
 */
 
 #ifndef BOOST_ALGORITHM_SEQUENCE_COPY_HPP
@@ -197,15 +200,32 @@ template<typename I,typename O>
 /// \param res   An output iterator to copy into
 /// \return      The (modified) output iterator
 ///
-//  template <typename I, typename Size, typename O>
-//  O copy_n ( I first, Size count, O res )
-  template <typename I, typename O>
-  O copy_n ( I first, typename std::iterator_traits<I>::difference_type count, O res )
+  template <typename I, typename Size, typename O>
+  O copy_n ( I first, Size count, O res )
+//  template <typename I, typename O>
+//  O copy_n ( I first, typename std::iterator_traits<I>::difference_type count, O res )
   {
-    while ( count-- > 0 )
-      *res++ = *first++;
+    for ( ; count > 0; ++res, ++first, --count )
+      *res = *first;
     return res;
   }
+
+/// \fn uninitialized_copy_n ( I first, Size count, O res )
+/// \brief xxx
+///
+/// \param first The start of the input sequence
+/// \param count The number of elements to copy
+/// \param res   An output iterator to copy into
+/// \return      The (modified) output iterator
+///
+  template<typename I, typename Size, typename O> 
+  O uninitialized_copy_n ( I first, Size count, O res ) 
+  {
+    typedef typename std::iterator_traits<I>::value_type vt;
+    for ( ; count > 0; ++res, ++first, --count )
+        new ( static_cast <void*> ( &*res )) vt (*first); 
+    return res;
+  } 
 
 //	Range-based versions of copy and copy_backwards.
 
@@ -239,6 +259,48 @@ template<typename I,typename O>
   {
     return std::copy_backward ( boost::begin ( range ), boost::end ( range ), res );
   } 
+
+
+/// \fn partition_copy ( I first, I last, O1 out_true, O2 out_false, Pred pred )
+/// \brief Copies each element from [first, last) into one of the two output sequences,
+///		depending on the result of the predicate
+///
+/// \param first       The start of the input sequence
+/// \param last        One past the end of the input sequence
+/// \param out_true    An output iterator to copy into
+/// \param out_false   An output iterator to copy into
+/// \param p           A predicate to determine which output sequence to copy into.
+///
+///
+  template <typename I, typename O1, typename O2, typename Pred>
+  std::pair <O1, O2> partition_copy ( I first, I last, O1 out_true, O2 out_false, Pred pred )
+  {
+    while (first != last)
+    {
+      if (p(*first)) 
+        *out_true++  = *first++;
+      else
+        *out_false++ = *first++;
+    } 
+  
+    return std::make_pair ( out_true, out_false );
+  }
+  
+
+/// \fn partition_copy ( I first, I last, O1 out_true, O2 out_false, Pred pred )
+/// \brief Copies each element from the range into one of the two output sequences,
+///		depending on the result of the predicate
+///
+/// \param range       The input range
+/// \param out_true    An output iterator to copy into
+/// \param out_false   An output iterator to copy into
+/// \param p           A predicate to determine which output sequence to copy into.
+///
+  template <typename Range, typename O1, typename O2, typename Pred>
+  std::pair <O1, O2> partition_copy ( Range range, O1 out_true, O2 out_false, Pred pred )
+  {
+    return partition_copy ( boost::begin ( range ), boost::end ( range ), out_true, out_false, pred );
+  }
 
 }}} // namespace boost & algorithm & sequence
 
