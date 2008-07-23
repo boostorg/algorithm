@@ -43,13 +43,6 @@ namespace boost { namespace algorithm { namespace sequence {
 /// \param R        A forward readable Boost range input sequence.
 /// \param pred     Predicate.
 ///
-/*
-    inline typename boost::range_iterator< ForwardReadableRange >::type
-    find( ForwardReadableRange& c, const T& value )
-    {
-       return std::find( boost::begin( c ), boost::end( c ), value );
-    }
-*/
 
   template <class ForwardReadableRange, class Predicate>
   typename boost::range_iterator<ForwardReadableRange>::type find_if_not( ForwardReadableRange& R, Predicate pred )
