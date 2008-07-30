@@ -62,7 +62,7 @@ namespace boost { namespace algorithm { namespace sequence {
   } 
   
 
-/// \fn copy_backward_if ( I first, I last, O res, Pred p )
+/// \fn reverse_copy_if ( I first, I last, O res, Pred p )
 /// \brief Copies all the elements from (last, first] that satisfy the predicate into 'res'
 /// 
 /// \param first The start of the input sequence
@@ -74,7 +74,7 @@ namespace boost { namespace algorithm { namespace sequence {
 /// \note        Based on a suggested implementation by Bjorne Stoustrop.
 ///
   template<typename I, typename O, typename Pred> 
-  O copy_backward_if ( I first, I last, O res, Pred p) 
+  O reverse_copy_if ( I first, I last, O res, Pred p) 
   {
     while (first != last)
     {
@@ -84,7 +84,7 @@ namespace boost { namespace algorithm { namespace sequence {
     return res; 
   } 
 
-/// \fn copy_backward_if ( Range range, O res, Pred p )
+/// \fn reverse_copy_if ( Range range, O res, Pred p )
 /// \brief Copy all the elements from the range that satisfy the predicate into 'res'
 /// 
 /// \param range The input range
@@ -93,9 +93,9 @@ namespace boost { namespace algorithm { namespace sequence {
 /// \return      The (modified) output iterator
 ///
   template<typename Range, typename O, typename Pred> 
-  O copy_backward_if ( Range range, O res, Pred p ) 
+  O reverse_copy_if ( Range range, O res, Pred p ) 
   {
-    return copy_backward_if ( boost::begin ( range ), boost::end ( range ), res, p );
+    return reverse_copy_if ( boost::begin ( range ), boost::end ( range ), res, p );
   } 
 
 
@@ -124,11 +124,11 @@ template<typename I,typename O>
 /// \return      The (modified) output iterator
 ///
   template<typename I, typename O, typename Pred>
-  O copy_while ( I first, I last, O res, Pred p )
+  std::pair<I,O> copy_while ( I first, I last, O res, Pred p )
   {
     for (; first != last && p(*first); ++first)
         *res++ = *first;
-    return res;
+    return std::make_pair ( first, res );
   }
 
 /// \fn copy_while ( Range range, O res, Pred p )
@@ -141,13 +141,13 @@ template<typename I,typename O>
 /// \return      The (modified) output iterator
 ///
   template<typename Range, typename O, typename Pred> 
-  O copy_while ( Range range, O res, Pred p ) 
+  std::pair<I,O> copy_while ( Range range, O res, Pred p ) 
   {
     return copy_while ( boost::begin ( range ), boost::end ( range ), res, p );
   } 
 
                       
-/// \fn copy_backward_while ( I first, I last, O res, Pred p )
+/// \fn reverse_copy_while ( I first, I last, O res, Pred p )
 /// \brief Copies all the elements from (last, first] up to a point into 'res'.\n
 ///      Will continue until the input range is exhausted, or the predicate 'p' fails.
 ///
@@ -158,14 +158,14 @@ template<typename I,typename O>
 /// \return      The (modified) output iterator
 ///
   template<typename I, typename O, typename Pred>
-  O copy_backward_while ( I first, I last, O res, Pred p )
+  std::pair<I,O> reverse_copy_while ( I first, I last, O res, Pred p )
   {
     while ( first != last && p ( *--last ))
         *res++ = *last;
-    return res;
+    return std::make_pair ( last, res );
   }
 
-/// \fn copy_backward_while ( Range range, O res, Pred p )
+/// \fn reverse_copy_while ( Range range, O res, Pred p )
 /// \brief Copies all the elements from the range up to a point into 'res'.\n
 ///    Will continue until the input range is exhausted, or the predicate 'p' fails.
 /// 
@@ -175,9 +175,9 @@ template<typename I,typename O>
 /// \return      The (modified) output iterator
 ///
   template<typename Range, typename O, typename Pred> 
-  O copy_backward_while ( Range range, O res, Pred p ) 
+  std::pair<I,O> reverse_copy_while ( Range range, O res, Pred p ) 
   {
-    return copy_backward_while ( boost::begin ( range ), boost::end ( range ), res, p );
+    return reverse_copy_while ( boost::begin ( range ), boost::end ( range ), res, p );
   } 
 
                       
@@ -227,7 +227,7 @@ template<typename I,typename O>
     return res;
   } 
 
-//	Range-based versions of copy and copy_backwards.
+//	Range-based versions of copy and copy_backward.
 
 /// \fn copy ( Range range, O res )
 /// \brief Copies elements from the range 'range' into 'res'.
@@ -252,7 +252,7 @@ template<typename I,typename O>
 /// \param res   An output iterator to copy into
 /// \return      The (modified) output iterator
 ///
-/// \note A range-based version of std::copy_backwards
+/// \note A range-based version of std::copy_backward
 ///
   template<typename Range, typename O> 
   O copy_backward ( Range range, O res ) 
