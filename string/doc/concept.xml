@@ -4,7 +4,7 @@
 
 <!-- Copyright (c) 2002-2006 Pavol Droba.
      Subject to the Boost Software License, Version 1.0. 
-     (See accompanying file LICENSE-1.0 or  http://www.boost.org/LICENSE-1.0)
+     (See accompanying file LICENSE_1_0.txt or  http://www.boost.org/LICENSE_1_0.txt)
 -->
 
 <section id="string_algo.concept" last-revision="$Date$">
@@ -102,7 +102,7 @@
 struct simple_finder
 {
     template&lt;typename ForwardIteratorT&gt;
-    boost::iterator_range&lt;ForwardIterator&gt; operator()(
+    boost::iterator_range&lt;ForwardIteratorT&gt; operator()(
         ForwardIteratorT Begin,
         ForwardIteratorT End )
     {

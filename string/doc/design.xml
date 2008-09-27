@@ -5,7 +5,7 @@
 
 <!-- Copyright (c) 2002-2006 Pavol Droba.
      Subject to the Boost Software License, Version 1.0. 
-     (See accompanying file LICENSE-1.0 or  http://www.boost.org/LICENSE-1.0)
+     (See accompanying file LICENSE_1_0.txt or  http://www.boost.org/LICENSE_1_0.txt)
 -->
 
 <section id="string_algo.design" last-revision="$Date$">
@@ -217,7 +217,7 @@
         </para>
         <para>
             For more information about the exception safety topics, follow this 
-            <ulink url="../../more/generic_exception_safety.html">link</ulink>
+            <ulink url="http://www.boost.org/more/generic_exception_safety.html">link</ulink>
         </para>        
     </section>
 </section>
