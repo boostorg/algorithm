@@ -14,6 +14,7 @@
 // #include <boost/range.hpp>		// For boost::begin and boost::end
 
 /// \file iota.hpp
+/// \brief Generate and write sequences.
 /// \brief Boost implementation of iota, a proposed algorithm for TR2
 /// \author Marshall Clow
 

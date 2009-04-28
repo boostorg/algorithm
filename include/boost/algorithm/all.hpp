@@ -16,13 +16,13 @@
 #include <boost/range.hpp>		// For boost::begin and boost::end
 
 /// \file all.hpp
-/// \brief Boost implementation of various STL-type logical algorithms
+/// \brief Test ranges against predicates.
 /// \author Marshall Clow
 
 
 namespace boost { namespace algorithm {
 
-/// \fn all ( I first, I last, V val )
+/// \fn all ( I first, I last, const V &val )
 /// \brief Returns true if all elements in [first, last) are equal to 'val'
 /// 
 /// \param first The start of the input sequence
@@ -39,7 +39,7 @@ namespace boost { namespace algorithm {
     return true; 
   } 
 
-/// \fn all ( Range range, V val )
+/// \fn all ( Range range, const V &val )
 /// \brief Returns true if all elements in the range are equal to 'val'
 /// 
 /// \param range The input range
@@ -81,7 +81,7 @@ template<typename I, typename Pred>
     return all_if ( boost::begin ( range ), boost::end ( range ), p );
   } 
 
-/// \fn none ( I first, I last, V val )
+/// \fn none ( I first, I last, const V &val )
 /// \brief Returns true if none of the elements in [first, last) are equal to 'val'
 /// 
 /// \param first The start of the input sequence
@@ -93,12 +93,12 @@ template<typename I, typename Pred>
   {
     while (first != last) {
       if ( *first++ == val ) 
-        return true;
+        return false;
     } 
-    return false; 
+    return true; 
   } 
 
-/// \fn none ( Range range, V val )
+/// \fn none ( Range range, const V &val )
 /// \brief Returns true if none of the elements in the range are equal to 'val'
 /// 
 /// \param range The input range
@@ -140,7 +140,7 @@ template<typename I, typename Pred>
     return none_if ( boost::begin ( range ), boost::end ( range ), p );
   } 
 
-/// \fn any ( I first, I last, V val )
+/// \fn any ( I first, I last, const V &val )
 /// \brief Returns true if any of the elements in [first, last) are equal to 'val'
 /// 
 /// \param first The start of the input sequence
@@ -157,7 +157,7 @@ template<typename I, typename Pred>
     return false; 
   } 
 
-/// \fn any ( Range range, V val )
+/// \fn any ( Range range, const V &val )
 /// \brief Returns true if any of the elements in the range are equal to 'val'
 /// 
 /// \param range The input range
@@ -198,7 +198,7 @@ template<typename I, typename Pred>
     return any_if ( boost::begin ( range ), boost::end ( range ), p );
   } 
 
-/// \fn exists_and_only ( I first, I last, V val )
+/// \fn exists_and_only ( I first, I last, const V &val )
 /// \brief Returns true if the value 'val' exists only once in [first, last).
 /// 
 /// \param first The start of the input sequence
@@ -214,7 +214,7 @@ template<typename I, typename Pred>
     return true;
   }
 
-/// \fn exists_and_only ( Range range, V val )
+/// \fn exists_and_only ( Range range, const V &val )
 /// \brief Returns true if the value 'val' exists only once in the range.
 /// 
 /// \param range The input range

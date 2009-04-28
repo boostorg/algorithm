@@ -13,7 +13,7 @@
 #include <boost/range.hpp>
 
 /// \file find_if_not.hpp
-/// \brief Boost implementation of find_if_not() algorithm.
+/// \brief Return the first iterator in a range for which a predicate is false.
 /// \author Jesse Williamson
 
 namespace boost { namespace algorithm { namespace sequence {

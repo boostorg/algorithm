@@ -16,12 +16,12 @@
 
 
 /// \file select.hpp
-/// \brief Boost implementation select1st and select2nd.
+/// \brief Choose the first or second element of a Pair.
 /// \author Marshall Clow
 
 namespace boost { namespace algorithm {
 
-/// \fn select1st
+/// \struct select1st
 /// \brief Unary function that returns the first element of a std::pair
 /// 
 /// \param p     The pair.
@@ -35,7 +35,7 @@ namespace boost { namespace algorithm {
            typename Pair::first_type& operator()(      Pair& p) const { return p.first; }
   };
 
-/// \fn select2nd
+/// \struct select2nd
 /// \brief Unary function that returns the first element of a std::pair
 /// 
 /// \param p     The pair.

@@ -14,7 +14,7 @@
 #include <boost/range.hpp>		// For boost::begin and boost::end
 
 /// \file for_each_if.hpp
-/// \brief Boost implementation for_each_if, which was left out of the standard.
+/// \brief Apply a functor to a range when a predicate is satisfied.
 /// \author Marshall Clow
 
 namespace boost { namespace algorithm {
@@ -31,7 +31,7 @@ namespace boost { namespace algorithm {
 ///
 ///
   template<typename InputIterator, typename Pred, typename Func>
-  UnaryFunction for_each_if ( InputIterator first, InputIterator last, Pred p, Func f )
+  Func for_each_if ( InputIterator first, InputIterator last, Pred p, Func f )
   {
     while ( first != last )
     {

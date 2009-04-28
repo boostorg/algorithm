@@ -18,8 +18,7 @@
 #include <iterator>				// for std::iterator_traits<>
 
 /// \file copy.hpp
-/// \brief Boost implementation of various STL-type copying algorithms
-///         that were left out of the standard.
+/// \brief STL-type copy()-type algorithms that were left out of the standard.
 /// \author Marshall Clow
 
 namespace boost { namespace algorithm { namespace sequence {
@@ -141,7 +140,7 @@ template<typename I,typename O>
 /// \return      The (modified) output iterator
 ///
   template<typename Range, typename O, typename Pred> 
-  std::pair<I,O> copy_while ( Range range, O res, Pred p ) 
+  std::pair<typename Range::type,O> copy_while ( Range range, O res, Pred p ) 
   {
     return copy_while ( boost::begin ( range ), boost::end ( range ), res, p );
   } 
@@ -175,7 +174,7 @@ template<typename I,typename O>
 /// \return      The (modified) output iterator
 ///
   template<typename Range, typename O, typename Pred> 
-  std::pair<I,O> reverse_copy_while ( Range range, O res, Pred p ) 
+  std::pair<typename Range::type,O> reverse_copy_while ( Range range, O res, Pred p ) 
   {
     return reverse_copy_while ( boost::begin ( range ), boost::end ( range ), res, p );
   } 
@@ -190,9 +189,14 @@ template<typename I,typename O>
 //
 // Marshall sez: What's the advantage of templatizing on count, rather than using std::size_t?
 // 
+// Jesse says: I've kept the signature that was uncommented to stop Doxygen from complaining. Here's 
+// the signature that was being discussed:
+//  template <typename I, typename O>
+//  O copy_n ( I first, typename std::iterator_traits<I>::difference_type count, O res )
+//
 // No range-based version here
 
-/// \fn copy_n ( I first, typename iterator_traits<I>::difference_type count, O res )
+/// \fn copy_n ( I first, Size count, O res )
 /// \brief Copies n elements starting at 'first' into 'res'.
 ///
 /// \param first The start of the input sequence
@@ -202,8 +206,6 @@ template<typename I,typename O>
 ///
   template <typename I, typename Size, typename O>
   O copy_n ( I first, Size count, O res )
-//  template <typename I, typename O>
-//  O copy_n ( I first, typename std::iterator_traits<I>::difference_type count, O res )
   {
     for ( ; count > 0; ++res, ++first, --count )
       *res = *first;
@@ -269,7 +271,7 @@ template<typename I,typename O>
 /// \param last        One past the end of the input sequence
 /// \param out_true    An output iterator to copy into
 /// \param out_false   An output iterator to copy into
-/// \param p           A predicate to determine which output sequence to copy into.
+/// \param pred        A predicate to determine which output sequence to copy into.
 ///
 ///
   template <typename I, typename O1, typename O2, typename Pred>
@@ -287,14 +289,16 @@ template<typename I,typename O>
   }
   
 
-/// \fn partition_copy ( I first, I last, O1 out_true, O2 out_false, Pred pred )
+/// \fn partition_copy ( Range range, O1 out_true, O2 out_false, Pred pred )
 /// \brief Copies each element from the range into one of the two output sequences,
 ///		depending on the result of the predicate
 ///
 /// \param range       The input range
 /// \param out_true    An output iterator to copy into
 /// \param out_false   An output iterator to copy into
-/// \param p           A predicate to determine which output sequence to copy into.
+/// \param pred        A predicate to determine which output sequence to copy into.
+///
+/// \note A range-based version of partition_copy.
 ///
   template <typename Range, typename O1, typename O2, typename Pred>
   std::pair <O1, O2> partition_copy ( Range range, O1 out_true, O2 out_false, Pred pred )

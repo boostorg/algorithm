@@ -13,7 +13,7 @@
 #include <boost/range.hpp>
 
 /// \file transform_if.hpp
-/// \brief Boost implementation of transform_if() algorithm.
+/// \brief Apply operations across ranges when a predicate is true, storing returned values.
 /// \author Jesse Williamson
 
 namespace boost { namespace algorithm { namespace sequence {
