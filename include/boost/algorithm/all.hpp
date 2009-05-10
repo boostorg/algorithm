@@ -6,23 +6,35 @@
 
  Revision history:
    05 May 2008 mtc First version - as part of BoostCon 2008
+   07 May 2009 mtc Changed names to match n2666
+   
 */
-
-//	Returns true iff all of the elements in [ first, last ) satisfy the predicate.
-
-#ifndef BOOST_ALGORITHM_ALL_HPP
-#define BOOST_ALGORITHM_ALL_HPP
-
-#include <boost/range.hpp>		// For boost::begin and boost::end
 
 /// \file all.hpp
 /// \brief Test ranges against predicates.
 /// \author Marshall Clow
 
+#ifndef BOOST_ALGORITHM_ALL_HPP
+#define BOOST_ALGORITHM_ALL_HPP
+
+#include <boost/range.hpp>      // For boost::begin and boost::end
+
+//  I would love to use the all_of, any_of and none_of that are in the C++0x
+//  standard library if they are available, but I don't know how to do that.
+//  -- mtc 11-May-2009
+//  Something like:
+//  #ifdef <something>
+//  use std::all_of;
+//  #else
+//  template<typename I, typename V> 
+//  bool all_of ( I first, I last, const V &val )
+//      ... and so on.
+//  #endif
+
 
 namespace boost { namespace algorithm {
 
-/// \fn all ( I first, I last, const V &val )
+/// \fn all_of ( I first, I last, const V &val )
 /// \brief Returns true if all elements in [first, last) are equal to 'val'
 /// 
 /// \param first The start of the input sequence
@@ -30,7 +42,7 @@ namespace boost { namespace algorithm {
 /// \param val   A value to compare against
 ///
   template<typename I, typename V> 
-  bool all ( I first, I last, const V &val )
+  bool all_of ( I first, I last, const V &val )
   {
     while (first != last) {
       if ( *first++ != val ) 
@@ -39,20 +51,21 @@ namespace boost { namespace algorithm {
     return true; 
   } 
 
-/// \fn all ( Range range, const V &val )
+
+/// \fn all_of ( Range range, const V &val )
 /// \brief Returns true if all elements in the range are equal to 'val'
 /// 
 /// \param range The input range
 /// \param val   A value to compare against
 ///
   template<typename Range, typename V> 
-  bool all ( Range range, const V &val ) 
+  bool all_of ( Range range, const V &val ) 
   {
-    return all ( boost::begin ( range ), boost::end ( range ), val );
+    return all_of ( boost::begin ( range ), boost::end ( range ), val );
   } 
 
 
-/// \fn all_if ( I first, I last, Pred p )
+/// \fn all_of_if ( I first, I last, Pred p )
 /// \brief Returns true if all elements in [first, last) satisfy the predicate
 /// 
 /// \param first The start of the input sequence
@@ -60,7 +73,7 @@ namespace boost { namespace algorithm {
 /// \param p     A predicate
 ///
 template<typename I, typename Pred> 
-  bool all_if ( I first, I last, Pred p )
+  bool all_of_if ( I first, I last, Pred p )
   {
     while (first != last) {
       if ( !p(*first++)) 
@@ -69,19 +82,19 @@ template<typename I, typename Pred>
     return true; 
   } 
 
-/// \fn all_if ( Range range, Pred p )
+/// \fn all_of_if ( Range range, Pred p )
 /// \brief Returns true if all elements in the range satisfy the predicate
 /// 
 /// \param range The input range
 /// \param p     A predicate to test the elements
 ///
   template<typename Range, typename Pred> 
-  bool all_if ( Range range, Pred p )
+  bool all_of_if ( Range range, Pred p )
   {
-    return all_if ( boost::begin ( range ), boost::end ( range ), p );
+    return all_of_if ( boost::begin ( range ), boost::end ( range ), p );
   } 
 
-/// \fn none ( I first, I last, const V &val )
+/// \fn none_of ( I first, I last, const V &val )
 /// \brief Returns true if none of the elements in [first, last) are equal to 'val'
 /// 
 /// \param first The start of the input sequence
@@ -89,7 +102,7 @@ template<typename I, typename Pred>
 /// \param val   A value to compare against
 ///
   template<typename I, typename V> 
-  bool none ( I first, I last, const V &val ) 
+  bool none_of ( I first, I last, const V &val ) 
   {
     while (first != last) {
       if ( *first++ == val ) 
@@ -98,20 +111,20 @@ template<typename I, typename Pred>
     return true; 
   } 
 
-/// \fn none ( Range range, const V &val )
+/// \fn none_of ( Range range, const V &val )
 /// \brief Returns true if none of the elements in the range are equal to 'val'
 /// 
 /// \param range The input range
 /// \param val   A value to compare against
 ///
   template<typename Range, typename V> 
-  bool none ( Range range, const V & val ) 
+  bool none_of ( Range range, const V & val ) 
   {
-    return none ( boost::begin ( range ), boost::end ( range ), val );
+    return none_of ( boost::begin ( range ), boost::end ( range ), val );
   } 
 
 
-/// \fn none_if ( I first, I last, Pred p )
+/// \fn none_of_if ( I first, I last, Pred p )
 /// \brief Returns true if none of the elements in [first, last) satisfy the predicate
 /// 
 /// \param first The start of the input sequence
@@ -119,7 +132,7 @@ template<typename I, typename Pred>
 /// \param p     A predicate
 ///
 template<typename I, typename Pred> 
-  bool none_if ( I first, I last, Pred p )
+  bool none_of_if ( I first, I last, Pred p )
   {
     while (first != last) {
       if ( p(*first++)) 
@@ -128,7 +141,7 @@ template<typename I, typename Pred>
     return true; 
   } 
 
-/// \fn none_if ( Range range, Pred p )
+/// \fn none_of_if ( Range range, Pred p )
 /// \brief Returns true if none of the elements in the range satisfy the predicate
 /// 
 /// \param range The input range
@@ -137,10 +150,10 @@ template<typename I, typename Pred>
   template<typename Range, typename Pred> 
   bool none_if ( Range range, Pred p )
   {
-    return none_if ( boost::begin ( range ), boost::end ( range ), p );
+    return none_of_if ( boost::begin ( range ), boost::end ( range ), p );
   } 
 
-/// \fn any ( I first, I last, const V &val )
+/// \fn any_of ( I first, I last, const V &val )
 /// \brief Returns true if any of the elements in [first, last) are equal to 'val'
 /// 
 /// \param first The start of the input sequence
@@ -148,7 +161,7 @@ template<typename I, typename Pred>
 /// \param val   A value to compare against
 ///
   template<typename I, typename V> 
-  bool any ( I first, I last, const V &val ) 
+  bool any_of ( I first, I last, const V &val ) 
   {
     while (first != last) {
       if ( *first++ == val ) 
@@ -157,19 +170,19 @@ template<typename I, typename Pred>
     return false; 
   } 
 
-/// \fn any ( Range range, const V &val )
+/// \fn any_of ( Range range, const V &val )
 /// \brief Returns true if any of the elements in the range are equal to 'val'
 /// 
 /// \param range The input range
 /// \param val   A value to compare against
 ///
   template<typename Range, typename V> 
-  bool any ( Range range, const V &val ) 
+  bool any_of ( Range range, const V &val ) 
   {
-    return any ( boost::begin ( range ), boost::end ( range ), val );
+    return any_of ( boost::begin ( range ), boost::end ( range ), val );
   } 
 
-/// \fn any_if ( I first, I last, Pred p )
+/// \fn any_of_if ( I first, I last, Pred p )
 /// \brief Returns true if any of the elements in [first, last) satisfy the predicate
 /// 
 /// \param first The start of the input sequence
@@ -177,7 +190,7 @@ template<typename I, typename Pred>
 /// \param p     A predicate
 ///
   template<typename I, typename Pred> 
-  bool any_if ( I first, I last, Pred p) 
+  bool any_of_if ( I first, I last, Pred p) 
   {
     while (first != last) {
       if ( p(*first++)) 
@@ -186,16 +199,16 @@ template<typename I, typename Pred>
     return false; 
   } 
 
-/// \fn any_if ( Range range, Pred p )
+/// \fn any_of_if ( Range range, Pred p )
 /// \brief Returns true if any elements in the range satisfy the predicate
 /// 
 /// \param range The input range
 /// \param p     A predicate to test the elements
 ///
   template<typename Range, typename Pred> 
-  bool any_if ( Range range, Pred p )
+  bool any_of_if ( Range range, Pred p )
   {
-    return any_if ( boost::begin ( range ), boost::end ( range ), p );
+    return any_of_if ( boost::begin ( range ), boost::end ( range ), p );
   } 
 
 /// \fn exists_and_only ( I first, I last, const V &val )
@@ -257,4 +270,5 @@ template<typename I, typename Pred>
 
 }} // namespace boost and algorithm
 
+#undef ANY_DOING_0X
 #endif // BOOST_ALGORITHM_ALL_HPP
