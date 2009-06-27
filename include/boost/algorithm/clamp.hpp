@@ -32,9 +32,11 @@ namespace boost { namespace algorithm {
   template<typename V> 
   V clamp ( V lo, V hi, V val )
   {
-    return val >= hi ? hi : val <= lo ? lo : val;
+//  return val >= hi ? hi : val <= lo ? lo : val;
 //  Alternately, 
 //  return std::max ( std::min ( val, hi ), lo );
+//  Rewritten to only use operator <
+	return val < lo ? lo : val < hi ? val : hi;
   } 
 
 }}
