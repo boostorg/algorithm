@@ -20,23 +20,23 @@
 
 namespace boost { namespace algorithm {
 
-/// \fn clamp ( V lo, V hi, V val )
+/// \fn clamp ( V val, V lo, V hi )
 /// \brief Returns the value "val" brought into the range [ lo, hi ]
 ///          If the value is greater than "hi", return hi. If the value is
 ///          less than "lo", return lo. Otherwise, return the original value.
 /// 
+/// \param val   The value to be clamped
 /// \param lo    The low point of the range to be clamped to
 /// \param hi    The high point of the range to be clamped to
-/// \param val   The value to be clamped
 ///
   template<typename V> 
-  V clamp ( V lo, V hi, V val )
+  V clamp ( V val, V lo, V hi )
   {
 //  return val >= hi ? hi : val <= lo ? lo : val;
 //  Alternately, 
 //  return std::max ( std::min ( val, hi ), lo );
 //  Rewritten to only use operator <
-	return val < lo ? lo : val < hi ? val : hi;
+  return val < lo ? lo : hi < val ? hi : val;
   } 
 
 }}
