@@ -65,6 +65,7 @@ alias unit_test_framework
      [ run gather_test1.cpp unit_test_framework        : : : : gather_test1 ]
      [ compile-fail gather_fail1.cpp ]
 
-   ;
+# LSD radix sort tests
+     [ run stable_counting_sanity.cpp unit_test_framework       : : : : stable_counting_sanity ]
+     ;
 }
-

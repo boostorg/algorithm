@@ -46,6 +46,10 @@ Thanks to all the people who have reviewed this library and made suggestions for
 [include knuth_morris_pratt.qbk]
 [endsect]
 
+[section:Sorting Integer Sorting Algorithms]
+[include integer_sort.qbk]
+[endsect]
+
 [section:CXX11 C++11 Algorithms]
 [include all_of.qbk]
 [include any_of.qbk]
