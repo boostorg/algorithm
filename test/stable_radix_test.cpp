@@ -1,5 +1,5 @@
 
-#define BOOST_TEST_MODULE counting_sanity
+#define BOOST_TEST_MAIN
 #include <boost/test/unit_test.hpp>
 
 #include <iterator>
