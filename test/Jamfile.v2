@@ -67,5 +67,6 @@ alias unit_test_framework
 
 # Integer sort tests
      [ run stable_counting_test.cpp unit_test_framework       : : : : stable_counting_test ]
+     [ run stable_radix_test.cpp unit_test_framework       : : : : stable_radix_test ]
      ;
 }

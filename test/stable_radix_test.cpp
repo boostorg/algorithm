@@ -7,7 +7,7 @@
 #include <list>
 #include <deque>
 
-#include <boost/algorithm/integer_sort/counting-sort.hpp>
+#include <boost/algorithm/integer_sort/radix-sort.hpp>
 #include <boost/test/test_tools.hpp>
 #include <boost/random.hpp>
 #include <boost/lexical_cast.hpp>
@@ -25,7 +25,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(empty, T, all_unsigned_types)
 {
     // So empty, it would be a crime to dereference it.
     T *const p = NULL, * const result = NULL;
-    stable_counting_sort(p, p, result);
+    stable_radix_sort(p, p, result);
     // No BOOST_REQUIRE... we just make sure the program does not crash/throw.
 }
 
@@ -45,7 +45,7 @@ struct count_one
     {
         result[0] = 9;
         Container const c(1, 0);
-        stable_counting_sort(c.begin(), c.end(), result.begin());
+        stable_radix_sort(c.begin(), c.end(), result.begin());
         BOOST_CHECK(std::equal(result.begin(), result.end(), c.begin()));
     }
 };
@@ -79,7 +79,7 @@ public:
     {
         std::fill(result.begin(), result.end(), 9);
         Container const c(input.begin(), input.end());
-        stable_counting_sort(c.begin(), c.end(), result.begin());
+        stable_radix_sort(c.begin(), c.end(), result.begin());
         BOOST_CHECK(std::equal(c.begin(), c.end(), result.begin()));
     }
 };
@@ -112,7 +112,7 @@ struct random_k
     {
         std::fill(result.begin(), result.end(), 0);
         Container const c(input.begin(), input.end());
-        stable_counting_sort(c.begin(), c.end(), result.begin());
+        stable_radix_sort(c.begin(), c.end(), result.begin());
         BOOST_CHECK(std::equal(c.begin(), c.end(), result.begin()));
     }
 };
