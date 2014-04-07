@@ -15,6 +15,7 @@
 #include <boost/mpl/transform.hpp>
 #include <boost/mpl/apply_wrap.hpp>
 #include <boost/mpl/for_each.hpp>
+#include <boost/bind.hpp>
 
 using namespace boost::algorithm;
 
@@ -85,10 +86,11 @@ public:
 };
 
 
+
 BOOST_AUTO_TEST_CASE_TEMPLATE(one_1000, T, all_unsigned_types)
 {
     typedef typename boost::mpl::transform<boost::mpl::list< std::vector<boost::mpl::_1>, std::deque<boost::mpl::_1>, std::list<boost::mpl::_1> >, boost::mpl::apply1<boost::mpl::_1, T> >::type test_containers;
-
+    
     unsigned int const n = 1000;
     std::vector<T> const input(n, 1);
     
@@ -100,31 +102,33 @@ template <typename T>
 struct random_k
 {
     std::vector<T> input;
-    std::vector<T> result;
     
-    random_k(std::vector<T> const &input) : input(input)
+    random_k(T k, unsigned n)
     {
-        result.resize(input.size());
+        boost::random::mt19937 gen(0);
+        boost::random::uniform_int_distribution<T> dist(0, k);
+        std::generate_n(std::back_inserter(input), n, boost::bind(dist, gen));
     }
     
     template <typename Container>
     void operator()(Container)
     {
-        std::fill(result.begin(), result.end(), 0);
         Container const c(input.begin(), input.end());
-        stable_radix_sort(c.begin(), c.end(), result.begin());
-        BOOST_CHECK(std::equal(c.begin(), c.end(), result.begin()));
+        std::vector<T> result1;
+        result1.resize(input.size());
+        stable_radix_sort(c.begin(), c.end(), result1.begin());
+        std::vector<T> result2(input.begin(), input.end());
+        std::stable_sort(result2.begin(), result2.end());
+        BOOST_CHECK(std::equal(result1.begin(), result1.end(), result2.begin()));
     }
 };
 
 
 BOOST_AUTO_TEST_CASE_TEMPLATE(random_small_k, T, all_unsigned_types)
 {
-    unsigned const k = 255, n = 1000;
-    boost::random::mt19937 gen(0);
-    boost::random::uniform_int_distribution<T> dist(0, k);
-    std::vector<T> tmp_data;
-    for(unsigned i = 0; i < n; i++)
-        tmp_data.push_back(dist(gen));
-    // TODO: Unfinished.
+    typedef typename boost::mpl::transform<boost::mpl::list< std::vector<boost::mpl::_1>, std::deque<boost::mpl::_1>, std::list<boost::mpl::_1> >, boost::mpl::apply1<boost::mpl::_1, T> >::type test_containers;
+
+    T const k = ~T(0);
+    unsigned n = 1000;
+    boost::mpl::for_each<test_containers>(random_k<T>(k, n));
 }
