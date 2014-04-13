@@ -44,7 +44,7 @@ namespace algorithm {
     BOOST_CONCEPT_REQUIRES(((BidirectionalIterator<Input>))
         ((Mutable_RandomAccessIterator<Output>))
         ((UnsignedInteger<typename tr1_result_of<Conversion(typename std::iterator_traits<Input>::value_type)>::type>)), 
-                           (void))
+                           (Output))
     stable_radix_sort(Input first, Input last, Output result, Conversion conv,
         typename tr1_result_of<Conversion(typename std::iterator_traits<Input>::value_type)>::type const min,
         typename tr1_result_of<Conversion(typename std::iterator_traits<Input>::value_type)>::type const max,
@@ -95,6 +95,7 @@ namespace algorithm {
                 }
             }
         }
+        return result;
     }
     
     
@@ -102,7 +103,7 @@ namespace algorithm {
         BOOST_CONCEPT_REQUIRES(((BidirectionalIterator<Input>))
         ((Mutable_RandomAccessIterator<Output>))
         ((UnsignedInteger<typename tr1_result_of<Conversion(typename std::iterator_traits<Input>::value_type)>::type>)), 
-                            (void))
+                            (Output))
     stable_radix_sort(Input first, Input last, Output result, Conversion conv)
     {
         if(first != last)
@@ -110,6 +111,8 @@ namespace algorithm {
             std::pair<Input, Input> const bound(boost::minmax_element(first, last));
             return stable_radix_sort(first, last, result, conv, conv(*bound.first), conv(*bound.second));
         }
+        else
+            return result;
     }
 
     
@@ -117,7 +120,7 @@ namespace algorithm {
         BOOST_CONCEPT_REQUIRES(((BidirectionalIterator<Input>))
         ((Mutable_RandomAccessIterator<Output>))
         ((UnsignedInteger<typename std::iterator_traits<Input>::value_type>)), 
-                           (void))
+                           (Output))
     stable_radix_sort(Input first, Input last, Output result)
     {
         return stable_radix_sort(first, last, result, identity<typename std::iterator_traits<Input>::value_type>());
