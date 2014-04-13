@@ -8,9 +8,7 @@
 #include <deque>
 
 #include <boost/algorithm/integer_sort/counting-sort.hpp>
-#include <boost/test/test_tools.hpp>
 #include <boost/random.hpp>
-#include <boost/lexical_cast.hpp>
 #include <boost/mpl/list.hpp>
 #include <boost/mpl/transform.hpp>
 #include <boost/mpl/apply_wrap.hpp>
@@ -132,6 +130,56 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(random_small_k, T, all_unsigned_types)
     try
     {
         boost::mpl::for_each<test_containers>(random_k<T>(k, n));
+    }
+    catch(std::bad_alloc const &e)
+    {
+        BOOST_TEST_MESSAGE("std::bad_alloc thrown but not a failure.");
+    }
+}
+
+
+template <typename T>
+struct convert
+{
+    struct foo
+    {
+        T key;
+
+        foo() {}
+        foo(T key) : key(key) {}
+        
+        operator T() const { return key; }
+    };
+
+    std::vector<foo> input;
+
+    convert(unsigned n)
+    {
+        boost::random::mt19937 gen(0);
+        boost::random::uniform_int_distribution<T> dist(0, ~T(0));
+        std::generate_n(std::back_inserter(input), n, boost::bind(dist, gen));
+    }
+    
+    template <typename Container>
+    void operator()(Container)
+    {
+        Container const c(input.begin(), input.end());
+        std::vector<foo> result1;
+        result1.resize(input.size());
+        stable_counting_sort(c.begin(), c.end(), result1.begin(), identity<T>());
+        std::vector<T> result2(input.begin(), input.end());
+        std::stable_sort(result2.begin(), result2.end());
+        BOOST_CHECK(std::equal(result1.begin(), result1.end(), result2.begin()));
+    }
+};
+
+
+BOOST_AUTO_TEST_CASE_TEMPLATE(conversion, T, all_unsigned_types)
+{
+    typedef typename boost::mpl::transform<boost::mpl::list< std::vector<boost::mpl::_1>, std::deque<boost::mpl::_1>, std::list<boost::mpl::_1> >, boost::mpl::apply1<boost::mpl::_1, typename convert<T>::foo> >::type test_containers;
+    try
+    {
+        boost::mpl::for_each<test_containers>(convert<T>(1000));
     }
     catch(std::bad_alloc const &e)
     {

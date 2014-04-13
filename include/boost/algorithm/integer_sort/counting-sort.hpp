@@ -36,14 +36,16 @@ namespace algorithm {
     }
     
     
+    // For types that are implicitly convertible to an unsigned integral type.
     template <typename T>
     struct identity
     {
         typedef T result_type;
         
         identity() {}
-
-        T const &operator()(T const &x) const
+        
+        template <typename U>
+        T operator()(U const &x) const
         {
             return x;
         }
