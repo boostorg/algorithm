@@ -35,21 +35,38 @@ namespace algorithm {
         }
     }
     
-    
-    // For types that are implicitly convertible to an unsigned integral type.
-    template <typename T>
-    struct identity
+
+    namespace transformation
     {
-        typedef T result_type;
-        
-        identity() {}
-        
-        template <typename U>
-        T operator()(U const &x) const
+        template <typename T>
+        struct identity
         {
-            return x;
-        }
-    };
+            typedef T result_type;
+            
+            identity() {}
+            
+            T const &operator()(T const &x) const
+            {
+                return x;
+            }
+        };
+        
+        
+        // For types that are implicitly convertible to an unsigned integral type.
+        template <typename T>
+        struct implicit
+        {
+            typedef T result_type;
+            
+            implicit() {}
+            
+            template <typename U>
+            T operator()(U const &x) const
+            {
+                return x;
+            }
+        };
+    }
     
     
     /**
@@ -153,7 +170,7 @@ namespace algorithm {
             , (Output))
     stable_counting_sort(Input first, Input last, Output result)
     {
-        return stable_counting_sort(first, last, result, identity<typename std::iterator_traits<Input>::value_type>());
+        return stable_counting_sort(first, last, result, transformation::identity<typename std::iterator_traits<Input>::value_type>());
     }
 }
 }

@@ -166,7 +166,7 @@ struct convert
         Container const c(input.begin(), input.end());
         std::vector<foo> result1;
         result1.resize(input.size());
-        stable_counting_sort(c.begin(), c.end(), result1.begin(), identity<T>());
+        stable_counting_sort(c.begin(), c.end(), result1.begin(), transformation::implicit<T>());
         std::vector<T> result2(input.begin(), input.end());
         std::stable_sort(result2.begin(), result2.end());
         BOOST_CHECK(std::equal(result1.begin(), result1.end(), result2.begin()));

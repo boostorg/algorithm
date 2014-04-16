@@ -123,7 +123,7 @@ namespace algorithm {
                            (Output))
     stable_radix_sort(Input first, Input last, Output result)
     {
-        return stable_radix_sort(first, last, result, identity<typename std::iterator_traits<Input>::value_type>());
+        return stable_radix_sort(first, last, result, transformation::identity<typename std::iterator_traits<Input>::value_type>());
     }
 }
 }
