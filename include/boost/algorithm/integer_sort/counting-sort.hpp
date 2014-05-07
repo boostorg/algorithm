@@ -15,13 +15,12 @@
 #include <cassert>
 #include <limits>
 #include <vector>
+#include <type_traits>
+#include <algorithm>
+#include <cstdint>
 
 #include <boost/concept_check.hpp>
 #include <boost/concept/requires.hpp>
-#include <boost/integer.hpp>
-#include <boost/utility/result_of.hpp>
-#include <boost/algorithm/minmax_element.hpp>
-#include <boost/scoped_array.hpp>
 
 
 namespace boost {
@@ -90,36 +89,39 @@ namespace algorithm {
         BOOST_CONCEPT_REQUIRES(
             ((BidirectionalIterator<Input>))
             ((Mutable_RandomAccessIterator<Output>))
-            ((UnsignedInteger<typename tr1_result_of<Conversion(typename std::iterator_traits<Input>::value_type)>::type>))
+            ((UnsignedInteger<typename std::result_of<Conversion(typename std::iterator_traits<Input>::value_type)>::type>))
             , (Output))
     stable_counting_sort(Input first, Input last, Output result, Conversion conv,
-        typename tr1_result_of<Conversion(typename std::iterator_traits<Input>::value_type)>::type const min,
-        typename tr1_result_of<Conversion(typename std::iterator_traits<Input>::value_type)>::type const max,
+        typename std::result_of<Conversion(typename std::iterator_traits<Input>::value_type)>::type const min,
+        typename std::result_of<Conversion(typename std::iterator_traits<Input>::value_type)>::type const max,
         unsigned const radix, unsigned char const digit)
     {
         typedef std::reverse_iterator<Input> ReverseIterator;
 
         if(first != last)
         {
-            Input next(first);
+            auto next(first);
             ++next;
             if(next == last)
                 *result++ = *first;
             else
             {
+                typedef typename std::result_of<Conversion(typename std::iterator_traits<Input>::value_type)>::type T;
                 assert(radix != 0);
                 // TODO: Maybe this next assertion should be an exception?
                 assert(max - min != std::numeric_limits<uintmax_t>::max()); // Because k - min + 1 == 0.
-                unsigned const shift = radix * digit;
+                auto const shift = radix * digit;
                 uintmax_t const bitmask = (1ul << radix) - 1;
                 std::vector<uintmax_t> C(static_cast<uintmax_t>(max - min) + 1);
                 ReverseIterator rfirst(last);
                 ReverseIterator const rlast(first);
 
                 // TODO: Could this be done faster by left-shifting _min and _bitmask once instead of right-shifting the value n times?
-                for(; first != last; first++)
-                    C[detail::count_index(conv(*first), shift, min, bitmask)]++;
-
+                std::for_each(first, last, [&](T const &x)
+                {
+                    C[detail::count_index(conv(x), shift, min, bitmask)]++;
+                });
+                
                 std::partial_sum(C.begin(), C.end(), C.begin());
 
                 for(; rfirst != rlast; rfirst++)
@@ -134,13 +136,13 @@ namespace algorithm {
         BOOST_CONCEPT_REQUIRES(
             ((BidirectionalIterator<Input>))
             ((Mutable_RandomAccessIterator<Output>))
-            ((UnsignedInteger<typename tr1_result_of<Conversion(typename std::iterator_traits<Input>::value_type)>::type>))
+            ((UnsignedInteger<typename std::result_of<Conversion(typename std::iterator_traits<Input>::value_type)>::type>))
         , (Output))
     stable_counting_sort(Input first, Input last, Output result, Conversion conv,
-        typename tr1_result_of<Conversion(typename std::iterator_traits<Input>::value_type)>::type const min,
-        typename tr1_result_of<Conversion(typename std::iterator_traits<Input>::value_type)>::type const max)
+        typename std::result_of<Conversion(typename std::iterator_traits<Input>::value_type)>::type const min,
+        typename std::result_of<Conversion(typename std::iterator_traits<Input>::value_type)>::type const max)
     {
-        unsigned const radix(sizeof(typename tr1_result_of<Conversion(typename std::iterator_traits<Input>::value_type)>::type) * 8);
+        unsigned const radix(sizeof(typename std::result_of<Conversion(typename std::iterator_traits<Input>::value_type)>::type) * 8);
         return stable_counting_sort(first, last, result, conv, min, max, radix, 0);
     }
     
@@ -149,13 +151,13 @@ namespace algorithm {
         BOOST_CONCEPT_REQUIRES(
             ((BidirectionalIterator<Input>))
             ((Mutable_RandomAccessIterator<Output>))
-            ((UnsignedInteger<typename tr1_result_of<Conversion(typename std::iterator_traits<Input>::value_type)>::type>))
+            ((UnsignedInteger<typename std::result_of<Conversion(typename std::iterator_traits<Input>::value_type)>::type>))
             , (Output))
     stable_counting_sort(Input first, Input last, Output result, Conversion conv)
     {
         if(first != last)
         {
-            std::pair<Input, Input> const bound(boost::minmax_element(first, last));
+            auto const bound(std::minmax_element(first, last));
             return stable_counting_sort(first, last, result, conv, *bound.first, *bound.second);
         }
         else

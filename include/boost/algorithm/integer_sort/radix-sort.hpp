@@ -10,7 +10,6 @@
 #define RADIX_SORT
 
 #include <boost/algorithm/integer_sort/counting-sort.hpp>
-#include <boost/algorithm/minmax_element.hpp>
 
 #include <algorithm>
 #include <cmath>
@@ -43,15 +42,15 @@ namespace algorithm {
     template <typename Input, typename Output, typename Conversion>
     BOOST_CONCEPT_REQUIRES(((BidirectionalIterator<Input>))
         ((Mutable_RandomAccessIterator<Output>))
-        ((UnsignedInteger<typename tr1_result_of<Conversion(typename std::iterator_traits<Input>::value_type)>::type>)), 
+        ((UnsignedInteger<typename std::result_of<Conversion(typename std::iterator_traits<Input>::value_type)>::type>)), 
                            (Output))
     stable_radix_sort(Input first, Input last, Output result, Conversion conv,
-        typename tr1_result_of<Conversion(typename std::iterator_traits<Input>::value_type)>::type const min,
-        typename tr1_result_of<Conversion(typename std::iterator_traits<Input>::value_type)>::type const max,
+        typename std::result_of<Conversion(typename std::iterator_traits<Input>::value_type)>::type const min,
+        typename std::result_of<Conversion(typename std::iterator_traits<Input>::value_type)>::type const max,
         unsigned const radix = 8u)
     {
         typedef typename std::iterator_traits<Input>::value_type value_type;
-        typedef typename tr1_result_of<Conversion(typename std::iterator_traits<Input>::value_type)>::type uint_type;
+        typedef typename std::result_of<Conversion(typename std::iterator_traits<Input>::value_type)>::type uint_type;
         
         if(first != last)
         {
@@ -102,13 +101,13 @@ namespace algorithm {
     template <typename Input, typename Output, typename Conversion>
         BOOST_CONCEPT_REQUIRES(((BidirectionalIterator<Input>))
         ((Mutable_RandomAccessIterator<Output>))
-        ((UnsignedInteger<typename tr1_result_of<Conversion(typename std::iterator_traits<Input>::value_type)>::type>)), 
+        ((UnsignedInteger<typename std::result_of<Conversion(typename std::iterator_traits<Input>::value_type)>::type>)), 
                             (Output))
     stable_radix_sort(Input first, Input last, Output result, Conversion conv)
     {
         if(first != last)
         {
-            std::pair<Input, Input> const bound(boost::minmax_element(first, last));
+            auto const bound(std::minmax_element(first, last));
             return stable_radix_sort(first, last, result, conv, conv(*bound.first), conv(*bound.second));
         }
         else
