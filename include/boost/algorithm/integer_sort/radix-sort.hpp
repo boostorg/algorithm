@@ -10,6 +10,8 @@
 #define RADIX_SORT
 
 #include <boost/algorithm/integer_sort/counting-sort.hpp>
+#include <boost/concept_check.hpp>
+#include <boost/concept/requires.hpp>
 
 #include <algorithm>
 #include <cmath>
@@ -55,10 +57,7 @@ namespace algorithm {
         if(first != last)
         {
             assert(max >= min);
-            
-            Input next(first);
-            ++next;
-            if(next == last)
+            if(std::next(first) == last)
                 *result++ = *first;
             else
             {

@@ -100,9 +100,7 @@ namespace algorithm {
 
         if(first != last)
         {
-            auto next(first);
-            ++next;
-            if(next == last)
+            if(std::next(first) == last)
                 *result++ = *first;
             else
             {
