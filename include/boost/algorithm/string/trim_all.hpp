@@ -59,7 +59,8 @@ namespace boost {
                 ::boost::find_format_all_copy(      
                     ::boost::trim_copy_if(Input, IsSpace),
                     ::boost::token_finder(IsSpace, ::boost::token_compress_on),
-                    ::boost::dissect_formatter(::boost::head_finder(1)));
+                    // ::boost::dissect_formatter(::boost::head_finder(1)));
+					::boost::const_formatter(::boost::as_literal("")));
         }
 
 
@@ -79,7 +80,8 @@ namespace boost {
             ::boost::find_format_all(       
                 Input,          
                 ::boost::token_finder(IsSpace, ::boost::token_compress_on),
-                ::boost::dissect_formatter(::boost::head_finder(1)));
+                // ::boost::dissect_formatter(::boost::head_finder(1)));
+				::boost::const_formatter(::boost::as_literal("")));
         }
 
 
