@@ -54,6 +54,13 @@ void test_sequence ( Container &v, Predicate comp, int expected ) {
     std::cout << "Expected(2): " << std::distance ( v.begin (), exp ) 
               <<       ", got: " << std::distance ( v.begin (), res ) << std::endl;
     BOOST_CHECK ( exp == res );
+
+//  Range based test
+    res = ba::partition_point ( v, comp );
+    exp = offset_to_iter ( v, expected );
+    std::cout << "Expected(3): " << std::distance ( v.begin (), exp ) 
+              <<       ", got: " << std::distance ( v.begin (), res ) << std::endl;
+    BOOST_CHECK ( exp == res );
     }
 
 template <typename T>

@@ -61,7 +61,7 @@ ForwardIterator partition_point ( ForwardIterator first, ForwardIterator last, P
 /// \param p        The predicate to test the values with
 ///
 template <typename Range, typename Predicate>
-typename boost::range_iterator<Range> partition_point ( Range &r, Predicate p )
+typename boost::range_iterator<Range>::type partition_point ( Range &r, Predicate p )
 {
     return boost::algorithm::partition_point (boost::begin(r), boost::end(r), p);
 }
