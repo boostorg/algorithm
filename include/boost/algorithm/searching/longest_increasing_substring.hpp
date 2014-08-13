@@ -10,23 +10,17 @@
 #ifndef BOOST_ALGORITHM_LONGEST_INCREASING_SUBSTRING_HPP
 #define BOOST_ALGORITHM_LONGEST_INCREASING_SUBSTRING_HPP
 
-#include <iomanip>
 #include <iterator>     // for std::iterator_traits
 
 #include <boost/assert.hpp>
-#include <boost/static_assert.hpp>
 
 #include <boost/range/begin.hpp>
 #include <boost/range/end.hpp>
 
-#include <boost/utility/enable_if.hpp>
-#include <boost/type_traits/is_same.hpp>
+// #include <boost/type_traits/is_same.hpp>
 
-#include <boost/algorithm/searching/detail/debugging.hpp>
-
+// #include <boost/algorithm/searching/detail/debugging.hpp>
 // #define BOOST_ALGORITHM_LONGEST_INCREASING_SUBSTRING_DEBUG_HPP
-
-#include <vector>
 
 namespace boost { namespace algorithm {
 
@@ -34,15 +28,7 @@ namespace boost { namespace algorithm {
     A templated version of the longest (increasing) substring algorithm.
     
     Requirements:
-        * Random access iterators
-        * The two iterator types (patIter and corpusIter) must 
-            "point to" the same underlying type.
-        * Additional requirements may be imposed buy the skip table, such as:
-        ** Numeric type (array-based skip table)
-        ** Hashable type (map-based skip table)
-
-https://en.wikipedia.org/wiki/Longest_increasing_substring
-
+        * Forward (input) iterators
 */
 
     template <typename Iter, typename Compare = std::less<typename std::iterator_traits<Iter>::value_type> >
@@ -51,18 +37,21 @@ https://en.wikipedia.org/wiki/Longest_increasing_substring
     public:
         typedef std::pair<Iter, Iter> result_type;
 
+        /// \param cmp          A predicate used for the search comparisons.
         longest_increasing_substring (Compare cmp = Compare())
             : compare(cmp) {
         }
             
         ~longest_increasing_substring () {}
         
-        /// \fn operator ( corpusIter corpus_first, corpusIter corpus_last, Pred p )
-        /// \brief Searches the corpus for the pattern that was passed into the constructor
+        /// \brief Searches the longest (increasing) substring in the data
+        ///
+        /// The result is a pair of iterators delimiting the longest increasing substring (continuous elements).
+        /// By giving a different comparison predicate to the constructor, one can find as well, e.g., the longest decreasing
+        /// substring (with std::greater<T>() predicate) or the non-decreasing one (with std::not1(std::greater<T>())).
         /// 
-        /// \param first        The start of the data to search (Random Access Iterator)
+        /// \param first        The start of the data to search (Forward Input Iterator)
         /// \param last         One past the end of the data to search
-        /// \param cmp          A predicate used for the search comparisons.
         ///
         result_type operator () ( Iter first, Iter last ) const
         {
@@ -72,20 +61,24 @@ https://en.wikipedia.org/wiki/Longest_increasing_substring
         template <typename Range>
         Range operator () ( Range &r ) const
         {
+            // BOOST_STATIC_ASSERT (( boost::is_same<
+            //     typename std::iterator_traits<boost::range_iterator<Range> >::value_type, 
+            //     typename std::iterator_traits<Iter>::value_type>::value ));
+            
             result_type result = (*this) ( boost::begin(r), boost::end(r) );
-            return Range ( result.begin(), result.end() );
+            return Range ( result.first, result.second );
+        }
+
+        std::size_t compute_length(Iter first, Iter last ) const
+        {
+            result_type result = (*this) (first, last);
+            return std::distance(result.first, result.second);
         }
 
     private:
 /// \cond DOXYGEN_HIDE
         Compare compare;
         
-        /// \fn do_search ( corpusIter corpus_first, corpusIter corpus_last )
-        /// \brief Searches the corpus for the pattern that was passed into the constructor
-        /// 
-        /// \param first The start of the data to search (Random Access Iterator)
-        /// \param last  One past the end of the data to search
-        ///
         result_type do_search ( Iter first, Iter last ) const {
             // Empty sequence has empty increasing substring
             result_type result(first, first);
@@ -104,18 +97,9 @@ https://en.wikipedia.org/wiki/Longest_increasing_substring
             std::size_t newN = n;
             assert(std::distance(newResult.first, newResult.second) == 1);
             for (; i != last; ++i) {
-#ifdef BOOST_ALGORITHM_LONGEST_INCREASING_SUBSTRING_DEBUG_HPP
-                std::cout << "prev = " << *prev << "\n";
-                std::cout << "curr = " << *i << "\n";
-                std::cout << "   n = " << n << "\n";
-                std::cout << "newN = " << newN << "\n";
-#endif            
                 if (compare(*prev, *i)) {
                     // Current element is in the increasing substring
                     ++newN;
-#ifdef BOOST_ALGORITHM_LONGEST_INCREASING_SUBSTRING_DEBUG_HPP
-                    std::cout << "++newN = " << newN << "\n";
-#endif            
                 } else {
                     // Current is not increasing, restart a new substring
                     if (newN > n) {
@@ -136,9 +120,6 @@ https://en.wikipedia.org/wiki/Longest_increasing_substring
                 n = newN;
                 result = std::make_pair(newResult.first, i);
             }
-#ifdef BOOST_ALGORITHM_LONGEST_INCREASING_SUBSTRING_DEBUG_HPP
-            std::cout << "final n = " << n << "\n";
-#endif            
             assert(std::distance(result.first, result.second) == n);
             return result;
         }
@@ -158,26 +139,42 @@ https://en.wikipedia.org/wiki/Longest_increasing_substring
 /// \param pat_last     One past the end of the data to search for
 ///
     template <typename Iter>
-    std::size_t longest_increasing_substring_length(
-                  Iter first, Iter last )
+    std::size_t longest_increasing_substring_length( Iter first, Iter last )
     {
         longest_increasing_substring<Iter> lis;
         return lis.compute_length(first, last);
     }
     
     template <typename Iter, typename Compare>
-    std::size_t longest_increasing_substring_length(
-                  Iter first, Iter last, Compare cmp )
+    std::size_t longest_increasing_substring_length( Iter first, Iter last, Compare cmp )
     {
-        longest_increasing_substring<Iter> lis(cmp);
+        longest_increasing_substring<Iter, Compare> lis(cmp);
         return lis.compute_length( first, last );
     }
 
+    template <typename Range>
+    std::size_t longest_increasing_substring_length( const Range &sequence )
+    {
+        return longest_increasing_substring_length(boost::begin(sequence), boost::end(sequence));
+    }
+
+    template <typename Range, typename Compare>
+    std::size_t longest_increasing_substring_length( const Range &sequence, Compare cmp )
+    {
+        return longest_increasing_substring_length(boost::begin(sequence), boost::end(sequence), cmp);
+    }
+
     template <typename Iter>
-    std::pair<Iter, Iter> longest_increasing_substring_search ( 
-                  Iter first, Iter last )
+    std::pair<Iter, Iter> longest_increasing_substring_search ( Iter first, Iter last )
     {
         longest_increasing_substring<Iter> lis;
+        return lis ( first, last );
+    }
+
+    template <typename Iter, typename Compare>
+    std::pair<Iter, Iter> longest_increasing_substring_search ( Iter first, Iter last, Compare cmp )
+    {
+        longest_increasing_substring<Iter, Compare> lis(cmp);
         return lis ( first, last );
     }
 
@@ -188,7 +185,17 @@ https://en.wikipedia.org/wiki/Longest_increasing_substring
         typedef longest_increasing_substring<iterator> lis_type;
         lis_type lis;
         typename lis_type::result_type result = lis ( boost::begin(sequence), boost::end(sequence) );
-        return Range ( result.begin(), result.end() );
+        return Range ( result.first, result.second );
+    }
+
+    template <typename Range, typename Compare>
+    Range longest_increasing_substring_search ( const Range &sequence, Compare cmp )
+    {
+        typedef typename boost::range_iterator<const Range>::type iterator;
+        typedef longest_increasing_substring<iterator, Compare> lis_type;
+        lis_type lis(cmp);
+        typename lis_type::result_type result = lis ( boost::begin(sequence), boost::end(sequence) );
+        return Range ( result.first, result.second );
     }
 
     //  Creator functions -- take a pattern range, return an object
@@ -196,16 +203,31 @@ https://en.wikipedia.org/wiki/Longest_increasing_substring
     boost::algorithm::longest_increasing_substring<typename boost::range_iterator<const Range>::type>
     make_longest_increasing_substring ( const Range &r ) {
         return boost::algorithm::longest_increasing_substring
-            <typename boost::range_iterator<const Range>::type> (boost::begin(r), boost::end(r));
+            <typename boost::range_iterator<const Range>::type> ();
         }
 
-    // TODO: make_ with Compare
+    template <typename Range, typename Compare>
+    boost::algorithm::longest_increasing_substring<typename boost::range_iterator<const Range>::type, Compare>
+    make_longest_increasing_substring ( const Range &r, Compare cmp )
+    {
+        return boost::algorithm::longest_increasing_substring
+            <typename boost::range_iterator<const Range>::type, Compare> (cmp);
+        }
 
     template <typename Range>
     boost::algorithm::longest_increasing_substring<typename boost::range_iterator<Range>::type>
-    make_longest_increasing_substring ( Range &r ) {
+    make_longest_increasing_substring ( Range &r )
+    {
         return boost::algorithm::longest_increasing_substring
-            <typename boost::range_iterator<Range>::type> (boost::begin(r), boost::end(r));
+            <typename boost::range_iterator<Range>::type> ();
+        }
+
+    template <typename Range, typename Compare>
+    boost::algorithm::longest_increasing_substring<typename boost::range_iterator<Range>::type, Compare>
+    make_longest_increasing_substring ( Range &r, Compare cmp )
+    {
+        return boost::algorithm::longest_increasing_substring
+            <typename boost::range_iterator<Range>::type, Compare> (cmp);
         }
 
 }}
