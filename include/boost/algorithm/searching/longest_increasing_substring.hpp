@@ -137,19 +137,13 @@ private:
     // \endcond
 };
 
-/*  Two ranges as inputs gives us four possibilities; with 1,2 parameters
-    Use a bit of TMP to disambiguate the 3-argument templates */
-
-/// \fn longest_increasing_substring_search ( corpusIter corpus_first,
-/// corpusIter corpus_last,
-///       patIter pat_first, patIter pat_last )
-/// \brief Searches the corpus for the pattern.
+/// \fn longest_increasing_substring_search ( Iter first, Iter last )
+/// \brief Searches the range [first, last) for the longest increasing
+/// substring.
 ///
-/// \param corpus_first The start of the data to search (Random Access Iterator)
-/// \param corpus_last  One past the end of the data to search
-/// \param pat_first    The start of the pattern to search for (Random Access
+/// \param first        The start of the pattern to search for (Forward Input
 /// Iterator)
-/// \param pat_last     One past the end of the data to search for
+/// \param last         One past the end of the data to search for
 ///
 template <typename Iter>
 std::size_t
@@ -159,6 +153,16 @@ longest_increasing_substring_length ( Iter first, Iter last )
     return lis.compute_length ( first, last );
 }
 
+/// \fn longest_increasing_substring_search ( Iter first, Iter last, Compare cmp
+/// )
+/// \brief Searches the range [first, last) for the longest substring ordered by
+/// custom predicate cmp.
+///
+/// \param first        The start of the pattern to search for (Forward Input
+/// Iterator)
+/// \param last         One past the end of the data to search for
+/// \param cmp          Comparison predicate defining the ordering
+///
 template <typename Iter, typename Compare>
 std::size_t
 longest_increasing_substring_length ( Iter first, Iter last, Compare cmp )
@@ -259,7 +263,8 @@ make_longest_increasing_substring ( Range &r, Compare cmp )
     return boost::algorithm::longest_increasing_substring<
         typename boost::range_iterator<Range>::type, Compare> ( cmp );
 }
-}
-}
+
+}  // namespace algorithm
+}  // namespace boost
 
 #endif  //  BOOST_ALGORITHM_LONGEST_INCREASING_SUBSTRING_HPP
