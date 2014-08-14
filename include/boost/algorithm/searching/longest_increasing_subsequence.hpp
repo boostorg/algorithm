@@ -18,9 +18,12 @@
 #include <boost/range/begin.hpp>
 #include <boost/range/end.hpp>
 
-#include <boost/algorithm/searching/detail/debugging.hpp>
+#include <boost/type_traits/is_same.hpp>
 
-// #define BOOST_ALGORITHM_LONGEST_INCREASING_SUBSEQUENCE_DEBUG_HPP
+// #define BOOST_ALGORITHM_LONGEST_INCREASING_SUBSEQUENCE_DEBUG
+#ifdef BOOST_ALGORITHM_LONGEST_INCREASING_SUBSEQUENCE_DEBUG
+#include <boost/algorithm/searching/detail/debugging.hpp>
+#endif
 
 #include <vector>
 
@@ -44,6 +47,9 @@ class longest_increasing_subsequence {
     typedef typename std::iterator_traits<Iter>::value_type value_type;
 
 public:
+    typedef std::vector<Iter> iterator_vector;
+    typedef std::vector<value_type> value_vector;
+
     longest_increasing_subsequence ( Compare cmp = Compare () )
         : compare ( cmp )
     {
@@ -51,25 +57,63 @@ public:
 
     ~longest_increasing_subsequence () {}
 
-    /// \brief Searches the longest (increasing) subsequence in the data
+    /// \brief Searches the longest (increasing) subsequence in the sequence
     ///
     /// The result is a vector of iterators defining the longest increasing
     /// subsequence (possibly non-continuous elements). By giving a different
     /// comparison predicate to the constructor, one can find as well, e.g., the
-    /// longest decreasing substring (with std::greater<T>() predicate) or the
+    /// longest decreasing subsequence (with std::greater<T>() predicate) or the
     /// non-decreasing one (with std::not1(std::greater<T>())).
+    /// The time complexity of the algorithm is log-linear O(n logn) where n is the length
+    /// of the sequence (`std::distance(first, last)`).
+    /// The space complexity is linear O(n).
     ///
-    /// \param first        The start of the data to search (Forward Input
+    /// \param first        The start of the sequence to search (Random Access
     /// Iterator)
-    /// \param last         One past the end of the data to search
+    /// \param last         One past the end of the sequence to search
     ///
-    std::vector<Iter> operator()( Iter first, Iter last ) const
+    iterator_vector operator()( Iter first, Iter last ) const
     {
         return this->do_search ( first, last );
     }
 
+    template <typename OutputIter>
+    OutputIter
+    operator()( Iter first, Iter last, OutputIter d_first ) const
+    {
+        BOOST_STATIC_ASSERT (( boost::is_same<
+            typename std::iterator_traits<Iter>::value_type, 
+            typename std::iterator_traits<OutputIter>::value_type>::value ));
+        return this->do_search ( first, last, d_first );
+    }
+
     template <typename Range>
-    typename boost::range_iterator<Range>::type operator()( Range &r ) const
+    iterator_vector operator()( const Range &r ) const
+    {
+        return ( *this )( boost::begin ( r ), boost::end ( r ) );
+    }
+
+    template <typename Range, typename OutputIter>
+    OutputIter
+    operator()( const Range &r, OutputIter d_first ) const
+    {
+        BOOST_STATIC_ASSERT (( boost::is_same<
+            typename std::iterator_traits<Iter>::value_type, 
+            typename std::iterator_traits<OutputIter>::value_type>::value ));
+        return this->do_search ( boost::begin ( r ), boost::end ( r ), d_first );
+    }
+
+    std::size_t
+    compute_length ( Iter first, Iter last ) const
+    {
+        // TODO: separate search from output creation, and use the first part here
+        iterator_vector result = ( *this )( first, last );
+        return result.size ();
+    }
+
+    template <typename Range>
+    std::size_t
+    compute_length ( const Range &r ) const
     {
         return ( *this )( boost::begin ( r ), boost::end ( r ) );
     }
@@ -78,7 +122,7 @@ private:
     /// \cond DOXYGEN_HIDE
     Compare compare;
 
-    std::vector<Iter>
+    iterator_vector
     do_search ( Iter first, Iter last ) const
     {
         typedef std::size_t size_type;
@@ -149,7 +193,7 @@ private:
         }      // for
 
         // Reconstruct the longest increasing subsequence
-        std::vector<Iter> S ( L );
+        iterator_vector S ( L );
         size_type k = M[L];
         for ( size_type i = L - 1; i > 0; --i ) {
             S[i] = first + k;  // X[k];
@@ -163,11 +207,11 @@ private:
 
 /// \fn longest_increasing_subsequence_length ( Iter first, Iter last )
 /// \brief Searches the range [first, last) for the length of the longest
-/// increasing substring.
+/// increasing subsequence.
 ///
-/// \param first        The start of the pattern to search for (Forward Input
+/// \param first        The start of the sequence to search for (Forward Input
 /// Iterator)
-/// \param last         One past the end of the data to search for
+/// \param last         One past the end of the sequence to search for
 ///
 template <typename Iter>
 std::size_t
@@ -177,76 +221,108 @@ longest_increasing_subsequence_length ( Iter first, Iter last )
     return lis.compute_length ( first, last );
 }
 
+template <typename Range>
+std::size_t
+longest_increasing_subsequence_length ( const Range &r )
+{
+    typedef typename boost::range_iterator<const Range>::type range_iterator;
+    longest_increasing_subsequence<range_iterator> lis;
+    return lis.compute_length ( boost::begin ( r ), boost::end ( r ) );
+}
+// TODO: do we need a non-const range overload?
+
 /// \fn longest_increasing_subsequence_length ( Iter first, Iter last, Compare
 /// cmp )
 /// \brief Searches the range [first, last) for the length of the longest
 /// subsequence ordered by custom predicate cmp.
 ///
-/// \param first        The start of the pattern to search for (Forward Input
+/// \param first        The start of the sequence to search for (Forward Input
 /// Iterator)
-/// \param last         One past the end of the data to search for
+/// \param last         One past the end of the sequence to search for
 /// \param cmp          Comparison predicate defining the ordering
 ///
 template <typename Iter, typename Compare>
 std::size_t
 longest_increasing_subsequence_length ( Iter first, Iter last, Compare cmp )
 {
-    longest_increasing_subsequence<Iter> lis ( cmp );
+    longest_increasing_subsequence<Iter, Compare> lis ( cmp );
     return lis.compute_length ( first, last );
 }
 
+template <typename Range, typename Compare>
+std::size_t
+longest_increasing_subsequence_length ( const Range &r, Compare cmp )
+{
+    typedef typename boost::range_iterator<const Range>::type range_iterator;
+    longest_increasing_subsequence<range_iterator, Compare> lis ( cmp );
+    return lis.compute_length ( boost::begin ( r ), boost::end ( r ) );
+}
+// TODO: do we need a non-const range overload?
+
 /// \fn longest_increasing_subsequence_search ( Iter first, Iter last )
 /// \brief Searches the range [first, last) for the longest increasing
-/// substring.
+/// subsequence.
 ///
-/// \param first        The start of the pattern to search for (Forward Input
+/// \param first        The start of the sequence to search for (Forward Input
 /// Iterator)
-/// \param last         One past the end of the data to search for
+/// \param last         One past the end of the sequence to search for
 ///
 template <typename Iter>
-Iter
+std::vector<Iter>
 longest_increasing_subsequence_search ( Iter first, Iter last )
 {
     longest_increasing_subsequence<Iter> lis;
     return lis ( first, last );
 }
+// TODO: range
 
 /// \fn longest_increasing_subsequence_search ( Iter first, Iter last, Compare
 /// cmp )
 /// \brief Searches the range [first, last) for the longest subsequence ordered
 /// by custom predicate cmp.
 ///
-/// \param first        The start of the pattern to search for (Forward Input
+/// \param first        The start of the sequence to search for (Forward Input
 /// Iterator)
-/// \param last         One past the end of the data to search for
+/// \param last         One past the end of the sequence to search for
 /// \param cmp          Comparison predicate defining the ordering
 ///
 template <typename Iter, typename Compare>
-Iter
+std::vector<Iter>
 longest_increasing_subsequence_search ( Iter first, Iter last, Compare cmp )
 {
     longest_increasing_subsequence<Iter, Compare> lis ( cmp );
     return lis ( first, last );
 }
+// TODO: range
 
 template <typename Range, typename OutputIter>
-OutputIter
-longest_increasing_subsequence_search ( const Range &sequence )
+void
+longest_increasing_subsequence_search ( const Range &sequence,
+                                        OutputIter output_first )
 {
-    typedef typename boost::range_iterator<const Range>::type pattern_iterator;
-    longest_increasing_subsequence<pattern_iterator> lis;
-    return lis ( boost::begin ( sequence ), boost::end ( sequence ) );
+    typedef typename boost::range_iterator<const Range>::type range_iterator;
+    longest_increasing_subsequence<range_iterator> lis;
+    return lis ( boost::begin ( sequence ), boost::end ( sequence ),
+                 output_first );
 }
 
-//  Creator functions -- take a pattern range, return an object
+//  Creator functions -- take a range, return an object
 template <typename Range>
 boost::algorithm::longest_increasing_subsequence<
     typename boost::range_iterator<const Range>::type>
 make_longest_increasing_subsequence ( const Range &r )
 {
     return boost::algorithm::longest_increasing_subsequence<
-        typename boost::range_iterator<const Range>::type> ( boost::begin ( r ),
-                                                             boost::end ( r ) );
+        typename boost::range_iterator<const Range>::type> ();
+}
+
+template <typename Range, typename Compare>
+boost::algorithm::longest_increasing_subsequence<
+    typename boost::range_iterator<const Range>::type, Compare>
+make_longest_increasing_subsequence ( const Range &r, Compare cmp )
+{
+    return boost::algorithm::longest_increasing_subsequence<
+        typename boost::range_iterator<const Range, Compare>::type> ( cmp );
 }
 
 template <typename Range>
@@ -257,6 +333,15 @@ make_longest_increasing_subsequence ( Range &r )
     return boost::algorithm::longest_increasing_subsequence<
         typename boost::range_iterator<Range>::type> ( boost::begin ( r ),
                                                        boost::end ( r ) );
+}
+
+template <typename Range, typename Compare>
+boost::algorithm::longest_increasing_subsequence<
+    typename boost::range_iterator<Range>::type, Compare>
+make_longest_increasing_subsequence ( Range &r, Compare cmp )
+{
+    return boost::algorithm::longest_increasing_subsequence<
+        typename boost::range_iterator<Range, Compare>::type> ( cmp );
 }
 
 }  // namespace algorithm
