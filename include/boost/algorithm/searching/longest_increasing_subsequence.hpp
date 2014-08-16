@@ -80,14 +80,16 @@ public:
     /// Iterator)
     /// \param last         One past the end of the sequence to search
     ///
-    value_vector operator()( RandomIterator first, RandomIterator last, value_output_tag_t tag = value_output_tag ) const
+    value_vector
+    operator()( RandomIterator first, RandomIterator last, value_output_tag_t tag = value_output_tag ) const
     {
-        return this->do_search ( first, last, tag );
+        return this->do_search_and_output ( first, last, tag );
     }
 
-    iterator_vector operator()( RandomIterator first, RandomIterator last, iterator_output_tag_t tag ) const
+    iterator_vector
+    operator()( RandomIterator first, RandomIterator last, iterator_output_tag_t tag ) const
     {
-        return this->do_search ( first, last, tag );
+        return this->do_search_and_output ( first, last, tag );
     }
 
     template <typename OutputIterator>
@@ -97,17 +99,19 @@ public:
         // BOOST_STATIC_ASSERT (( boost::is_same<
             // typename std::iterator_traits<RandomIterator>::value_type, 
             // typename std::iterator_traits<OutputIterator>::value_type>::value ));
-        return this->do_search ( first, last, d_first );
+        return this->do_search_and_output ( first, last, d_first );
     }
 
     template <typename Range>
-    value_vector operator()( const Range &r, value_output_tag_t tag = value_output_tag ) const
+    value_vector
+    operator()( const Range &r, value_output_tag_t tag = value_output_tag ) const
     {
         return ( *this )( boost::begin ( r ), boost::end ( r ), tag );
     }
 
     template <typename Range>
-    iterator_vector operator()( const Range &r, iterator_output_tag_t tag ) const
+    iterator_vector
+    operator()( const Range &r, iterator_output_tag_t tag ) const
     {
         return ( *this )( boost::begin ( r ), boost::end ( r ), tag );
     }
@@ -119,15 +123,13 @@ public:
         BOOST_STATIC_ASSERT (( boost::is_same<
             typename std::iterator_traits<RandomIterator>::value_type, 
             typename std::iterator_traits<OutputIterator>::value_type>::value ));
-        return this->do_search ( boost::begin ( r ), boost::end ( r ), d_first );
+        return this->do_search_and_output ( boost::begin ( r ), boost::end ( r ), d_first );
     }
 
     std::size_t
     compute_length ( RandomIterator first, RandomIterator last ) const
     {
-        // TODO: separate search from output creation, and use the first part here
-        value_vector result = ( *this )( first, last );
-        return result.size ();
+        return this->do_search ( first, last);
     }
 
     template <typename Range>
@@ -141,20 +143,29 @@ private:
     /// \cond DOXYGEN_HIDE
     Comparator compare;
 
-    template <typename OutputIterator>
-    OutputIterator
-    do_search ( RandomIterator first, RandomIterator last, OutputIterator d_first ) const
-    {
-        typedef std::size_t size_type;
-        typedef std::vector<size_type> index_vector;
-        typedef typename std::iterator_traits<
-            typename index_vector::iterator>::difference_type difference_type;
-        difference_type const n = std::distance ( first, last );
+    typedef std::size_t size_type;
+    typedef std::vector<size_type> index_vector;
 
-        /// predecessor[k] - stores the index of the predecessor of X[k] in the longest
+    size_type
+    do_search ( RandomIterator first, RandomIterator last ) const
+    {
+        index_vector predecessor;
+        index_vector lis_tail;
+        return do_search ( first, last, predecessor, lis_tail );
+    }
+
+    size_type
+    do_search ( RandomIterator first, RandomIterator last,
+                /*output*/ index_vector &predecessor,
+                /*output*/ index_vector &lis_tail) const
+    {
+        difference_type const n = std::distance ( first, last );
+        /// Length of the longest (increasing) subsequence found so far
+        size_type lis_length = 0;
+        /// predecessor[k, 0 <= k < n] - stores the index of the predecessor of X[k] in the longest
         /// increasing subsequence ending at X[k]
-        index_vector predecessor ( n );
-        /// lis_tail[j] - stores the index k of the smallest value X[k] such that there
+        predecessor.resize ( n );
+        /// lis_tail[j, 0 <= k <= n] - stores the index k of the smallest value X[k] such that there
         /// is an increasing subsequence of length j ending at X[k] on the range
         /// k <= i
         /// (note we have j <= k <= i here, because j represents the length of
@@ -162,11 +173,8 @@ private:
         /// termination.
         /// Obviously, we can never have an increasing subsequence of length 13
         /// ending at index 11. k <= i by definition).
-        // -> j-elements: X[.] X[.] ... X[k] is an increasing subsequence
-        index_vector lis_tail ( n + 1 );
+        lis_tail.resize ( n + 1 );
 
-        /// Length of the longest (increasing) subsequence found so far
-        size_type lis_length = 0;
         for ( difference_type i = 0; i < n; ++i ) {
             // Binary search for the largest positive j <= lis_length, such that
             // X[lis_tail[j]] < X[i].
@@ -210,7 +218,15 @@ private:
                 lis_tail[new_lis_length] = i;
             }
         }
+        return lis_length;
+    }
 
+    template <typename OutputIterator>
+    OutputIterator do_output ( RandomIterator first, RandomIterator /*last*/,
+                               size_type lis_length,
+                               index_vector const &predecessor, index_vector const &lis_tail,
+                               OutputIterator d_first) const
+    {
         // Reconstruct the longest increasing subsequence
         index_vector lis ( lis_length );
         size_type k = lis_tail[lis_length];
@@ -224,20 +240,40 @@ private:
         }
         return d_first;
     }
+    
+    template <typename OutputIterator>
+    OutputIterator
+    do_search_and_output ( RandomIterator first, RandomIterator last, OutputIterator d_first ) const
+    {
+        index_vector predecessor;
+        index_vector lis_tail;
+        size_type lis_length = do_search(first, last, predecessor, lis_tail);
+        return do_output ( first, last, lis_length, predecessor, lis_tail, d_first );
+    }
 
     value_vector
-    do_search ( RandomIterator first, RandomIterator last, value_output_tag_t tag ) const
+    do_search_and_output ( RandomIterator first, RandomIterator last, value_output_tag_t tag ) const
     {
+        index_vector predecessor;
+        index_vector lis_tail;
+        size_type lis_length = do_search(first, last, predecessor, lis_tail);
+
         value_vector lis;
-        this->do_search ( first, last, std::back_inserter(lis) );
+        lis.reserve ( lis_length );
+        this->do_output ( first, last, lis_length, predecessor, lis_tail, std::back_inserter(lis) );
         return lis;
     }
 
     iterator_vector
-    do_search ( RandomIterator first, RandomIterator last, iterator_output_tag_t tag ) const
+    do_search_and_output ( RandomIterator first, RandomIterator last, iterator_output_tag_t tag ) const
     {
+        index_vector predecessor;
+        index_vector lis_tail;
+        size_type lis_length = do_search(first, last, predecessor, lis_tail);
+
         iterator_vector lis;
-        this->do_search ( first, last, std::back_inserter(lis) );
+        lis.reserve ( lis_length );
+        this->do_output ( first, last, lis_length, predecessor, lis_tail, std::back_inserter(lis), tag );
         return lis;
     }
     // \endcond
