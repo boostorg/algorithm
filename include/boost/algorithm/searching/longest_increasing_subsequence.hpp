@@ -27,7 +27,8 @@
 
 #include <vector>
 
-namespace boost { namespace algorithm {
+namespace boost {
+namespace algorithm {
 
 /*
     A templated version of the longest (increasing) subsequence algorithm.
@@ -43,17 +44,23 @@ https://en.wikipedia.org/wiki/Longest_increasing_subsequence
 ///
 /// @time O(N logN)
 /// @space O(N)
-template <typename RandomIterator, typename Comparator = std::less<typename std::iterator_traits<RandomIterator>::value_type> >
+template <typename RandomIterator,
+          typename Comparator = std::less<
+              typename std::iterator_traits<RandomIterator>::value_type> >
 class longest_increasing_subsequence {
-    typedef typename std::iterator_traits<RandomIterator>::difference_type difference_type;
-    typedef typename std::iterator_traits<RandomIterator>::value_type value_type;
+    typedef typename std::iterator_traits<RandomIterator>::difference_type
+        difference_type;
+    typedef
+        typename std::iterator_traits<RandomIterator>::value_type value_type;
 
 public:
     typedef std::vector<RandomIterator> iterator_vector;
     typedef std::vector<value_type> value_vector;
-    
-    struct iterator_output_tag_t {};
-    struct value_output_tag_t {};
+
+    struct iterator_output_tag_t {
+    };
+    struct value_output_tag_t {
+    };
 
     static iterator_output_tag_t iterator_output_tag;
     static value_output_tag_t value_output_tag;
@@ -72,39 +79,40 @@ public:
     /// comparison predicate to the constructor, one can find as well, e.g., the
     /// longest decreasing subsequence (with std::greater<T>() predicate) or the
     /// non-decreasing one (with std::not1(std::greater<T>())).
-    /// The time complexity of the algorithm is log-linear O(n logn) where n is the length
-    /// of the sequence (`std::distance(first, last)`).
+    /// The time complexity of the algorithm is log-linear O(n logn) where n is
+    /// the length of the sequence (`std::distance(first, last)`).
     /// The space complexity is linear O(n).
     ///
     /// \param first        The start of the sequence to search (Random Access
     /// Iterator)
     /// \param last         One past the end of the sequence to search
     ///
-    value_vector
-    operator()( RandomIterator first, RandomIterator last, value_output_tag_t tag = value_output_tag ) const
+    value_vector operator()( RandomIterator first, RandomIterator last,
+                             value_output_tag_t tag = value_output_tag ) const
     {
         return this->do_search_and_output ( first, last, tag );
     }
 
-    iterator_vector
-    operator()( RandomIterator first, RandomIterator last, iterator_output_tag_t tag ) const
+    iterator_vector operator()( RandomIterator first, RandomIterator last,
+                                iterator_output_tag_t tag ) const
     {
         return this->do_search_and_output ( first, last, tag );
     }
 
     template <typename OutputIterator>
-    OutputIterator
-    operator()( RandomIterator first, RandomIterator last, OutputIterator d_first ) const
+    OutputIterator operator()( RandomIterator first, RandomIterator last,
+                               OutputIterator d_first ) const
     {
         // BOOST_STATIC_ASSERT (( boost::is_same<
-            // typename std::iterator_traits<RandomIterator>::value_type, 
-            // typename std::iterator_traits<OutputIterator>::value_type>::value ));
+        //     typename std::iterator_traits<RandomIterator>::value_type,
+        //     typename std::iterator_traits<OutputIterator>::value_type>::value
+        //     ));
         return this->do_search_and_output ( first, last, d_first );
     }
 
     template <typename Range>
-    value_vector
-    operator()( const Range &r, value_output_tag_t tag = value_output_tag ) const
+    value_vector operator()( const Range &r,
+                             value_output_tag_t tag = value_output_tag ) const
     {
         return ( *this )( boost::begin ( r ), boost::end ( r ), tag );
     }
@@ -117,19 +125,20 @@ public:
     }
 
     template <typename Range, typename OutputIterator>
-    OutputIterator
-    operator()( const Range &r, OutputIterator d_first ) const
+    OutputIterator operator()( const Range &r, OutputIterator d_first ) const
     {
-        BOOST_STATIC_ASSERT (( boost::is_same<
-            typename std::iterator_traits<RandomIterator>::value_type, 
-            typename std::iterator_traits<OutputIterator>::value_type>::value ));
-        return this->do_search_and_output ( boost::begin ( r ), boost::end ( r ), d_first );
+        BOOST_STATIC_ASSERT ( ( boost::is_same<
+            typename std::iterator_traits<RandomIterator>::value_type,
+            typename std::iterator_traits<
+                OutputIterator>::value_type>::value ) );
+        return this->do_search_and_output ( boost::begin ( r ),
+                                            boost::end ( r ), d_first );
     }
 
     std::size_t
     compute_length ( RandomIterator first, RandomIterator last ) const
     {
-        return this->do_search ( first, last);
+        return this->do_search ( first, last );
     }
 
     template <typename Range>
@@ -157,20 +166,19 @@ private:
     size_type
     do_search ( RandomIterator first, RandomIterator last,
                 /*output*/ index_vector &predecessor,
-                /*output*/ index_vector &lis_tail) const
+                /*output*/ index_vector &lis_tail ) const
     {
         difference_type const n = std::distance ( first, last );
         /// Length of the longest (increasing) subsequence found so far
         size_type lis_length = 0;
-        /// predecessor[k, 0 <= k < n] - stores the index of the predecessor of X[k] in the longest
-        /// increasing subsequence ending at X[k]
+        /// predecessor[k, 0 <= k < n] - stores the index of the predecessor of
+        /// X[k] in the longest increasing subsequence ending at X[k]
         predecessor.resize ( n );
-        /// lis_tail[j, 0 <= k <= n] - stores the index k of the smallest value X[k] such that there
-        /// is an increasing subsequence of length j ending at X[k] on the range
-        /// k <= i
-        /// (note we have j <= k <= i here, because j represents the length of
-        /// the increasing subsequence, and k represents the index of its
-        /// termination.
+        /// lis_tail[j, 0 <= k <= n] - stores the index k of the smallest value
+        /// X[k] such that there is an increasing subsequence of length j ending
+        /// at X[k] on the range k <= i (note we have j <= k <= i here, because
+        /// j represents the length of the increasing subsequence, and k
+        /// represents the index of its termination.
         /// Obviously, we can never have an increasing subsequence of length 13
         /// ending at index 11. k <= i by definition).
         lis_tail.resize ( n + 1 );
@@ -187,8 +195,9 @@ private:
                 while ( lo <= hi ) {
                     size_type mid = ( lo + hi ) / 2;
                     assert ( mid <= i );
-                    if ( compare ( *( first + lis_tail[mid] ),
-                                   *( first + i ) ) ) {  // X[lis_tail[mid]] < X[i]
+                    if ( compare (
+                             *( first + lis_tail[mid] ),
+                             *( first + i ) ) ) {  // X[lis_tail[mid]] < X[i]
                         lo = mid + 1;
                     }
                     else {
@@ -212,9 +221,10 @@ private:
                 lis_length = new_lis_length;
             }
             else if ( compare ( *( first + i ),
-                                *( first + lis_tail[new_lis_length] ) ) ) {  // X[i] < X[lis_tail[new_lis_length]]
-                // If we found a smaller last value for the
-                // subsequence of length new_lis_length, only update lis_tail
+                                *( first + lis_tail[new_lis_length] ) ) ) {
+                // X[i] < X[lis_tail[new_lis_length]]
+                // If we found a smaller last value for the subsequence of
+                // length new_lis_length, only update lis_tail
                 lis_tail[new_lis_length] = i;
             }
         }
@@ -222,10 +232,10 @@ private:
     }
 
     template <typename OutputIterator>
-    OutputIterator do_output ( RandomIterator first, RandomIterator /*last*/,
-                               size_type lis_length,
-                               index_vector const &predecessor, index_vector const &lis_tail,
-                               OutputIterator d_first) const
+    OutputIterator
+    do_output ( RandomIterator first, RandomIterator /*last*/,
+                size_type lis_length, index_vector const &predecessor,
+                index_vector const &lis_tail, OutputIterator d_first ) const
     {
         // Reconstruct the longest increasing subsequence
         index_vector lis ( lis_length );
@@ -236,50 +246,57 @@ private:
         }
         // Output the found subsequence
         for ( size_type i = 0; i < lis_length; ++i ) {
-            *d_first++ = *(first + lis[i]);
+            *d_first++ = *( first + lis[i] );
         }
         return d_first;
     }
-    
+
     template <typename OutputIterator>
     OutputIterator
-    do_search_and_output ( RandomIterator first, RandomIterator last, OutputIterator d_first ) const
+    do_search_and_output ( RandomIterator first, RandomIterator last,
+                           OutputIterator d_first ) const
     {
         index_vector predecessor;
         index_vector lis_tail;
-        size_type lis_length = do_search(first, last, predecessor, lis_tail);
-        return do_output ( first, last, lis_length, predecessor, lis_tail, d_first );
+        size_type lis_length = do_search ( first, last, predecessor, lis_tail );
+        return do_output ( first, last, lis_length, predecessor, lis_tail,
+                           d_first );
     }
 
     value_vector
-    do_search_and_output ( RandomIterator first, RandomIterator last, value_output_tag_t tag ) const
+    do_search_and_output ( RandomIterator first, RandomIterator last,
+                           value_output_tag_t tag ) const
     {
         index_vector predecessor;
         index_vector lis_tail;
-        size_type lis_length = do_search(first, last, predecessor, lis_tail);
+        size_type lis_length = do_search ( first, last, predecessor, lis_tail );
 
         value_vector lis;
         lis.reserve ( lis_length );
-        this->do_output ( first, last, lis_length, predecessor, lis_tail, std::back_inserter(lis) );
+        this->do_output ( first, last, lis_length, predecessor, lis_tail,
+                          std::back_inserter ( lis ) );
         return lis;
     }
 
     iterator_vector
-    do_search_and_output ( RandomIterator first, RandomIterator last, iterator_output_tag_t tag ) const
+    do_search_and_output ( RandomIterator first, RandomIterator last,
+                           iterator_output_tag_t tag ) const
     {
         index_vector predecessor;
         index_vector lis_tail;
-        size_type lis_length = do_search(first, last, predecessor, lis_tail);
+        size_type lis_length = do_search ( first, last, predecessor, lis_tail );
 
         iterator_vector lis;
         lis.reserve ( lis_length );
-        this->do_output ( first, last, lis_length, predecessor, lis_tail, std::back_inserter(lis), tag );
+        this->do_output ( first, last, lis_length, predecessor, lis_tail,
+                          std::back_inserter ( lis ), tag );
         return lis;
     }
     // \endcond
 };
 
-/// \fn longest_increasing_subsequence_length ( RandomIterator first, RandomIterator last )
+/// \fn longest_increasing_subsequence_length ( RandomIterator first,
+/// RandomIterator last )
 /// \brief Searches the range [first, last) for the length of the longest
 /// increasing subsequence.
 ///
@@ -289,7 +306,8 @@ private:
 ///
 template <typename RandomIterator>
 std::size_t
-longest_increasing_subsequence_length ( RandomIterator first, RandomIterator last )
+longest_increasing_subsequence_length ( RandomIterator first,
+                                        RandomIterator last )
 {
     longest_increasing_subsequence<RandomIterator> lis;
     return lis.compute_length ( first, last );
@@ -305,7 +323,8 @@ longest_increasing_subsequence_length ( const Range &r )
 }
 // TODO: do we need a non-const range overload?
 
-/// \fn longest_increasing_subsequence_length ( RandomIterator first, RandomIterator last, Comparator
+/// \fn longest_increasing_subsequence_length ( RandomIterator first,
+/// RandomIterator last, Comparator
 /// cmp )
 /// \brief Searches the range [first, last) for the length of the longest
 /// subsequence ordered by custom predicate cmp.
@@ -317,7 +336,8 @@ longest_increasing_subsequence_length ( const Range &r )
 ///
 template <typename RandomIterator, typename Comparator>
 std::size_t
-longest_increasing_subsequence_length ( RandomIterator first, RandomIterator last, Comparator cmp )
+longest_increasing_subsequence_length ( RandomIterator first,
+                                        RandomIterator last, Comparator cmp )
 {
     longest_increasing_subsequence<RandomIterator, Comparator> lis ( cmp );
     return lis.compute_length ( first, last );
@@ -333,7 +353,8 @@ longest_increasing_subsequence_length ( const Range &r, Comparator cmp )
 }
 // TODO: do we need a non-const range overload?
 
-/// \fn longest_increasing_subsequence_search ( RandomIterator first, RandomIterator last )
+/// \fn longest_increasing_subsequence_search ( RandomIterator first,
+/// RandomIterator last )
 /// \brief Searches the range [first, last) for the longest increasing
 /// subsequence.
 ///
@@ -343,16 +364,18 @@ longest_increasing_subsequence_length ( const Range &r, Comparator cmp )
 ///
 // template <typename RandomIterator>
 // std::vector<RandomIterator>
-// longest_increasing_subsequence_search ( RandomIterator first, RandomIterator last )
+// longest_increasing_subsequence_search ( RandomIterator first, RandomIterator
+// last )
 // {
-    // longest_increasing_subsequence<RandomIterator> lis;
-    // return lis ( first, last );
+// longest_increasing_subsequence<RandomIterator> lis;
+// return lis ( first, last );
 // }
 // TODO: range
 
 template <typename RandomIterator, typename OutputIterator>
 OutputIterator
-longest_increasing_subsequence_search ( RandomIterator first, RandomIterator last,
+longest_increasing_subsequence_search ( RandomIterator first,
+                                        RandomIterator last,
                                         OutputIterator d_first )
 {
     longest_increasing_subsequence<RandomIterator> lis;
@@ -361,7 +384,8 @@ longest_increasing_subsequence_search ( RandomIterator first, RandomIterator las
 
 template <typename RandomIterator, typename OutputIterator, typename Comparator>
 OutputIterator
-longest_increasing_subsequence_search ( RandomIterator first, RandomIterator last,
+longest_increasing_subsequence_search ( RandomIterator first,
+                                        RandomIterator last,
                                         OutputIterator d_first, Comparator cmp )
 {
     longest_increasing_subsequence<RandomIterator, Comparator> lis ( cmp );
@@ -375,8 +399,7 @@ longest_increasing_subsequence_search ( const Range &sequence,
 {
     typedef typename boost::range_iterator<const Range>::type range_iterator;
     longest_increasing_subsequence<range_iterator> lis;
-    return lis ( boost::begin ( sequence ), boost::end ( sequence ),
-                 d_first );
+    return lis ( boost::begin ( sequence ), boost::end ( sequence ), d_first );
 }
 
 template <typename Range, typename OutputIterator, typename Comparator>
@@ -386,12 +409,11 @@ longest_increasing_subsequence_search ( const Range &sequence,
 {
     typedef typename boost::range_iterator<const Range>::type range_iterator;
     longest_increasing_subsequence<range_iterator, Comparator> lis ( cmp );
-    return lis ( boost::begin ( sequence ), boost::end ( sequence ),
-                 d_first );
+    return lis ( boost::begin ( sequence ), boost::end ( sequence ), d_first );
 }
 
-/// \fn longest_increasing_subsequence_search ( RandomIterator first, RandomIterator last, Comparator
-/// cmp )
+/// \fn longest_increasing_subsequence_search ( RandomIterator first,
+/// RandomIterator last, Comparator cmp )
 /// \brief Searches the range [first, last) for the longest subsequence ordered
 /// by custom predicate cmp.
 ///
@@ -402,10 +424,11 @@ longest_increasing_subsequence_search ( const Range &sequence,
 ///
 // template <typename RandomIterator, typename Comparator>
 // std::vector<RandomIterator>
-// longest_increasing_subsequence_search ( RandomIterator first, RandomIterator last, Comparator cmp )
+// longest_increasing_subsequence_search ( RandomIterator first, RandomIterator
+// last, Comparator cmp )
 // {
-    // longest_increasing_subsequence<RandomIterator, Comparator> lis ( cmp );
-    // return lis ( first, last );
+// longest_increasing_subsequence<RandomIterator, Comparator> lis ( cmp );
+// return lis ( first, last );
 // }
 // TODO: range
 
