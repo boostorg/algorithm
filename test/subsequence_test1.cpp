@@ -37,12 +37,13 @@ check_length ( const Container &sequence, std::size_t expected_length,
                Compare cmp )
 {
     typedef typename Container::const_iterator const_iterator;
-    typedef std::vector<const_iterator> ResultContainer;
+    typedef typename Container::value_type value_type;
+    typedef typename std::vector<value_type> ResultContainer;
 
     ba::longest_increasing_subsequence<const_iterator> ls ( cmp );
-    ResultContainer res = ls ( sequence.begin (), sequence.end () );
+    ResultContainer lis = ls ( sequence.begin (), sequence.end () );
 
-    BOOST_CHECK_EQUAL ( res.size (), expected_length );
+    BOOST_CHECK_EQUAL ( lis.size (), expected_length );
 
     // check_one_iter ( haystack, needle, expected );
     // check_one_pointer ( haystack, needle, expected );
@@ -62,18 +63,18 @@ check_lis ( const Container &sequence, const Container &expected_lis,
             Compare cmp )
 {
     typedef typename Container::const_iterator const_iterator;
-    typedef std::vector<const_iterator> ResultContainer;
+    typedef typename Container::value_type value_type;
+    typedef typename std::vector<value_type> ResultContainer;
 
     ba::longest_increasing_subsequence<const_iterator> ls ( cmp );
-    ResultContainer res = ls ( sequence.begin (), sequence.end () );
-    Container lis;
-    lis.resize ( res.size () );
-    for ( std::size_t i = 0; i < res.size (); ++i ) {
-        lis[i] = *res[i];
-    }
-
+    ResultContainer lis = ls ( sequence.begin (), sequence.end () );
     BOOST_CHECK_EQUAL_COLLECTIONS (
         lis.begin (), lis.end (), expected_lis.begin (), expected_lis.end () );
+
+    ResultContainer lis2;
+    ls ( sequence.begin (), sequence.end (), std::back_inserter(lis2) );
+    BOOST_CHECK_EQUAL_COLLECTIONS (
+        lis2.begin (), lis2.end (), expected_lis.begin (), expected_lis.end () );
 }
 
 template <typename Container, typename Compare, typename ContainerContainer>
@@ -82,15 +83,9 @@ check_lis ( const Container &sequence, const ContainerContainer &expected_lises,
             Compare cmp )
 {
     typedef typename Container::const_iterator const_iterator;
-    typedef std::vector<const_iterator> ResultContainer;
 
     ba::longest_increasing_subsequence<const_iterator> ls ( cmp );
-    ResultContainer res = ls ( sequence.begin (), sequence.end () );
-    Container lis;
-    lis.resize ( res.size () );
-    for ( std::size_t i = 0; i < res.size (); ++i ) {
-        lis[i] = *res[i];
-    }
+    Container lis = ls ( sequence.begin (), sequence.end () );
 
     bool any_equal = false;
     for ( std::size_t i = 0; i < expected_lises.size (); ++i ) {
