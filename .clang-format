@@ -44,7 +44,7 @@ IndentWidth:     4
 # UseTab:          Never
 BreakBeforeBraces: Stroustrup #GNU # Linux
 SpacesInParentheses: true
-# SpacesInAngles:  false
+SpacesInAngles:  true
 # SpaceInEmptyParentheses: false
 # SpacesInCStyleCastParentheses: false
 # SpacesInContainerLiterals: true

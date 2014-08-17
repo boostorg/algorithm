@@ -11,7 +11,8 @@
 
 #define BOOST_TEST_MAIN
 #include <boost/test/unit_test.hpp>
-#include <boost/test/test_tools.hpp>
+
+#include <boost/range/iterator_range.hpp>
 
 #include <fstream>
 #include <iostream>
@@ -23,69 +24,312 @@ using namespace boost::assign;       // bring 'list_of()' into scope
 
 namespace ba = boost::algorithm;
 
+struct null_insert_iterator
+    : std::iterator< std::output_iterator_tag, null_insert_iterator > {
+    // Null-op assignment
+    template < typename T >
+    void operator=( T const & )
+    {
+    }
+
+    // Null-op operators
+    null_insert_iterator &operator++() { return *this; }
+    null_insert_iterator operator++( int ) { return *this; }
+    null_insert_iterator &operator*() { return *this; }
+};
+
 namespace {
-template <typename Container, typename Compare>
+
+// Length checking
+
+template < typename Container, typename Comparator >
 void
-check_lis ( const Container &sequence, std::size_t expected_length,
-            Compare cmp )
+check_length_iter ( const Container &sequence, std::size_t expected_length,
+                    Comparator cmp )
 {
+    // TODO: move to separate test
+    (void)ba::longest_increasing_subsequence_length (
+        sequence.begin (), sequence.end () );  // check interface, ignore result
+    std::size_t size = ba::longest_increasing_subsequence_length (
+        sequence.begin (), sequence.end (), cmp );
+    BOOST_CHECK_EQUAL ( size, expected_length );
 }
 
-template <typename Container, typename Compare>
+template < typename Container, typename Comparator >
 void
-check_length ( const Container &sequence, std::size_t expected_length,
-               Compare cmp )
+check_length_range ( const Container &sequence, std::size_t expected_length,
+                     Comparator cmp )
 {
     typedef typename Container::const_iterator const_iterator;
-    typedef typename Container::value_type value_type;
-    typedef typename std::vector<value_type> ResultContainer;
-
-    ba::longest_increasing_subsequence<const_iterator> ls ( cmp );
-    ResultContainer lis = ls ( sequence.begin (), sequence.end () );
-
-    BOOST_CHECK_EQUAL ( lis.size (), expected_length );
-
-    // check_one_iter ( haystack, needle, expected );
-    // check_one_pointer ( haystack, needle, expected );
-    // check_one_object ( haystack, needle, expected );
+    boost::iterator_range< const_iterator > range ( sequence.begin (),
+                                                    sequence.end () );
+    // TODO: move to separate test
+    (void)ba::longest_increasing_subsequence_length (
+        range );  // check interface, ignore result
+    std::size_t size = ba::longest_increasing_subsequence_length ( range, cmp );
+    BOOST_CHECK_EQUAL ( size, expected_length );
+    // TODO: range creator functions make_*
 }
 
-// template<typename Container>
-// void check_length ( const Container &sequence, std::size_t expected_length )
-// {
-// typedef typename Container::value_type value_type;
-// check_length ( sequence, expected_length, std::less<value_type>() );
-// }
-
-template <typename Container, typename Compare>
+template < typename Container, typename Comparator >
 void
-check_lis ( const Container &sequence, const Container &expected_lis,
-            Compare cmp )
+check_length_pointer ( const Container &sequence, std::size_t expected_length,
+                       Comparator cmp )
+{
+    typedef const typename Container::value_type *ptr_type;
+    ptr_type sBeg = sequence.size () == 0 ? NULL : &*sequence.begin ();
+    ptr_type sEnd = sBeg + sequence.size ();
+
+    // TODO: move to separate test
+    (void)ba::longest_increasing_subsequence_length (
+        sBeg, sEnd );  // check interface, ignore result
+    std::size_t size =
+        ba::longest_increasing_subsequence_length ( sBeg, sEnd, cmp );
+    BOOST_CHECK_EQUAL ( size, expected_length );
+}
+
+template < typename Container, typename Comparator >
+void
+check_length_object ( const Container &sequence, std::size_t expected_length,
+                      Comparator cmp )
 {
     typedef typename Container::const_iterator const_iterator;
-    typedef typename Container::value_type value_type;
-    typedef typename std::vector<value_type> ResultContainer;
 
-    ba::longest_increasing_subsequence<const_iterator> ls ( cmp );
-    ResultContainer lis = ls ( sequence.begin (), sequence.end () );
+    // TODO: move to separate test
+    ba::longest_increasing_subsequence< const_iterator >
+        ls_no_comparator;  // check interface, ignore result
+    (void)ls_no_comparator;
+    ba::longest_increasing_subsequence< const_iterator, Comparator > ls ( cmp );
+    std::size_t size = ls.compute_length ( sequence.begin (), sequence.end () );
+    BOOST_CHECK_EQUAL ( size, expected_length );
+    // TODO: range-based make_*
+}
+
+// Content checking
+
+template < typename Container, typename Comparator >
+void
+check_lis_iter ( const Container &sequence, const Container &expected_lis,
+                 Comparator cmp )
+{
+    typedef typename Container::const_iterator const_iterator;
+    typedef typename ba::longest_increasing_subsequence<
+        const_iterator >::value_vector value_vector;
+    typedef typename ba::longest_increasing_subsequence<
+        const_iterator >::iterator_vector iterator_vector;
+
+    // value output
+    (void)ba::longest_increasing_subsequence_search (
+        sequence.begin (), sequence.end (),
+        ba::value_output_tag () );  // check interface
+    value_vector lis_value = ba::longest_increasing_subsequence_search (
+        sequence.begin (), sequence.end (), ba::value_output_tag (), cmp );
+    BOOST_CHECK_EQUAL_COLLECTIONS ( lis_value.begin (), lis_value.end (),
+                                    expected_lis.begin (),
+                                    expected_lis.end () );
+
+    // iterator output
+    (void)ba::longest_increasing_subsequence_search (
+        sequence.begin (), sequence.end (),
+        ba::iterator_output_tag () );  // check interface
+    iterator_vector iter = ba::longest_increasing_subsequence_search (
+        sequence.begin (), sequence.end (), ba::iterator_output_tag (), cmp );
+    value_vector lis_iter ( iter.size () );
+    for ( std::size_t i = 0; i < iter.size (); ++i ) {
+        lis_iter[i] = *iter[i];
+    }
+    BOOST_CHECK_EQUAL_COLLECTIONS ( lis_iter.begin (), lis_iter.end (),
+                                    expected_lis.begin (),
+                                    expected_lis.end () );
+
+    // output iterator
+    (void)ba::longest_increasing_subsequence_search (
+        sequence.begin (), sequence.end (),
+        null_insert_iterator () );  // check interface
+    value_vector lis_out_iter;
+    std::back_insert_iterator< value_vector > end_out_iter =
+        ba::longest_increasing_subsequence_search (
+            sequence.begin (), sequence.end (),
+            std::back_inserter ( lis_out_iter ), cmp );
+    (void)end_out_iter;  // ignore result
+    BOOST_CHECK_EQUAL_COLLECTIONS ( lis_out_iter.begin (), lis_out_iter.end (),
+                                    expected_lis.begin (),
+                                    expected_lis.end () );
+}
+
+template < typename Container, typename Comparator >
+void
+check_lis_range ( const Container &sequence, const Container &expected_lis,
+                  Comparator cmp )
+{
+    typedef typename Container::const_iterator const_iterator;
+    typedef typename ba::longest_increasing_subsequence<
+        const_iterator >::value_vector value_vector;
+    boost::iterator_range< const_iterator > range ( sequence.begin (),
+                                                    sequence.end () );
+    (void)ba::longest_increasing_subsequence_search (
+        range, ba::value_output_tag () );  // check interface
+    value_vector lis = ba::longest_increasing_subsequence_search (
+        range, ba::value_output_tag (), cmp );
     BOOST_CHECK_EQUAL_COLLECTIONS (
         lis.begin (), lis.end (), expected_lis.begin (), expected_lis.end () );
 
-    ResultContainer lis2;
-    ls ( sequence.begin (), sequence.end (), std::back_inserter(lis2) );
-    BOOST_CHECK_EQUAL_COLLECTIONS (
-        lis2.begin (), lis2.end (), expected_lis.begin (), expected_lis.end () );
+    (void)ba::longest_increasing_subsequence_search (
+        range, null_insert_iterator () );  // check interface
+    value_vector lis2;
+    ba::longest_increasing_subsequence_search (
+        range, std::back_inserter ( lis2 ), cmp );
+    BOOST_CHECK_EQUAL_COLLECTIONS ( lis2.begin (), lis2.end (),
+                                    expected_lis.begin (),
+                                    expected_lis.end () );
 }
 
-template <typename Container, typename Compare, typename ContainerContainer>
+template < typename Container, typename Comparator >
+void
+check_lis_pointer ( const Container &sequence, const Container &expected_lis,
+                    Comparator cmp )
+
+{
+    typedef const typename Container::value_type *ptr_type;
+    typedef typename ba::longest_increasing_subsequence<
+        ptr_type >::value_vector value_vector;
+    ptr_type sBeg = sequence.size () == 0 ? NULL : &*sequence.begin ();
+    ptr_type sEnd = sBeg + sequence.size ();
+
+    // TODO: move to separate test
+    (void)ba::longest_increasing_subsequence_search (
+        sBeg, sEnd,
+        ba::value_output_tag () );  // check interface, ignore result
+    value_vector lis = ba::longest_increasing_subsequence_search (
+        sBeg, sEnd, ba::value_output_tag (), cmp );
+    BOOST_CHECK_EQUAL_COLLECTIONS (
+        lis.begin (), lis.end (), expected_lis.begin (), expected_lis.end () );
+
+    (void)ba::longest_increasing_subsequence_search (
+        sBeg, sEnd,
+        null_insert_iterator () );  // check interface, ignore result
+    value_vector lis2;
+    (void)ba::longest_increasing_subsequence_search (
+        sBeg, sEnd, std::back_inserter ( lis2 ), cmp );  // ignore result
+    BOOST_CHECK_EQUAL_COLLECTIONS ( lis2.begin (), lis2.end (),
+                                    expected_lis.begin (),
+                                    expected_lis.end () );
+}
+
+template < typename Container, typename Comparator >
+void
+check_lis_object ( const Container &sequence, const Container &expected_lis,
+                   Comparator cmp )
+{
+    typedef typename Container::const_iterator const_iterator;
+    typedef typename ba::longest_increasing_subsequence<
+        const_iterator >::value_vector value_vector;
+
+    ba::longest_increasing_subsequence< const_iterator > ls ( cmp );
+    value_vector lis =
+        ls ( sequence.begin (), sequence.end (), ba::value_output_tag () );
+    BOOST_CHECK_EQUAL_COLLECTIONS (
+        lis.begin (), lis.end (), expected_lis.begin (), expected_lis.end () );
+
+    value_vector lis2;
+    ls ( sequence.begin (), sequence.end (), std::back_inserter ( lis2 ) );
+    BOOST_CHECK_EQUAL_COLLECTIONS ( lis2.begin (), lis2.end (),
+                                    expected_lis.begin (),
+                                    expected_lis.end () );
+    // TODO: range-based make_*
+}
+
+template < typename Container, typename Comparator >
+void
+check_one_iter ( const std::string &test_name, const Container &sequence,
+                 std::size_t expected_length, const Container &expected_lis,
+                 Comparator cmp )
+{
+    std::cout << "(Iterators) Sequence " << test_name << " is "
+              << sequence.size () << " elements long; " << std::endl;
+    check_length_iter ( sequence, expected_length, cmp );
+    BOOST_REQUIRE_EQUAL ( expected_lis.size (), expected_length );
+    check_lis_iter ( sequence, expected_lis, cmp );
+}
+
+template < typename Container, typename Comparator >
+void
+check_one_range ( const std::string &test_name, const Container &sequence,
+                  std::size_t expected_length, const Container &expected_lis,
+                  Comparator cmp )
+{
+    std::cout << "(Ranges) Sequence " << test_name << " is " << sequence.size ()
+              << " elements long; " << std::endl;
+    check_length_range ( sequence, expected_length, cmp );
+    BOOST_REQUIRE_EQUAL ( expected_lis.size (), expected_length );
+    check_lis_range ( sequence, expected_lis, cmp );
+}
+
+template < typename Container, typename Comparator >
+void
+check_one_pointer ( const std::string &test_name, const Container &sequence,
+                    std::size_t expected_length, const Container &expected_lis,
+                    Comparator cmp )
+{
+    std::cout << "(Pointers) Sequence " << test_name << " is "
+              << sequence.size () << " elements long; " << std::endl;
+    check_length_pointer ( sequence, expected_length, cmp );
+    BOOST_REQUIRE_EQUAL ( expected_lis.size (), expected_length );
+    check_lis_pointer ( sequence, expected_lis, cmp );
+}
+
+template < typename Container, typename Comparator >
+void
+check_one_object ( const std::string &test_name, const Container &sequence,
+                   std::size_t expected_length, const Container &expected_lis,
+                   Comparator cmp )
+{
+    std::cout << "(Objects) Sequence " << test_name << " is "
+              << sequence.size () << " elements long; " << std::endl;
+    check_length_object ( sequence, expected_length, cmp );
+    BOOST_REQUIRE_EQUAL ( expected_lis.size (), expected_length );
+    check_lis_object ( sequence, expected_lis, cmp );
+}
+
+template < typename Container, typename Comparator >
+void
+check_one ( const std::string &test_name, const Container &sequence,
+            std::size_t expected_length, const Container &expected_lis,
+            Comparator cmp )
+{
+    check_one_iter ( test_name, sequence, expected_length, expected_lis, cmp );
+    check_one_range ( test_name, sequence, expected_length, expected_lis, cmp );
+    check_one_pointer ( test_name, sequence, expected_length, expected_lis,
+                        cmp );
+    check_one_object ( test_name, sequence, expected_length, expected_lis,
+                       cmp );
+}
+
+template < typename Container >
+void
+check_one ( const std::string &test_name, const Container &sequence,
+            std::size_t expected_length, const Container &expected_lis )
+{
+    typedef typename Container::value_type value_type;
+    // TODO: check again defaults
+    // check_one ( test_name, sequence, expected_length, expected_lis );
+    check_one ( test_name, sequence, expected_length, expected_lis,
+                std::less< value_type > () );
+}
+
+// Multiple possible results
+
+template < typename Container, typename Comparator,
+           typename ContainerContainer >
 void
 check_lis ( const Container &sequence, const ContainerContainer &expected_lises,
-            Compare cmp )
+            Comparator cmp )
 {
     typedef typename Container::const_iterator const_iterator;
 
-    ba::longest_increasing_subsequence<const_iterator> ls ( cmp );
-    Container lis = ls ( sequence.begin (), sequence.end () );
+    ba::longest_increasing_subsequence< const_iterator > ls ( cmp );
+    Container lis =
+        ls ( sequence.begin (), sequence.end (), ba::value_output_tag () );
 
     bool any_equal = false;
     for ( std::size_t i = 0; i < expected_lises.size (); ++i ) {
@@ -104,43 +348,22 @@ check_lis ( const Container &sequence, const ContainerContainer &expected_lises,
     BOOST_CHECK ( any_equal );
 }
 
-template <typename Container, typename Compare>
-void
-check_one ( const std::string &test_name, const Container &sequence,
-            std::size_t expected_length, const Container &expected_lis,
-            Compare cmp )
-{
-    BOOST_TEST_CHECKPOINT ( test_name );
-    check_length ( sequence, expected_length, cmp );
-    BOOST_REQUIRE_EQUAL ( expected_lis.size (), expected_length );
-    check_lis ( sequence, expected_lis, cmp );
-}
-
-template <typename Container, typename Compare, typename ContainerContainer>
+template < typename Container, typename Comparator,
+           typename ContainerContainer >
 void
 check_one ( const std::string &test_name, const Container &sequence,
             std::size_t expected_length,
-            const ContainerContainer &expected_lises, Compare cmp )
+            const ContainerContainer &expected_lises, Comparator cmp )
 {
     BOOST_TEST_CHECKPOINT ( test_name );
-    check_length ( sequence, expected_length, cmp );
+    check_length_iter ( sequence, expected_length, cmp );
     for ( std::size_t i = 0; i < expected_lises.size (); ++i ) {
         BOOST_REQUIRE_EQUAL ( expected_lises[i].size (), expected_length );
     }
     check_lis ( sequence, expected_lises, cmp );
 }
 
-template <typename Container>
-void
-check_one ( const std::string &test_name, const Container &sequence,
-            std::size_t expected_length, const Container &expected_lis )
-{
-    typedef typename Container::value_type value_type;
-    check_one ( test_name, sequence, expected_length, expected_lis,
-                std::less<value_type> () );
-}
-
-template <typename Container, typename ContainerContainer>
+template < typename Container, typename ContainerContainer >
 void
 check_one ( const std::string &test_name, const Container &sequence,
             std::size_t expected_length,
@@ -148,35 +371,27 @@ check_one ( const std::string &test_name, const Container &sequence,
 {
     typedef typename Container::value_type value_type;
     check_one ( test_name, sequence, expected_length, expected_lises,
-                std::less<value_type> () );
+                std::less< value_type > () );
 }
 }
 
-template <typename Container>
+template < typename Container >
 void
-ReadFromFile ( const char *name, std::back_insert_iterator<Container> inserter )
+ReadFromFile ( const char *name,
+               std::back_insert_iterator< Container > inserter )
 {
     std::ifstream in ( name, std::ios_base::binary | std::ios_base::in );
-    std::istream_iterator<char, char> begin ( in );
-    std::istream_iterator<char, char> end;
+    std::istream_iterator< char, char > begin ( in );
+    std::istream_iterator< char, char > end;
 
     std::copy ( begin, end, inserter );
 }
 
-template <typename Iter>
-std::string
-make_str ( Iter first, std::size_t len )
-{
-    std::string retVal ( len + 2, '\'' );
-    std::copy ( first, first + len, retVal.begin () + 1 );
-    return retVal;
-}
-
 BOOST_AUTO_TEST_CASE ( test_main )
 {
-    typedef std::vector<int> vec;
-    typedef std::vector<int> res;
-    typedef std::vector<res> resvec;
+    typedef std::vector< int > vec;
+    typedef vec res;
+    typedef std::vector< res > resvec;
     using std::string;
     using std::wstring;
 
