@@ -27,6 +27,9 @@ alias unit_test_framework
      [ compile-fail search_fail2.cpp  : : : : ]
      [ compile-fail search_fail3.cpp  : : : : ]
 
+# Longest increasing/common subsequence/substring tests
+     [ run substring_test1.cpp unit_test_framework        : : : : substring_test1 ]
+     
 # Clamp tests
      [ run clamp_test.cpp unit_test_framework         : : : : clamp_test ]
    
