@@ -27,8 +27,9 @@ alias unit_test_framework
      [ compile-fail search_fail2.cpp  : : : : ]
      [ compile-fail search_fail3.cpp  : : : : ]
 
-# Clamp tests
+# Misc tests
      [ run clamp_test.cpp unit_test_framework         : : : : clamp_test ]
+     [ run power_test.cpp unit_test_framework         : : : : power_test ]
    
 # Cxx11 tests
      [ run all_of_test.cpp unit_test_framework         : : : : all_of_test ]
@@ -57,9 +58,6 @@ alias unit_test_framework
      [ run hex_test3.cpp unit_test_framework         : : : : hex_test3 ]
      [ run hex_test4.cpp unit_test_framework         : : : : hex_test4 ]
      [ compile-fail hex_fail1.cpp ]
-
-# Wrapper tests
-     [ run wrapper_test1.cpp unit_test_framework         : : : : wrapper_test1 ]
 
 # Gather tests
      [ run gather_test1.cpp unit_test_framework        : : : : gather_test1 ]
