@@ -30,6 +30,7 @@ alias unit_test_framework
 # Misc tests
      [ run clamp_test.cpp unit_test_framework         : : : : clamp_test ]
      [ run power_test.cpp unit_test_framework         : : : : power_test ]
+     [ compile-fail power_fail1.cpp  : : : : ]
    
 # Cxx11 tests
      [ run all_of_test.cpp unit_test_framework         : : : : all_of_test ]
