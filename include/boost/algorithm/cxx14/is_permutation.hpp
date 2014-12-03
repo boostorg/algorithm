@@ -22,7 +22,6 @@
 
 namespace boost { namespace algorithm {
 
-#if __cplusplus <= 201103L
 /// \fn is_permutation ( ForwardIterator1 first, ForwardIterator1 last, 
 ///                      ForwardIterator2 first2, ForwardIterator2 last2 )
 /// \brief Tests to see if the sequence [first,last) is a permutation of the sequence starting at first2
@@ -79,7 +78,6 @@ bool is_permutation ( ForwardIterator1 first1, ForwardIterator1 last1,
         typename std::iterator_traits<ForwardIterator1>::iterator_category (),
         typename std::iterator_traits<ForwardIterator2>::iterator_category ());
 }
-#endif
 
 }}
 
