@@ -64,6 +64,8 @@ alias unit_test_framework
      [ run gather_test1.cpp unit_test_framework        : : : : gather_test1 ]
      [ compile-fail gather_fail1.cpp ]
 
-   ;
+# Integer sort tests
+     [ run stable_counting_test.cpp unit_test_framework       : : : : stable_counting_test ]
+     [ run stable_radix_test.cpp unit_test_framework       : : : : stable_radix_test ]
+     ;
 }
-

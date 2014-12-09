@@ -1,0 +1,88 @@
+[/ QuickBook Document version 1.5 ]
+
+[section:integer_sort Integer Sorting Algorithms]
+
+[/license
+Copyright (C) 2014 Jeremy W. Murphy
+
+Distributed under the Boost Software License, Version 1.0. (See accompanying
+file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+]
+
+
+[heading Overview]
+Integer sorting algorithms take advantage of the properties of integers to sort them using mechanisms other than comparison.
+Counting sort algorithm literally counts the frequency of values in the input to form an intermediate representation of the data from which a stable, ordered sequence can be created.
+
+Least-significant digit (LSD) radix sort uses counting sort to order input data iteratively.  With a default one-byte digit, radix sort runs counting sort on one digit of the input at a time.
+
+
+[/ Counts are stored in an array indexed by the value.  
+/ The partial sum of the array of counts is calculated, calculating the right-most index of each value / in the output.
+/ Values are then read from the end of the input, storing each in its position calculated from the array, which is decremented at each step.
+/ It is limited to sorting types that can be projected in order onto an unsigned integral type.
+]
+
+[heading Interface]
+Requirements are for the input iterator to be bidirectional and for the output iterator to be random access. The basic interface requires the input type T to be of an unsigned integral type.  Radix and counting sort have an almost identical interface: counting sort has one additional parameter, digit, which radix sort calculates and passes to counting sort internally.
+
+``
+template <typename Input, typename Output>
+void stable_counting sort(Input first, Input last, Output result);
+template <typename Input, typename Output>
+void radix sort(Input first, Input last, Output result);
+``
+
+The next interface introduces customization of the conversion to allow user-defined types.
+The output type of the conv function has the same requirements as T above.
+``
+template <typename Input, typename Output, typename Conversion>
+void stable_counting sort(Input first, Input last, Output result, Conversion conv);
+``
+The next interface adds the option to specify min and max manually.
+``
+template <typename Input, typename Output, typename Conversion>
+void stable_counting sort(Input first, Input last, Output result, Conversion conv, T min, T max);
+``
+Finally, the complete interface for total customization includes specifying the radix and digit.
+``
+template <typename Input, typename Output, typename Conversion>
+void stable_counting sort(Input first, Input last, Output result, Conversion conv, T min, T max, unsigned radix, char unsigned digit);
+``
+
+[heading Complexity]
+Let k equal the range of the input (max - min).  Counting sort runs in \Theta(k) space.  If k = O(n), counting sort runs in \Theta(n) time, otherwise it runs in \Theta(n + k).
+
+If k = O(n), radix sort runs in \theta(dn) time, otherwise it runs in \Theta(d(n + k)).  Even though this complexity is worse than counting sort, the performance characteristics more than make up for it in practice.
+
+Space complexity for radix sort depends on the width of the unsigned integral type divided by the radix, called digits in the algorithm:
+
+    digits  space complexity
+      1     \Theta(k)
+      2     \Theta(n + k)
+    >=3     \Theta(2n + k)
+
+If digits equals one, LSD radix sort is equivalent to stable counting sort.  When digits equals two, one temporary buffer is required, and for greater than two digits, two temporary buffers are required.  
+
+// To guarantee the best linear complexity...
+
+
+[heading Exception Safety]
+Counting and radix sort take their parameters by value and have no global state.  
+
+[heading Customization Points]
+If UnsignedInteger(T) is false, a Conversion type is required to project T onto an unsigned integral type of appropriate size.
+
+
+[heading Performance]
+Radix sort performance is proportional to the size of T and k.  
+
+(On x86_64 ) Compared to std::sort it is approximately 20 times faster at sorting `char`, 
+10 times faster for `short`, 4 times faster for `int` and almost 2 times faster for `long`.
+
+
+[heading Notes]
+It is typical for algorithms to treat empty input (n = 0) as a special case.  These algorithms also treat n = 1 as a special case of no sorting work to be done.  This was largely motivated by the fact that the LSD radix sort algorithm calculates log(n) but does not expect zero, 
+however it makes logical sense for a sorting algorithm in general.
+
+[endsect]
