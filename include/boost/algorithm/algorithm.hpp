@@ -17,6 +17,8 @@
 #ifndef BOOST_ALGORITHM_HPP
 #define BOOST_ALGORITHM_HPP
 
+#include <functional> // for plus and multiplies
+
 #include <boost/utility/enable_if.hpp> // for boost::disable_if
 #include <boost/type_traits/is_integral.hpp>
 
