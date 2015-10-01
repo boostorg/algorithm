@@ -65,7 +65,8 @@ alias unit_test_framework
      [ compile-fail gather_fail1.cpp ]
 
 # SortSubrange tests
-     [ run sort_subrange_test.cpp unit_test_framework        : : : : sort_subrange_test ]
+     [ run sort_subrange_test.cpp unit_test_framework       : : : : sort_subrange_test ]
+     [ run partition_subrange_test.cpp unit_test_framework  : : : : partition_subrange_test ]
 
    ;
 }
