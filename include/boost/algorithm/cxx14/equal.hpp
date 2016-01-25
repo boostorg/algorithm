@@ -21,7 +21,7 @@ namespace detail {
 
     template <class T1, class T2>
     struct eq : public std::binary_function<T1, T2, bool> {
-        bool operator () ( const T1& v1, const T2& v2 ) const { return v1 == v2 ;}
+        BOOST_CONSTEXPR bool operator () ( const T1& v1, const T2& v2 ) const { return v1 == v2 ;}
         };
     
     template <class RandomAccessIterator1, class RandomAccessIterator2, class BinaryPredicate>
@@ -37,7 +37,7 @@ namespace detail {
     }
 
     template <class InputIterator1, class InputIterator2, class BinaryPredicate>
-    bool equal ( InputIterator1 first1, InputIterator1 last1, 
+    BOOST_CXX14_CONSTEXPR bool equal ( InputIterator1 first1, InputIterator1 last1, 
                  InputIterator2 first2, InputIterator2 last2, BinaryPredicate pred,
                  std::input_iterator_tag, std::input_iterator_tag )
     {

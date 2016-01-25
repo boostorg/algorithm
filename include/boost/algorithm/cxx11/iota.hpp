@@ -29,7 +29,7 @@ namespace boost { namespace algorithm {
 ///  We will use the standard one if it is available, 
 ///  otherwise we have our own implementation.
 template <typename ForwardIterator, typename T>
-void iota ( ForwardIterator first, ForwardIterator last, T value )
+BOOST_CXX14_CONSTEXPR void iota ( ForwardIterator first, ForwardIterator last, T value )
 {
     for ( ; first != last; ++first, ++value )
         *first = value;
@@ -42,7 +42,7 @@ void iota ( ForwardIterator first, ForwardIterator last, T value )
 /// \param value    The initial value of the sequence to be generated
 ///
 template <typename Range, typename T>
-void iota ( Range &r, T value )
+BOOST_CXX14_CONSTEXPR void iota ( Range &r, T value )
 {
     boost::algorithm::iota (boost::begin(r), boost::end(r), value);
 }
@@ -56,7 +56,7 @@ void iota ( Range &r, T value )
 /// \param n        The number of items to write
 ///
 template <typename OutputIterator, typename T>
-OutputIterator iota_n ( OutputIterator out, T value, std::size_t n )
+BOOST_CXX14_CONSTEXPR OutputIterator iota_n ( OutputIterator out, T value, std::size_t n )
 {
     for ( ; n > 0; --n, ++value )
         *out++ = value;

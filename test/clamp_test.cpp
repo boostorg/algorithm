@@ -45,6 +45,10 @@ void test_ints()
     BOOST_CHECK_EQUAL (  1, ba::clamp (  0, 1, 10 ));
     BOOST_CHECK_EQUAL ( 10, ba::clamp ( 10, 1, 10 ));
     BOOST_CHECK_EQUAL ( 10, ba::clamp ( 11, 1, 10 ));
+    BOOST_CXX14_CONSTEXPR bool constexpr_res = (
+        ba::clamp (  3, 1, 10 ) == 3
+    );
+    BOOST_CHECK( constexpr_res );
     
     BOOST_CHECK_EQUAL (  3, ba::clamp (  3, 10, 1, intGreater ));
     BOOST_CHECK_EQUAL (  1, ba::clamp (  1, 10, 1, intGreater ));

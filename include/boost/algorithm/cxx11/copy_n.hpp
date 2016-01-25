@@ -28,7 +28,7 @@ namespace boost { namespace algorithm {
 ///  We will use the standard one if it is available, 
 ///     otherwise we have our own implementation.
 template <typename InputIterator, typename Size, typename OutputIterator>
-OutputIterator copy_n ( InputIterator first, Size n, OutputIterator result )
+BOOST_CXX14_CONSTEXPR OutputIterator copy_n ( InputIterator first, Size n, OutputIterator result )
 {
     for ( ; n > 0; --n, ++first, ++result )
         *result = *first;
