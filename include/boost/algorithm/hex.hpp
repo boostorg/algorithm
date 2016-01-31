@@ -290,6 +290,21 @@ String hex ( const String &input ) {
     return output;
     }
 
+
+/// \fn String hex_lower ( const String &input )
+/// \brief   Converts a sequence of integral types into a lower case hexadecimal sequence of characters.
+///
+/// \param input    A container to be converted
+/// \return         A container with the encoded text
+template<typename String>
+String hex_lower ( const String &input ) {
+    String output;
+    output.reserve (input.size () * (2 * sizeof (typename String::value_type)));
+    (void) hex_lower (input, std::back_inserter (output));
+    return output;
+    }
+
+
 /// \fn String unhex ( const String &input )
 /// \brief   Converts a sequence of hexadecimal characters into a sequence of characters.
 ///
