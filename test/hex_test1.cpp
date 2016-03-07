@@ -9,7 +9,6 @@
 
 #include <boost/config.hpp>
 #include <boost/algorithm/hex.hpp>
-#include <boost/algorithm/string/case_conv.hpp>
 
 #define BOOST_TEST_MAIN
 #include <boost/test/unit_test.hpp>
@@ -27,31 +26,6 @@ void test_to_hex ( const typename String::value_type ** tests ) {
         boost::algorithm::hex ( arg, std::back_inserter ( two ));
         boost::algorithm::hex ( arg.begin (), arg.end (), std::back_inserter ( three ));
         four = boost::algorithm::hex ( arg );
-        BOOST_CHECK ( one == two );
-        BOOST_CHECK ( one == three );
-        BOOST_CHECK ( one == four );
-        argh = one;
-        one.clear (); two.clear (); three.clear (); four.clear ();
-        boost::algorithm::unhex ( argh.c_str (), std::back_inserter ( one ));
-        boost::algorithm::unhex ( argh, std::back_inserter ( two ));
-        boost::algorithm::unhex ( argh.begin (), argh.end (), std::back_inserter ( three ));
-        four = boost::algorithm::unhex ( argh );
-        BOOST_CHECK ( one == two );
-        BOOST_CHECK ( one == three );
-        BOOST_CHECK ( one == four );
-        BOOST_CHECK ( one == arg );
-        }
-    }
-
-template<typename String>
-void test_to_hex_lower ( const typename String::value_type ** tests ) {
-    for ( const typename String::value_type **p = tests; *p; p++ ) {
-        String arg, argh, one, two, three, four;
-        arg.assign ( *p );
-        boost::algorithm::hex_lower ( *p, std::back_inserter ( one ));
-        boost::algorithm::hex_lower ( arg, std::back_inserter ( two ));
-        boost::algorithm::hex_lower ( arg.begin (), arg.end (), std::back_inserter ( three ));
-        four = boost::algorithm::hex_lower ( arg );
         BOOST_CHECK ( one == two );
         BOOST_CHECK ( one == three );
         BOOST_CHECK ( one == four );
@@ -87,11 +61,6 @@ void test_from_hex_success ( const typename String::value_type ** tests ) {
         boost::algorithm::hex ( argh, std::back_inserter ( two ));
         boost::algorithm::hex ( argh.begin (), argh.end (), std::back_inserter ( three ));
         four = boost::algorithm::hex ( argh );
-        boost::algorithm::to_lower( arg );
-        boost::algorithm::to_lower( one );
-        boost::algorithm::to_lower( two );
-        boost::algorithm::to_lower( three );
-        boost::algorithm::to_lower( four );
         BOOST_CHECK ( one == two );
         BOOST_CHECK ( one == three );
         BOOST_CHECK ( one == four );
@@ -144,7 +113,6 @@ const wchar_t *tohex_w [] = {
 const char *fromhex [] = {
     "20",
     "2122234556FF",
-    "2122234556ff",
     NULL        // End of the list
     };
 
@@ -152,7 +120,6 @@ const char *fromhex [] = {
 const wchar_t *fromhex_w [] = {
     L"00101020",
     L"2122234556FF3456",
-    L"2122234556ff3456",
     NULL        // End of the list
     };
 
@@ -162,8 +129,6 @@ const char *fromhex_fail [] = {
     "H",
     "234",
     "21222G4556FF",
-    "h",
-    "21222g4556ff",
     NULL        // End of the list
     };
 
@@ -174,8 +139,6 @@ const wchar_t *fromhex_fail_w [] = {
     L"H",
     L"234",
     L"21222G4556FF",
-    L"h",
-    L"21222g4556ff",
     NULL        // End of the list
     };
 
@@ -183,12 +146,10 @@ const wchar_t *fromhex_fail_w [] = {
 BOOST_AUTO_TEST_CASE( test_main )
 {
   test_to_hex<std::string> ( tohex );
-  test_to_hex_lower<std::string> ( tohex );
   test_from_hex_success<std::string> ( fromhex );
   test_from_hex_failure<std::string> ( fromhex_fail );
 
   test_to_hex<std::wstring> ( tohex_w );
-  test_to_hex_lower<std::wstring> ( tohex_w );
   test_from_hex_success<std::wstring> ( fromhex_w );
   test_from_hex_failure<std::wstring> ( fromhex_fail_w );
 }
