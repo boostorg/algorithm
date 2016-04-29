@@ -74,7 +74,7 @@ All of the variants of `none_of` and `none_of_equal` take their parameters by va
 
 [heading Notes]
 
-* The routine `none_of` is also available aspart of the C++11 standard.
+* The routine `none_of` is also available as part of the C++11 standard.
 
 * `none_of` and `none_of_equal` both return true for empty ranges, no matter what is passed to test against. 
 
