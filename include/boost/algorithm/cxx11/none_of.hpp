@@ -28,9 +28,9 @@ namespace boost { namespace algorithm {
 template<typename InputIterator, typename Predicate> 
 bool none_of ( InputIterator first, InputIterator last, Predicate p )
 {
-for ( ; first != last; ++first )
-    if ( p(*first)) 
-        return false;
+    for ( ; first != last; ++first )
+        if ( p(*first)) 
+            return false;
     return true;
 } 
 
