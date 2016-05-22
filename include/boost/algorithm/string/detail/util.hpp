@@ -12,7 +12,6 @@
 #define BOOST_STRING_UTIL_DETAIL_HPP
 
 #include <boost/algorithm/string/config.hpp>
-#include <functional>
 #include <boost/range/iterator_range_core.hpp>
 
 namespace boost {
@@ -89,8 +88,7 @@ namespace boost {
             template< 
                 typename SeqT, 
                 typename IteratorT=BOOST_STRING_TYPENAME SeqT::const_iterator >
-            struct copy_iterator_rangeF : 
-                public std::unary_function< iterator_range<IteratorT>, SeqT >
+            struct copy_iterator_rangeF
             {
                 SeqT operator()( const iterator_range<IteratorT>& Range ) const
                 {

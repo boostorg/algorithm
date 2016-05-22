@@ -13,12 +13,11 @@
 #define BOOST_TEST_MAIN
 #include <boost/test/unit_test.hpp>
 
-#include <functional>
 #include <vector>
 #include <list>
 
 template<typename T>
-struct is_ : public std::unary_function<T, bool> {
+struct is_ {
     is_ ( T v ) : val_ ( v ) {}
     ~is_ () {}
     bool operator () ( T comp ) const { return val_ == comp; }

@@ -13,7 +13,6 @@
 #define BOOST_ALGORITHM_EQUAL_HPP
 
 #include <algorithm>    // for std::equal
-#include <functional>   // for std::binary_function
 #include <iterator>
 
 namespace boost { namespace algorithm {
@@ -21,9 +20,10 @@ namespace boost { namespace algorithm {
 namespace detail {
 
     template <class T1, class T2>
-    struct eq : public std::binary_function<T1, T2, bool> {
+    struct eq {
+        typedef bool result_type;
         bool operator () ( const T1& v1, const T2& v2 ) const { return v1 == v2 ;}
-        };
+    };
     
     template <class RandomAccessIterator1, class RandomAccessIterator2, class BinaryPredicate>
     bool equal ( RandomAccessIterator1 first1, RandomAccessIterator1 last1, 
