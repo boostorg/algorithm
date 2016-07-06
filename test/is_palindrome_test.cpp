@@ -44,22 +44,22 @@ void test_is_palindrome()
     const std::list<int> empty;
     const std::vector<char> singleElement{'z'};
     int oddNonPalindrome[] = {3,2,2};
+    const int oddPalindrome[] = {1,2,3,2,1};
     const int evenPalindrome[] = {1,2,2,1};
+    int evenNonPalindrome[] = {1,4,8,8};
 
     // Test a default operator==
     BOOST_CHECK ( ba::is_palindrome(empty));
     BOOST_CHECK ( ba::is_palindrome(singleElement));
     BOOST_CHECK (!ba::is_palindrome(std::begin(oddNonPalindrome), std::end(oddNonPalindrome)));
+    BOOST_CHECK ( ba::is_palindrome(std::begin(oddPalindrome), std::end(oddPalindrome)));
     BOOST_CHECK ( ba::is_palindrome(std::begin(evenPalindrome), std::end(evenPalindrome)));
+    BOOST_CHECK (!ba::is_palindrome(std::begin(evenNonPalindrome), std::end(evenNonPalindrome)));
 
     //Test the custom comparators
     BOOST_CHECK ( ba::is_palindrome(empty.begin(), empty.end(), functorComparator()));
     BOOST_CHECK (!ba::is_palindrome(std::begin(oddNonPalindrome), std::end(oddNonPalindrome), funcComparator<int>));
     BOOST_CHECK ( ba::is_palindrome(evenPalindrome, std::equal_to<int>()));
-
-    //Only C++14 or newer
-    //auto lambdaComparator = [](const auto& v1, const auto& v2){ return v1 == v2; };
-    //BOOST_CHECK ( ba::is_palindrome(singleElement, lambdaComparator));
 }
 
 BOOST_AUTO_TEST_CASE( test_main )
