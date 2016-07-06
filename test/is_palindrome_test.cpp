@@ -8,13 +8,17 @@
   See http://www.boost.org/ for latest version.
 */
 
+#include <boost/config.hpp>
+#include <boost/algorithm/is_palindrome.hpp>
+
+#define BOOST_TEST_MAIN
+#include <boost/test/unit_test.hpp>
+
 #include <algorithm>
 #include <iostream>
 #include <list>
 #include <vector>
 
-#include <boost/algorithm/is_palindrome.hpp>
-#include <boost/test/included/test_exec_monitor.hpp>
 
 namespace ba = boost::algorithm;
 
@@ -35,7 +39,7 @@ struct functorComparator
 };
 
 
-static void test_is_palindrome()
+void test_is_palindrome()
 {
     const std::list<int> empty;
     const std::vector<char> singleElement{'z'};
@@ -58,9 +62,7 @@ static void test_is_palindrome()
     //BOOST_CHECK ( ba::is_palindrome(singleElement, lambdaComparator));
 }
 
-int test_main( int, char * [] )
+BOOST_AUTO_TEST_CASE( test_main )
 {
-    test_is_palindrome();
-
-    return 0;
+  test_is_palindrome ();
 }
