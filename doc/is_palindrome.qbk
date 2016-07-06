@@ -45,7 +45,9 @@ Given the containers:
 const std::list<int> empty,
 const std::vector<char> singleElement{'z'},
 int oddNonPalindrome[] = {3,2,2},
-const int evenPalindrome[] = {1,2,2,1}, then
+const int oddPalindrome[] = {1,2,3,2,1},
+const int evenPalindrome[] = {1,2,2,1},
+int evenNonPalindrome[] = {1,4,8,8}, then
 ``
 
 is_palindrome(empty))  --> true //empty range                                                                       
@@ -54,7 +56,9 @@ is_palindrome(std::begin(oddNonPalindrome), std::end(oddNonPalindrome))) --> fal
 is_palindrome(std::begin(evenPalindrome), std::end(evenPalindrome))) --> true                                                                                                                                                                                                            
 is_palindrome(empty.begin(), empty.end(), functorComparator())) --> true //empty range                             
 is_palindrome(std::begin(oddNonPalindrome), std::end(oddNonPalindrome), funcComparator<int>)) --> false
-is_palindrome(evenPalindrome, std::equal_to<int>())) --> true                                          
+is_palindrome(std::begin(oddPalindrome), std::end(oddPalindrome)) --> true
+is_palindrome(evenPalindrome, std::equal_to<int>())) --> true
+is_palindrome(std::begin(evenNonPalindrome), std::end(evenNonPalindrome)) --> false
 ``
 
 [heading Iterator Requirements]
