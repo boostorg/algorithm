@@ -12,8 +12,8 @@
 /// \brief Checks the input sequence on palindrome.
 /// \author Alexander Zaitsev
 
-#ifndef BOOST_ALGORITHM_is_palindrome_HPP
-#define BOOST_ALGORITHM_is_palindrome_HPP
+#ifndef BOOST_ALGORITHM_IS_PALINDROME_HPP
+#define BOOST_ALGORITHM_IS_PALINDROME_HPP
 
 #include <iterator>
 
@@ -104,4 +104,4 @@ bool is_palindrome(const R& range, Predicate p)
 
 }}
 
-#endif // BOOST_ALGORITHM_is_palindrome_HPP
+#endif // BOOST_ALGORITHM_IS_PALINDROME_HPP
