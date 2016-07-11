@@ -64,7 +64,8 @@ damerau_distance(ForwardIterator1 beginS1, ForwardIterator1 endS1,
     // go
     DiffType1 i;
     DiffType2 j;
-    ForwardIterator1 ii, jj;
+    ForwardIterator1 ii;
+    ForwardIterator2 jj;
     for(i = 1, ii=beginS1; i <= m; ++i, ++ii)
     {
         DiffType2 last = 0;
