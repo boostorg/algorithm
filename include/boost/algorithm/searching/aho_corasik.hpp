@@ -21,7 +21,7 @@
 namespace boost { namespace algorithm
 {
 
-template<typename T, typename Map>
+template<typename T, typename Map, typename ResultCont = std::vector<std::vector<T>>>
 class Base_Aho_Corasik
 {
 public:
@@ -30,6 +30,10 @@ public:
         tree.emplace_back(Node(0, 0, 0));
     }
 
+    ~Base_Aho_Corasik()
+    {
+
+    }
 
     template<typename R>
     void insert(const R &range)
@@ -49,7 +53,7 @@ public:
             buffer.back().push_back(*it);
             if (tree[v].next_.find(*it) == tree[v].next_.end())
             {
-                Node node(-1, -1, v);
+                Node node(Node::Sentinel, Node::Sentinel, v);
                 node.prevValue_ = *it;
                 tree.push_back(node);
                 tree[v].next_[*it] = sz++;
@@ -62,15 +66,15 @@ public:
 
     //Search
     template<typename R>
-    std::vector<std::vector<T>> find(const R &range)
+    ResultCont& find(const R &range)
     {
         return find(boost::begin(range), boost::end(range));
     }
 
     template<typename ForwardIterator>
-    std::vector<std::vector<T>> find(ForwardIterator begin, ForwardIterator end)
+    ResultCont& find(ForwardIterator begin, ForwardIterator end)
     {
-        std::vector<std::vector<T>> result;
+        result.clear();
         size_t v = 0;
         std::fill(used.begin(), used.end(), false);
 
@@ -94,7 +98,7 @@ public:
 private:
     size_t getlink(const size_t v)
     {
-        if (tree[v].suffLink_ == -1)
+        if (tree[v].suffLink_ == Node::Sentinel)
         {
             if (v == 0 || tree[v].prevNode_ == 0)
             {
@@ -133,7 +137,7 @@ private:
 
     size_t getgood(const size_t v)
     {
-        if (tree[v].goodSuffLink_ == -1)
+        if (tree[v].goodSuffLink_ == Node::Sentinel)
         {
             size_t u = getlink(v);
             if (u == 0)
@@ -165,15 +169,16 @@ private:
 private:
     struct Node
     {
-        int suffLink_, goodSuffLink_;
-        size_t prevNode_;
+        static const size_t Sentinel = static_cast<size_t>(-1);
+
+        size_t suffLink_, goodSuffLink_, prevNode_;
         bool isLeaf_;
         T prevValue_;
         std::vector<size_t> pat_;
         Map next_, go_;
-        Node(const int suffLink = -1, const int goodSuffLink = -1, const size_t prevNode = 0,
-             const bool isLeaf = false) : suffLink_(suffLink), goodSuffLink_(goodSuffLink),
-                                          prevNode_(prevNode), isLeaf_(isLeaf)
+        Node(const size_t suffLink = Sentinel, const size_t goodSuffLink = Sentinel,
+             const size_t prevNode = 0, const bool isLeaf = false) : suffLink_(suffLink), goodSuffLink_(goodSuffLink),
+                                                                     prevNode_(prevNode), isLeaf_(isLeaf)
         {
         }
     };
@@ -181,13 +186,16 @@ private:
     std::vector<std::vector<T>> buffer;
     size_t sz = 1, countStrings = 0;
     std::vector<char> used;
+    ResultCont result;
 };
 
-template<typename T, typename Compare = std::less<T>, typename Alloc = std::allocator<std::pair<const T, size_t>>>
-using Aho_Corasik = Base_Aho_Corasik<T, std::map<T, size_t, Compare, Alloc>>;
+template<typename T, typename Compare = std::less<T>, typename Alloc = std::allocator<std::pair<const T, size_t>>,
+         typename ResultCont = std::vector<std::vector<T>>>
+using Aho_Corasik = Base_Aho_Corasik<T, std::map<T, size_t, Compare, Alloc>, ResultCont>;
 
 template<typename T, typename Hash = std::hash<T>, typename Pred = std::equal_to<T>,
-         typename Alloc = std::allocator<std::pair<const T, size_t>>>
-using Aho_Corasik_Hash = Base_Aho_Corasik<T, std::unordered_map<T, size_t, Hash, Pred, Alloc>>;
+         typename Alloc = std::allocator<std::pair<const T, size_t>>,
+         typename ResultCont = std::vector<std::vector<T>>>
+using Aho_Corasik_Hash = Base_Aho_Corasik<T, std::unordered_map<T, size_t, Hash, Pred, Alloc>, ResultCont>;
 }}
 #endif //AHO_CORASIK_AHO_CORASIK_HPP
