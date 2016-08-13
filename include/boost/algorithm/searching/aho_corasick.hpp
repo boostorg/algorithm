@@ -1,3 +1,14 @@
+/*
+  Copyright (c) Alexander Zaitsev <zamazan4ik@gmail.com>, 2016
+  Distributed under the Boost Software License, Version 1.0. (See
+  accompanying file LICENSE_1_0.txt or copy at
+  http://www.boost.org/LICENSE_1_0.txt)
+  See http://www.boost.org/ for latest version.
+*/
+
+#ifndef AHO_CORASIK_AHO_CORASIK_HPP
+#define AHO_CORASIK_AHO_CORASIK_HPP
+
 #include <vector>
 #include <queue>
 #include <map>
@@ -229,4 +240,4 @@ void aho_corasick_hashmap ( Range1 corpus_range, Range2 pat_range, ResultCont &o
 
 }}
 
-
+#endif //AHO_CORASIK_AHO_CORASIK_HPP
