@@ -14,6 +14,7 @@
 #include <map>
 #include <unordered_map>
 #include <functional>
+#include <memory>
 
 #include <boost/range/begin.hpp>
 #include <boost/range/end.hpp>
