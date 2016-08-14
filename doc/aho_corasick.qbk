@@ -1,0 +1,140 @@
+[/ QuickBook Document version 1.5 ]
+
+[section:AhoCorasick Aho-Corasick Search]
+
+[/license
+
+Copyright (c) 2016 Alexander Zaitsev
+
+Distributed under the Boost Software License, Version 1.0.
+(See accompanying file LICENSE_1_0.txt or copy at
+http://www.boost.org/LICENSE_1_0.txt)
+]
+
+
+[heading Overview]
+
+The header file 'aho_corasick.hpp' contains an implementation of the Aho-Corasick algorithm for searching sequences of values. It is primarily used to search for multiple patterns within a corpus. 
+
+The Aho-Corasick algorithm works by building a trie (a tree with each node corresponding to an object) of the patterns sequences and traversing the trie to search for the pattern in a given corpus sequence. Additionally, the Aho-Corasick introduced the concept of "failure pointer/failure node" which is the node to be traversed when there is a mismatch.
+
+The algorithm was conceived in 1975 by Alfred V. Aho  and Margaret J. Corasick. Their paper "Efficient string matching: An aid to bibliographic search" was published in the Communications of the ACM.
+
+Nomenclature: The nomenclature is similar to that of the Knuth Morris Pratt implementation in Boost.Algorithm. The sequence being searched for is referred to as the "pattern", and the sequence being searched in is referred to as the "corpus".
+
+[heading Interface]
+
+For flexibility, the Aho-Corasick algorithm has two interfaces; an object-based interface and a procedural one. The object-based interface builds the trie in the constructor, and uses operator () to make suffix links and perform the search. The procedural interface builds the trie(with building suffix links) and does the search all in one step. If you are going to be searching for the same pattern in multiple corpora, then you should use the object interface, and only build the tries once.
+
+The header file 'aho_corasick.hpp' contains two versions of Aho-Corasick: based on std::map and std::unordered_map. Also there is class AhoCorasick, which you can customize. For every version this header file provide functional and object-based interfaces.
+
+Procedural interfaces:
+
+Procedural interfaces provide interfaces based on iterators and Boost.Range.
+
+For Aho-Corasick based on std::map:
+
+``
+template <typename T, typename Predicate = std::less<T>, typename RAIterator,
+          typename ForwardIterator, typename ResultCont>
+void aho_corasick_map ( RAIterator corpus_first, RAIterator corpus_last,
+                        ForwardIterator pat_first, ForwardIterator pat_last,
+                        ResultCont &out);
+
+template <typename T, typename Predicate = std::less<T>, typename Range1,
+        typename Range2, typename ResultCont>
+void aho_corasick_map ( Range1 corpus_range, Range2 pat_range, ResultCont &out);
+``
+
+For Aho-Corasick based on std::unordered_map:
+``
+template <typename T, typename Hash = std::hash<T>, typename Comp = std::equal_to<T>, typename RAIterator,
+          typename ForwardIterator, typename ResultCont>
+void aho_corasick_hashmap ( RAIterator corpus_first, RAIterator corpus_last,
+                        ForwardIterator pat_first, ForwardIterator pat_last,
+                        ResultCont &out);
+
+template <typename T, typename Hash = std::hash<T>, typename Comp = std::equal_to<T>, typename Range1,
+        typename Range2, typename ResultCont>
+void aho_corasick_hashmap ( Range1 corpus_range, Range2 pat_range, ResultCont &out);
+``
+
+
+
+Object interface (typedefs):
+``
+template <typename T, typename Pred = std::less<T>>
+using Aho_Corasick_Map = AhoCorasick<T, std::map, Pred>;
+
+template <typename T, typename Hash = std::hash<T>, typename Comp = std::equal_to<T>>
+using Aho_Corasick_HashMap = AhoCorasick<T, std::unordered_map, Hash, Comp>;
+`` 
+
+Interface (constructors, operator(), etc.) are equal for Aho_Corasick_Map, Aho_Corasick_HashMap and basical AhoCorasick:
+``
+AhoCorasick();
+
+template<typename ForwardIterator>
+AhoCorasick(ForwardIterator patBegin, ForwardIterator patEnd);
+
+
+template <typename Range, typename Out>
+void operator()(const Range& range, Out& cont);
+
+template <typename ForwardIterator, typename Out>
+void operator()(ForwardIterator begin, ForwardIterator end, Out& cont);
+`` 
+
+[heading Return value]
+
+You must give your own container to all algorithms (Out parameter). This container must consist of pairs of iterators to the corpus sequence. Also this container must support 'push_back' method.
+
+[heading Requirements]
+
+For Aho_Corasick_HashMap and aho_corasick_hashmap: by default use std::hash<ValueType> for Hash and std::equal_to<ValueType> as Comparator. If you type doesn't support it, you must use your own functions for this. Without Hash and Comparator algorithm doesn't work.
+
+For Aho_Corasick_Map and aho_corasick_map: by default use std::less<ValueType> as Predicate. If you type doesn't support it, you must use your own functions for this. Without Predicate algorithm doesn't work.
+
+[heading Performance]
+
+Performance of Aho_Corasick_Map and Aho_Corasick_HashMap is similar on small alphabets. On large alphabets Aho_Corasick_HashMap is faster than Aho_Corasick_Map. Remember, that getting hash of element is slow operation. Also if you use Aho_Corasick_HashMap, std::unordered_map can sometimes do rehash with O(Alphabet).
+
+[heading Memory Use]
+
+Every node of trie consist of container of std::shared_ptr to trie nodes, which you choose(std::map, std::unordered_map or maybe something else), two std::shared_ptr to trie nodes and std:vector<size_t> of length of patterns, which that ends in this node. Count of nodes is linear in the sum of the length of the patterns. 
+
+[heading Complexity]
+
+Nomenclature: M - sum of the patterns length, N - length of the corpus, K - alphabet size, T - number of coincidences
+
+std::unordered_map-based version:
+Time: O(M + N + T), Memory: O(M)
+std::map-based version: 
+Time: O((M + N)log(K) + T), Memory: O(M).
+
+[heading Exception Safety]
+
+Both the object-oriented and procedural versions of the Aho-Corasick algorithm take all their parameters by value(exclude output container, taked by non-const reference). Therefore, both interfaces provide the strong exception guarantee.
+
+[heading Notes]
+
+* When using the object-based interface, the pattern must remain unchanged for during the inserting.
+
+* The Aho-Corasick algorithm requires forward iterators for patterns and random-access iterators for the corpus.
+
+[heading Customization points] 
+
+In Aho_Corasick_HashMap and aho_corasick_hashmap() you can customize: value type, hash and compare functions.
+
+In Aho_Corasick_Map and aho_corasick_map() you can customize: value type and predicate.
+
+In AhoCorasick you can customize: value type, type of container and any other template parameters. It container will be used in nodes of the trie. Defining of the container: Container<Value_type, std::shared_ptr<Node>, Args...>. So your other template parameters will be used as Args... . Also your container must support 'find' method.
+
+[endsect]
+
+[/ File aho_corasick.qbk
+Copyright 2016 Alexander Zaitsev
+Distributed under the Boost Software License, Version 1.0.
+(See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt).
+]
+

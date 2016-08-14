@@ -67,12 +67,23 @@ public:
         }
     }
 
-    template<typename R>
-    void insert(const R& range)
+    /// \fn insert(const Range& range)
+    /// \brief Insert pattern in trie
+    ///
+    /// \param range The pattern range
+    ///
+    template<typename Range>
+    void insert(const Range& range)
     {
         insert(boost::begin(range), boost::end(range));
     }
 
+    /// \fn insert(ForwardIterator begin, ForwardIterator end)
+    /// \brief Insert pattern in trie
+    ///
+    /// \param begin The start of the pattern
+    /// \param end   One past the end of the pattern
+    ///
     template<typename ForwardIterator>
     void insert(ForwardIterator begin, ForwardIterator end)
     {
@@ -92,6 +103,38 @@ public:
         current_node->pat.push_back(patLen);
     }
 
+    /// \fn operator ( RAIterator begin, RAIterator end, Out& cont)
+    /// \brief Searches patterns in the corpus
+    /// 
+    /// \param begin The start of the data to search (Random Access Iterator)
+    /// \param end   One past the end of the data to search (Random Access Iterator)
+    /// \param cont  Output container of pairs of iterators to corpus sequence
+    ///
+    template <typename RAIterator, typename Out>
+    void operator()(RAIterator begin, RAIterator end, Out& cont)
+    {
+	init();
+        current_state = root;
+        for(auto it = begin; it != end; ++it)
+        {
+            step(*it);
+            getTermsForCurrentState(it, cont);
+        }
+    }
+    
+    /// \fn operator (const Range& range, Out& cont)
+    /// \brief Searches patterns in the corpus
+    /// 
+    /// \param range The corpus range 
+    /// \param cont  Output container of pairs of iterators to corpus sequence
+    ///
+    template <typename Range, typename Out>
+    void operator()(const Range& range, Out& cont)
+    {
+        operator()(boost::begin(range), boost::end(range), cont);
+    }
+    
+private:
     void init()
     {
         std::queue<std::shared_ptr<node_type>> q;
@@ -141,8 +184,8 @@ public:
         current_state = root;
     }
 
-    template <typename ForwardIterator, typename Out>
-    void getTermsForCurrentState(Out& cont, ForwardIterator pos)
+    template <typename RAIterator, typename Out>
+    void getTermsForCurrentState(RAIterator pos, Out& cont)
     {
         if (current_state->isTerminal())
         {
@@ -161,37 +204,6 @@ public:
             temp_node = temp_node->term;
         }
     }
-
-    //Find methods
-    template <typename ForwardIterator, typename Out>
-    void find(ForwardIterator begin, ForwardIterator end, Out& cont)
-    {
-        init();
-        current_state = root;
-        for(auto it = begin; it != end; ++it)
-        {
-            step(*it);
-            getTermsForCurrentState(cont, it);
-        }
-    }
-
-    template <typename Range, typename Out>
-    void find(const Range& range, Out& cont)
-    {
-        return find(boost::begin(range), boost::end(range), cont);
-    }
-
-    template <typename Range, typename Out>
-    void operator()(const Range& range, Out& cont)
-    {
-        return find(range, cont);
-    }
-
-    template <typename ForwardIterator, typename Out>
-    void operator()(ForwardIterator begin, ForwardIterator end, Out& cont)
-    {
-        return find(begin, end, cont);
-    }
 };
 
 //Object interface
@@ -203,40 +215,73 @@ using Aho_Corasick_HashMap = AhoCorasick<T, std::unordered_map, Hash, Comp>;
 
 
 //Functional interface
-template <typename T, typename Predicate = std::less<T>, typename ForwardIterator1,
-          typename ForwardIterator2, typename ResultCont>
-void aho_corasick_map ( ForwardIterator1 corpus_first, ForwardIterator1 corpus_last,
-                        ForwardIterator2 pat_first, ForwardIterator2 pat_last,
+
+/// \fn aho_corasick_map ( RAIterator corpus_begin, RAIterator corpus_end,
+///                        ForwardIterator pat_begin, ForwardIterator pat_end,
+///                        ResultCont &out)
+///
+/// \param corpus_begin The start of the corpus sequence
+/// \param corpus_end   One past the end of the corpus sequence
+/// \param pat_begin	The start of the patterns sequence
+/// \param pat_end	One past the end of the patterns sequence
+/// \param out 		Container for results
+/// 
+template <typename T, typename Predicate = std::less<T>, typename RAIterator,
+          typename ForwardIterator, typename ResultCont>
+void aho_corasick_map ( RAIterator corpus_begin, RAIterator corpus_end,
+                        ForwardIterator pat_begin, ForwardIterator pat_end,
                         ResultCont &out)
 {
-    AhoCorasick<T, std::map, Predicate> obj(pat_first, pat_last);
-    obj.find(corpus_first, corpus_last, out);
+    AhoCorasick<T, std::map, Predicate> obj(pat_begin, pat_end);
+    obj(corpus_begin, corpus_end, out);
 }
 
+/// \fn aho_corasick_map (Range1 corpus_range, Range2 pat_range, ResultCont &out)
+///
+/// \param corpus_range The corpus range
+/// \param pat_range	Patterns range
+/// \param out 		Container for results
+///
 template <typename T, typename Predicate = std::less<T>, typename Range1,
         typename Range2, typename ResultCont>
 void aho_corasick_map ( Range1 corpus_range, Range2 pat_range, ResultCont &out)
 {
     AhoCorasick<T, std::map, Predicate> obj(boost::begin(pat_range), boost::end(pat_range));
-    obj.find(boost::begin(corpus_range), boost::end(corpus_range), out);
+    obj(boost::begin(corpus_range), boost::end(corpus_range), out);
 }
 
-template <typename T, typename Hash = std::hash<T>, typename Comp = std::equal_to<T>, typename ForwardIterator1,
-          typename ForwardIterator2, typename ResultCont>
-void aho_corasick_hashmap ( ForwardIterator1 corpus_first, ForwardIterator1 corpus_last,
-                        ForwardIterator2 pat_first, ForwardIterator2 pat_last,
-                        ResultCont &out)
+/// \fn aho_corasick_hashmap ( RAIterator corpus_begin, RAIterator corpus_end,
+///                            ForwardIterator pat_begin, ForwardIterator pat_end,
+///                            ResultCont &out)
+///
+/// \param corpus_begin The start of the corpus sequence
+/// \param corpus_end   One past the end of the corpus sequence
+/// \param pat_begin	The start of the patterns sequence
+/// \param pat_end	One past the end of the patterns sequence
+/// \param out 		Container for results
+/// 
+template <typename T, typename Hash = std::hash<T>, typename Comp = std::equal_to<T>, typename RAIterator,
+          typename ForwardIterator, typename ResultCont>
+void aho_corasick_hashmap ( RAIterator corpus_first, RAIterator corpus_last,
+			    ForwardIterator pat_first, ForwardIterator pat_last,
+			    ResultCont &out)
 {
     AhoCorasick<T, std::unordered_map, Hash, Comp> obj(pat_first, pat_last);
-    obj.find(corpus_first, corpus_last, out);
+    obj(corpus_first, corpus_last, out);
 }
 
+/// \fn aho_corasick_hashmap (Range1 corpus_range, Range2 pat_range, ResultCont &out)
+///
+/// \param corpus_range The corpus range
+/// \param pat_range	Patterns range
+/// \param out 		Container for results
+///
 template <typename T, typename Hash = std::hash<T>, typename Comp = std::equal_to<T>, typename Range1,
         typename Range2, typename ResultCont>
 void aho_corasick_hashmap ( Range1 corpus_range, Range2 pat_range, ResultCont &out)
 {
     AhoCorasick<T, std::unordered_map, Hash, Comp> obj(boost::begin(pat_range), boost::end(pat_range));
-    obj.find(boost::begin(corpus_range), boost::end(corpus_range), out);
+    obj(boost::begin(corpus_range), boost::end(corpus_range), out);
 }
 
 }}
