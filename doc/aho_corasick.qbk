@@ -30,7 +30,7 @@ The header file 'aho_corasick.hpp' contains two versions of Aho-Corasick: based 
 
 Procedural interfaces:
 
-Procedural interfaces provide interfaces based on iterators and Boost.Range.
+Procedural interfaces provide interfaces based on iterators.
 
 For Aho-Corasick based on std::map:
 
@@ -40,10 +40,6 @@ template <typename T, typename Predicate = std::less<T>, typename RAIterator,
 void aho_corasick_map ( RAIterator corpus_first, RAIterator corpus_last,
                         ForwardIterator pat_first, ForwardIterator pat_last,
                         ResultCont &out);
-
-template <typename T, typename Predicate = std::less<T>, typename Range1,
-        typename Range2, typename ResultCont>
-void aho_corasick_map ( Range1 corpus_range, Range2 pat_range, ResultCont &out);
 ``
 
 For Aho-Corasick based on std::unordered_map:
@@ -53,10 +49,6 @@ template <typename T, typename Hash = std::hash<T>, typename Comp = std::equal_t
 void aho_corasick_hashmap ( RAIterator corpus_first, RAIterator corpus_last,
                         ForwardIterator pat_first, ForwardIterator pat_last,
                         ResultCont &out);
-
-template <typename T, typename Hash = std::hash<T>, typename Comp = std::equal_to<T>, typename Range1,
-        typename Range2, typename ResultCont>
-void aho_corasick_hashmap ( Range1 corpus_range, Range2 pat_range, ResultCont &out);
 ``
 
 
@@ -77,9 +69,6 @@ AhoCorasick();
 template<typename ForwardIterator>
 AhoCorasick(ForwardIterator patBegin, ForwardIterator patEnd);
 
-
-template <typename Range, typename Out>
-void operator()(const Range& range, Out& cont);
 
 template <typename ForwardIterator, typename Out>
 void operator()(ForwardIterator begin, ForwardIterator end, Out& cont);
