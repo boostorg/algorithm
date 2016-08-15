@@ -79,6 +79,8 @@ All of the variants of `is_palindrome` take their parameters by value or const r
 
 * If you use version of 'is_palindrome' without custom predicate, 'is_palindrome' uses default 'operator==' for elements. If you want use custom predicate, you must redefine 'operator=='.
 
+* Don't use 'const char*' with 'is_palindrome', because 'const char*' is always non-palindromic ('\0' at the end). If you will try to compile 'is_palindrome' with 'const char*', you will get an error.
+
 [endsect]
 
 [/ File is_palindrome.qbk

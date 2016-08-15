@@ -102,6 +102,22 @@ bool is_palindrome(const R& range, Predicate p)
     return is_palindrome(boost::begin(range), boost::end(range), p);
 }
 
+//Disable is_palindrome for const char* because it work not properly.
+//Please use string_view for const char* cases.
+//Here we use dirty hack to disable 'is_palindrome' with 'const char*'
+//URL: http://stackoverflow.com/questions/14637356/static-assert-fails-compilation-even-though-template-function-is-called-nowhere
+template<typename T>
+struct foobar : std::false_type
+{ };
+
+template<typename T = int>
+bool is_palindrome(const char* str)
+{
+    static_assert(foobar<T>::value, "Using 'is_palindrome' for 'const char*' is dangerous, because result is always false"
+                         "(reason: '\0' in the end of the string). You can use string_view in this case");
+    return false;
+}
+
 }}
 
 #endif // BOOST_ALGORITHM_IS_PALINDROME_HPP
