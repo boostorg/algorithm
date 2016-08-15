@@ -42,7 +42,7 @@ struct functorComparator
 void test_is_palindrome()
 {
     const std::list<int> empty;
-    const std::vector<char> singleElement{'z'};
+    const std::vector<char> singleElement(1, 'z');
     int oddNonPalindrome[] = {3,2,2};
     const int oddPalindrome[] = {1,2,3,2,1};
     const int evenPalindrome[] = {1,2,2,1};

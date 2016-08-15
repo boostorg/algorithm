@@ -16,6 +16,7 @@
 #define BOOST_ALGORITHM_IS_PALINDROME_HPP
 
 #include <iterator>
+#include <functional>
 
 #include <boost/range/begin.hpp>
 #include <boost/range/end.hpp>
