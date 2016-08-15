@@ -69,6 +69,11 @@ AhoCorasick();
 template<typename ForwardIterator>
 AhoCorasick(ForwardIterator patBegin, ForwardIterator patEnd);
 
+template<typename ForwardIterator>
+void insert(ForwardIterator begin, ForwardIterator end);
+
+template<typename Range>
+void insert(const Range& range);
 
 template <typename ForwardIterator, typename Out>
 void operator()(ForwardIterator begin, ForwardIterator end, Out& cont);
