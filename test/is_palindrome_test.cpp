@@ -63,14 +63,12 @@ void test_is_palindrome()
     BOOST_CHECK ( ba::is_palindrome(evenPalindrome, std::equal_to<int>()));
     
     //Test C-strings like cases
-    BOOST_CHECK ( ba::is_palindrome(nullptr));
-    BOOST_CHECK ( ba::is_palindrome(0));
     BOOST_CHECK ( ba::is_palindrome(stringNullPtr));
     BOOST_CHECK ( ba::is_palindrome(""));
     BOOST_CHECK ( ba::is_palindrome("a"));
     BOOST_CHECK ( ba::is_palindrome("abacaba"), std::equal_to<char>());
     BOOST_CHECK ( ba::is_palindrome("abba"));
-    BOOST_CHECK ( ba::is_palindrome("acab"));
+    BOOST_CHECK (!ba::is_palindrome("acab"));
 }
 
 BOOST_AUTO_TEST_CASE( test_main )
