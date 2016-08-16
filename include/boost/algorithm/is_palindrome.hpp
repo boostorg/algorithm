@@ -17,6 +17,8 @@
 
 #include <iterator>
 #include <functional>
+#include <type_traits>
+#include <cstring>
 
 #include <boost/range/begin.hpp>
 #include <boost/range/end.hpp>
@@ -34,7 +36,7 @@ namespace boost {  namespace algorithm {
 ///     For other sequences function will return false.
 ///     Complexity: O(N).
 template <typename BidirectionalIterator, typename Predicate>
-bool is_palindrome(BidirectionalIterator begin, BidirectionalIterator end, Predicate p)
+bool is_palindrome(BidirectionalIterator begin, BidirectionalIterator end, Predicate p )
 {
     if(begin == end)
     {
@@ -70,8 +72,26 @@ bool is_palindrome(BidirectionalIterator begin, BidirectionalIterator end, Predi
 template <typename BidirectionalIterator>
 bool is_palindrome(BidirectionalIterator begin, BidirectionalIterator end)
 {
-    return is_palindrome(begin, end,
-                         std::equal_to<typename std::iterator_traits<BidirectionalIterator>::value_type> ());
+    if(begin == end)
+    {
+        return true;
+    }
+
+    --end;
+    while(begin != end)
+    {
+        if(!(*begin == *end))
+        {
+            return false;
+        }
+        ++begin;
+        if(begin == end)
+        {
+            break;
+        }
+        --end;
+    }
+    return true;
 }
 
 /// \fn is_palindrome ( const R& range )
@@ -82,7 +102,7 @@ bool is_palindrome(BidirectionalIterator begin, BidirectionalIterator end)
 /// \note This function will return true for empty sequences and for palindromes.
 ///     For other sequences function will return false.
 ///     Complexity: O(N).
-template <typename R>
+template <typename R, typename std::enable_if<!std::is_integral<R>::value_type>::type>
 bool is_palindrome(const R& range)
 {
     return is_palindrome(boost::begin(range), boost::end(range));
@@ -97,26 +117,59 @@ bool is_palindrome(const R& range)
 /// \note This function will return true for empty sequences and for palindromes.
 ///     For other sequences function will return false.
 ///     Complexity: O(N).
-template <typename R, typename Predicate>
+template <typename R, typename Predicate, typename std::enable_if<!std::is_integral<R>::value_type>::type>
 bool is_palindrome(const R& range, Predicate p)
 {
     return is_palindrome(boost::begin(range), boost::end(range), p);
 }
 
-//Disable is_palindrome for const char* because it work not properly.
-//Please use string_view for const char* cases.
-//Here we use dirty hack to disable 'is_palindrome' with 'const char*'
-//URL: http://stackoverflow.com/questions/14637356/static-assert-fails-compilation-even-though-template-function-is-called-nowhere
-template<typename T>
-struct foobar : std::false_type
-{ };
 
-template<typename T = int>
+/// \fn is_palindrome ( const char* str )
+/// \return true if the entire sequence is palindrome
+///
+/// \param str C-string to be tested.
+///
+/// \note This function will return true for empty sequences and for palindromes.
+///     For other sequences function will return false.
+///     Complexity: O(N).
 bool is_palindrome(const char* str)
 {
-    static_assert(foobar<T>::value, "Using 'is_palindrome' for 'const char*' is dangerous, because result is always false"
-                         "(reason: '\0' in the end of the string). You can use string_view in this case");
-    return false;
+    if(str == nullptr)
+    {
+	return true;
+    }
+    return is_palindrome(str, str + strlen(str));
+}
+
+
+/// \fn is_palindrome ( const char* str, Predicate p )
+/// \return true if the entire sequence is palindrome
+///
+/// \param str C-string to be tested.
+/// \param p   A predicate used to compare the values.
+///
+/// \note This function will return true for empty sequences and for palindromes.
+///     For other sequences function will return false.
+///     Complexity: O(N).
+template<typename Predicate>
+bool is_palindrome(const char* str, Predicate p)
+{
+    if(str == nullptr)
+    {
+	return true;
+    }
+    return is_palindrome(str, str + strlen(str), p);
+}
+
+bool is_palindrome (nullptr_t)
+{ 
+    return true;
+}
+
+template<typename T>
+bool is_palindrome (T)
+{ 
+    return true;
 }
 
 }}

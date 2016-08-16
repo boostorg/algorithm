@@ -47,6 +47,7 @@ void test_is_palindrome()
     const int oddPalindrome[] = {1,2,3,2,1};
     const int evenPalindrome[] = {1,2,2,1};
     int evenNonPalindrome[] = {1,4,8,8};
+    const char* stringNullPtr = nullptr;
 
     // Test a default operator==
     BOOST_CHECK ( ba::is_palindrome(empty));
@@ -60,6 +61,16 @@ void test_is_palindrome()
     BOOST_CHECK ( ba::is_palindrome(empty.begin(), empty.end(), functorComparator()));
     BOOST_CHECK (!ba::is_palindrome(std::begin(oddNonPalindrome), std::end(oddNonPalindrome), funcComparator<int>));
     BOOST_CHECK ( ba::is_palindrome(evenPalindrome, std::equal_to<int>()));
+    
+    //Test C-strings like cases
+    BOOST_CHECK ( ba::is_palindrome(nullptr));
+    BOOST_CHECK ( ba::is_palindrome(0));
+    BOOST_CHECK ( ba::is_palindrome(stringNullPtr));
+    BOOST_CHECK ( ba::is_palindrome(""));
+    BOOST_CHECK ( ba::is_palindrome("a"));
+    BOOST_CHECK ( ba::is_palindrome("abacaba"), std::equal_to<char>());
+    BOOST_CHECK ( ba::is_palindrome("abba"));
+    BOOST_CHECK ( ba::is_palindrome("acab"));
 }
 
 BOOST_AUTO_TEST_CASE( test_main )
