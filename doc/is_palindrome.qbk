@@ -65,7 +65,6 @@ is_palindrome(std::begin(oddNonPalindrome), std::end(oddNonPalindrome), funcComp
 is_palindrome(std::begin(oddPalindrome), std::end(oddPalindrome)) --> true
 is_palindrome(evenPalindrome, std::equal_to<int>())) --> true
 is_palindrome(std::begin(evenNonPalindrome), std::end(evenNonPalindrome)) --> false
-is_palindrome(nullptr) --> true
 is_palindrome("a") --> true
 is_palindrome("aba", std::equal_to<char>()) --> true
 ``
@@ -84,7 +83,7 @@ All of the variants of `is_palindrome` take their parameters by value, const poi
 
 [heading Notes]
 
-* `is_palindrome` returns true for empty ranges, null pointers and for single element ranges. 
+* `is_palindrome` returns true for empty ranges, const char* null pointers and for single element ranges. 
 
 * If you use version of 'is_palindrome' without custom predicate, 'is_palindrome' uses default 'operator==()' for elements.
 
