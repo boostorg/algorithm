@@ -102,7 +102,7 @@ bool is_palindrome(BidirectionalIterator begin, BidirectionalIterator end)
 /// \note This function will return true for empty sequences and for palindromes.
 ///     For other sequences function will return false.
 ///     Complexity: O(N).
-template <typename R, typename std::enable_if<!std::is_integral<R>::value_type>::type>
+template <typename R>
 bool is_palindrome(const R& range)
 {
     return is_palindrome(boost::begin(range), boost::end(range));
@@ -117,7 +117,7 @@ bool is_palindrome(const R& range)
 /// \note This function will return true for empty sequences and for palindromes.
 ///     For other sequences function will return false.
 ///     Complexity: O(N).
-template <typename R, typename Predicate, typename std::enable_if<!std::is_integral<R>::value_type>::type>
+template <typename R, typename Predicate>
 bool is_palindrome(const R& range, Predicate p)
 {
     return is_palindrome(boost::begin(range), boost::end(range), p);
@@ -159,17 +159,6 @@ bool is_palindrome(const char* str, Predicate p)
 	return true;
     }
     return is_palindrome(str, str + strlen(str), p);
-}
-
-bool is_palindrome (nullptr_t)
-{ 
-    return true;
-}
-
-template<typename T>
-bool is_palindrome (T)
-{ 
-    return true;
 }
 
 }}
