@@ -17,7 +17,6 @@
 
 #include <iterator>
 #include <functional>
-#include <type_traits>
 #include <cstring>
 
 #include <boost/range/begin.hpp>
@@ -134,10 +133,8 @@ bool is_palindrome(const R& range, Predicate p)
 ///     Complexity: O(N).
 bool is_palindrome(const char* str)
 {
-    if(str == nullptr)
-    {
-	return true;
-    }
+    if(!str)
+	    return true;
     return is_palindrome(str, str + strlen(str));
 }
 
@@ -154,10 +151,8 @@ bool is_palindrome(const char* str)
 template<typename Predicate>
 bool is_palindrome(const char* str, Predicate p)
 {
-    if(str == nullptr)
-    {
-	return true;
-    }
+    if(!str)
+	    return true;
     return is_palindrome(str, str + strlen(str), p);
 }
 
