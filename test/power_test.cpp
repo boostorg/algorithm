@@ -8,6 +8,7 @@
 */
 
 #include <iostream>
+#include <functional>
 
 #include <boost/config.hpp>
 #include <boost/algorithm/algorithm.hpp>

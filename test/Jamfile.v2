@@ -64,6 +64,12 @@ alias unit_test_framework
      [ run gather_test1.cpp unit_test_framework        : : : : gather_test1 ]
      [ compile-fail gather_fail1.cpp ]
 
+# SortSubrange tests
+     [ run sort_subrange_test.cpp unit_test_framework       : : : : sort_subrange_test ]
+     [ run partition_subrange_test.cpp unit_test_framework  : : : : partition_subrange_test ]
+
+# Is_palindrome tests
+     [ run is_palindrome_test.cpp unit_test_framework    : : : : is_palindrome_test ]
    ;
 }
 
