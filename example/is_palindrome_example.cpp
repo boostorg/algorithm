@@ -89,6 +89,11 @@ int main ( int /*argc*/, char * /*argv*/ [] )
         std::cout << "This container is palindrome" << std::endl;
     else
         std::cout << "This container is not palindrome" << std::endl;
-
+    
+    //You can use C-strings
+    if(ba::is_palindrome("aba"))
+	std::cout << "This C-string is palindrome" << std::endl;
+    else
+        std::cout << "This C-string is not palindrome" << std::endl;
     return 0;
 }

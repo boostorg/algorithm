@@ -9,23 +9,26 @@ Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 ]
 
-The header file 'is_palindrome.hpp' contains four variants of a single algorithm, is_palindrome. 
+The header file 'is_palindrome.hpp' contains six variants of a single algorithm, is_palindrome. 
 The algorithm tests the sequence and returns true if the sequence is a palindrome; i.e, it is identical when traversed either backwards or frontwards.
 
 The routine `is_palindrome` takes a sequence and, optionally, a predicate. It will return true if the predicate returns true for tested elements by algorithm in the sequence. 
 
-The routine come in 4 forms; the first one takes two iterators to define the range. The second form takes two iterators to define the range and a predicate. 
-The third form takes a single range parameter, and uses Boost.Range to traverse it. And the fourth form takes a single range parameter ( uses Boost.Range to traverse it) and a predicate.
+The routine come in 6 forms; the first one takes two iterators to define the range. The second form takes two iterators to define the range and a predicate. 
+The third form takes a single range parameter, and uses Boost.Range to traverse it. The fourth form takes a single range parameter ( uses Boost.Range to traverse it) and a predicate.
+The fifth form takes a single C-string and a predicate. The sixth form takes a single C-string.
 
 
 [heading interface]
 
 The function `is_palindrome` returns true if the predicate returns true any tested by algorithm items in the sequence.  
-There are four versions: 
+There are six versions: 
 1) takes two iterators.
 2) takes two iterators and a predicate.
 3) takes a range.
 4) takes a range and a predicate.
+5) takes a C-string and a predicate.
+6) takes a C-string.
 
 ``
 template<typename BidirectionalIterator>
@@ -36,6 +39,9 @@ template<typename Range>
 	bool is_palindrome ( const Range &r );
 template<typename Range, typename Predicate> 
 	bool is_palindrome ( const Range &r, Predicate p );
+template<typename Predicate>
+	bool is_palindrome ( const char* str, Predicate p );
+bool is_palindrome(const char* str);
 ``
 
 
@@ -59,6 +65,8 @@ is_palindrome(std::begin(oddNonPalindrome), std::end(oddNonPalindrome), funcComp
 is_palindrome(std::begin(oddPalindrome), std::end(oddPalindrome)) --> true
 is_palindrome(evenPalindrome, std::equal_to<int>())) --> true
 is_palindrome(std::begin(evenNonPalindrome), std::end(evenNonPalindrome)) --> false
+is_palindrome("a") --> true
+is_palindrome("aba", std::equal_to<char>()) --> true
 ``
 
 [heading Iterator Requirements]
@@ -71,13 +79,15 @@ All of the variants of `is_palindrome` run in ['O(N)] (linear) time; that is, th
 
 [heading Exception Safety]
 
-All of the variants of `is_palindrome` take their parameters by value or const reference, and do not depend upon any global state. Therefore, all the routines in this file provide the strong exception guarantee.
+All of the variants of `is_palindrome` take their parameters by value, const pointer or const reference, and do not depend upon any global state. Therefore, all the routines in this file provide the strong exception guarantee.
 
 [heading Notes]
 
-* `is_palindrome` returns true for empty ranges and for single element ranges. 
+* `is_palindrome` returns true for empty ranges, const char* null pointers and for single element ranges. 
 
-* If you use version of 'is_palindrome' without custom predicate, 'is_palindrome' uses default 'operator==' for elements. If you want use custom predicate, you must redefine 'operator=='.
+* If you use version of 'is_palindrome' without custom predicate, 'is_palindrome' uses default 'operator==()' for elements.
+
+* Be careful with using not null pointer 'const char*' without '\0' - if you use it with 'is_palindrome', it's a undefined behaviour.
 
 [endsect]
 
