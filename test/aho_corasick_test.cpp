@@ -57,7 +57,9 @@ void test_aho_corasick()
     {
         std::vector<std::pair<std::string::const_iterator, std::string::const_iterator>> res;
         std::vector<std::string> localResult;
-        ba::aho_corasick_map<char>(corpus[i].begin(), corpus[i].end(), patterns[i].begin(), patterns[i].end(), res);
+        ba::aho_corasick_map<char>(corpus[i].begin(), corpus[i].end(), patterns[i].begin(), patterns[i].end(), 
+				   [&res](std::string::const_iterator begin, std::string::const_iterator end) -> bool
+                                   { res.push_back({begin, end}); return true; });
         fromIteratorsToContainer<std::string>(res, localResult);
         BOOST_CHECK(localResult == rightResults[i]);
     }
@@ -67,7 +69,9 @@ void test_aho_corasick()
     {
         std::vector<std::pair<std::string::const_iterator, std::string::const_iterator>> res;
         std::vector<std::string> localResult;
-        ba::aho_corasick_hashmap<char>(corpus[i].begin(), corpus[i].end(), patterns[i].begin(), patterns[i].end(), res);
+        ba::aho_corasick_hashmap<char>(corpus[i].begin(), corpus[i].end(), patterns[i].begin(), patterns[i].end(), 
+				       [&res](std::string::const_iterator begin, std::string::const_iterator end) -> bool
+				       { res.push_back({begin, end}); return true; });
         fromIteratorsToContainer<std::string>(res, localResult);
         BOOST_CHECK(localResult == rightResults[i]);
     }
@@ -78,7 +82,9 @@ void test_aho_corasick()
         std::vector<std::pair<std::string::const_iterator, std::string::const_iterator>> res;
         std::vector<std::string> localResult;
         ba::Aho_Corasick_Map<char> obj(patterns[i].begin(), patterns[i].end());
-        obj(corpus[i].begin(), corpus[i].end(), res);
+        obj(corpus[i].begin(), corpus[i].end(), 
+	    [&res](std::string::const_iterator begin, std::string::const_iterator end) -> bool
+            { res.push_back({begin, end}); return true; });
         fromIteratorsToContainer<std::string>(res, localResult);
         BOOST_CHECK(localResult == rightResults[i]);
     }
@@ -89,7 +95,9 @@ void test_aho_corasick()
         std::vector<std::pair<std::string::const_iterator, std::string::const_iterator>> res;
         std::vector<std::string> localResult;
         ba::Aho_Corasick_HashMap<char> obj(patterns[i].begin(), patterns[i].end());
-        obj(corpus[i].begin(), corpus[i].end(), res);
+        obj(corpus[i].begin(), corpus[i].end(), 
+	    [&res](std::string::const_iterator begin, std::string::const_iterator end) -> bool
+            { res.push_back({begin, end}); return true; });
         fromIteratorsToContainer<std::string>(res, localResult);
         BOOST_CHECK(localResult == rightResults[i]);
     }
@@ -100,7 +108,9 @@ void test_aho_corasick()
         std::vector<std::pair<std::string::const_iterator, std::string::const_iterator>> res;
         std::vector<std::string> localResult;
         ba::AhoCorasick<char, std::unordered_map, std::hash<char>, std::equal_to<char>> obj(patterns[i].begin(), patterns[i].end());
-        obj(corpus[i].begin(), corpus[i].end(), res);
+        obj(corpus[i].begin(), corpus[i].end(), 
+	    [&res](std::string::const_iterator begin, std::string::const_iterator end) -> bool
+            { res.push_back({begin, end}); return true; });
         fromIteratorsToContainer<std::string>(res, localResult);
         BOOST_CHECK(localResult == rightResults[i]);
     }

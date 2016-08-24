@@ -24,7 +24,7 @@ Nomenclature: The nomenclature is similar to that of the Knuth Morris Pratt impl
 
 [heading Interface]
 
-For flexibility, the Aho-Corasick algorithm has two interfaces; an object-based interface and a procedural one. The object-based interface builds the trie in the constructor, and uses operator () to make suffix links and perform the search. The procedural interface builds the trie(with building suffix links) and does the search all in one step. If you are going to be searching for the same pattern in multiple corpora, then you should use the object interface, and only build the tries once.
+For flexibility, the Aho-Corasick algorithm has two interfaces; an object-based interface and a procedural one. The object-based interface builds the trie in the constructor, and uses 'find()' to make suffix links and perform the search. The procedural interface builds the trie(with building suffix links) and does the search all in one step. If you are going to be searching for the same pattern in multiple corpora, then you should use the object interface, and only build the tries once.
 
 The header file 'aho_corasick.hpp' contains two versions of Aho-Corasick: based on std::map and std::unordered_map. Also there is class AhoCorasick, which you can customize. For every version this header file provide functional and object-based interfaces.
 
@@ -36,19 +36,19 @@ For Aho-Corasick based on std::map:
 
 ``
 template <typename T, typename Predicate = std::less<T>, typename RAIterator,
-          typename ForwardIterator, typename ResultCont>
-void aho_corasick_map ( RAIterator corpus_first, RAIterator corpus_last,
+          typename ForwardIterator, typename Callback>
+bool aho_corasick_map ( RAIterator corpus_first, RAIterator corpus_last,
                         ForwardIterator pat_first, ForwardIterator pat_last,
-                        ResultCont &out);
+                        Callback cb);
 ``
 
 For Aho-Corasick based on std::unordered_map:
 ``
 template <typename T, typename Hash = std::hash<T>, typename Comp = std::equal_to<T>, typename RAIterator,
-          typename ForwardIterator, typename ResultCont>
-void aho_corasick_hashmap ( RAIterator corpus_first, RAIterator corpus_last,
-                        ForwardIterator pat_first, ForwardIterator pat_last,
-                        ResultCont &out);
+          typename ForwardIterator, typename Callback>
+bool aho_corasick_hashmap ( RAIterator corpus_first, RAIterator corpus_last,
+			    ForwardIterator pat_first, ForwardIterator pat_last,
+			    Callback cb);
 ``
 
 
@@ -62,12 +62,15 @@ template <typename T, typename Hash = std::hash<T>, typename Comp = std::equal_t
 using Aho_Corasick_HashMap = AhoCorasick<T, std::unordered_map, Hash, Comp>;
 `` 
 
-Interface (constructors, operator(), etc.) are equal for Aho_Corasick_Map, Aho_Corasick_HashMap and basical AhoCorasick:
+Interface (constructors, etc.) are equal for Aho_Corasick_Map, Aho_Corasick_HashMap and basical AhoCorasick:
 ``
 AhoCorasick();
 
 template<typename ForwardIterator>
-AhoCorasick(ForwardIterator patBegin, ForwardIterator patEnd);
+explicit AhoCorasick(ForwardIterator patBegin, ForwardIterator patEnd);
+
+template<typename Range>
+explicit AhoCorasick(const Range& range);
 
 template<typename ForwardIterator>
 void insert(ForwardIterator begin, ForwardIterator end);
@@ -75,15 +78,17 @@ void insert(ForwardIterator begin, ForwardIterator end);
 template<typename Range>
 void insert(const Range& range);
 
-template <typename ForwardIterator, typename Out>
-void operator()(ForwardIterator begin, ForwardIterator end, Out& cont);
+template <typename RAIterator, typename Callback>
+bool find(RAIterator begin, RAIterator end, Callback cb);
 `` 
 
 [heading Return value]
 
-You must give your own container to all algorithms (Out parameter). This container must consist of pairs of iterators to the corpus sequence. Also this container must support 'push_back' method.
+The 'find' method returns true, if all Callback callings return true, otherwise returns false.
 
 [heading Requirements]
+
+C++11-compatible compiler required.
 
 For Aho_Corasick_HashMap and aho_corasick_hashmap: by default use std::hash<ValueType> for Hash and std::equal_to<ValueType> as Comparator. If you type doesn't support it, you must use your own functions for this. Without Hash and Comparator algorithm doesn't work.
 
@@ -117,6 +122,8 @@ Both the object-oriented and procedural versions of the Aho-Corasick algorithm t
 * The Aho-Corasick algorithm requires forward iterators for patterns and random-access iterators for the corpus.
 
 [heading Customization points] 
+
+For using Aho-Corasick algorithms you must use your own Callback(RAIterator, RAIterator) -> bool. This Callback must returns true if all is fine, otherwise false.
 
 In Aho_Corasick_HashMap and aho_corasick_hashmap() you can customize: value type, hash and compare functions.
 

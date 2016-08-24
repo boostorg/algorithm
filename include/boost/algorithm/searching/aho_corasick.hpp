@@ -18,7 +18,7 @@
 
 #include <boost/range/begin.hpp>
 #include <boost/range/end.hpp>
-
+#include <boost/make_unique.hpp>
 
 namespace boost { namespace algorithm {
 
@@ -29,18 +29,18 @@ private:
     class MapBorNode
     {
     public:
-        Container<T, std::shared_ptr<MapBorNode>, Args...> links;
-        std::shared_ptr<MapBorNode> fail, term;
+        Container<T, std::unique_ptr<MapBorNode>, Args...> links;
+        MapBorNode *fail, *term;
         std::vector<size_t> pat;
 
-        MapBorNode(std::shared_ptr<MapBorNode> fail_node = nullptr)
+        MapBorNode(MapBorNode* fail_node = nullptr)
                 : fail(fail_node), term(nullptr)
         { }
 
-        std::shared_ptr<MapBorNode> getLink(const T& c) const
+        MapBorNode* getLink(const T& c) const
         {
             const auto iter = links.find(c);
-            return iter != links.cend() ? iter->second : nullptr;
+            return iter != links.cend() ? (iter->second).get() : nullptr;
         }
 
         bool isTerminal() const
@@ -52,13 +52,14 @@ public:
     using value_type = T;
     using node_type = MapBorNode;
 private:
-    std::shared_ptr<node_type> root, current_state;
+    std::unique_ptr<node_type> root;
+    node_type* current_state;
     size_t countStrings = 0;
 public:
-    AhoCorasick() : root(std::make_shared<node_type>()) {}
+    AhoCorasick() : root(boost::make_unique<node_type>()) {}
 
     template<typename ForwardIterator>
-    AhoCorasick(ForwardIterator patBegin, ForwardIterator patEnd) : root(std::make_shared<node_type>())
+    explicit AhoCorasick(ForwardIterator patBegin, ForwardIterator patEnd) : root(boost::make_unique<node_type>())
     {
         while(patBegin != patEnd)
         {
@@ -66,6 +67,9 @@ public:
             ++patBegin;
         }
     }
+
+    template<typename Range>
+    explicit AhoCorasick(const Range& range) : AhoCorasick(boost::begin(range), boost::end(range)) {}
 
     /// \fn insert(const Range& range)
     /// \brief Insert pattern in trie
@@ -88,59 +92,63 @@ public:
     void insert(ForwardIterator begin, ForwardIterator end)
     {
         size_t patLen = 0;
-        std::shared_ptr<node_type> current_node = root;
+        node_type* current_node = root.get();
         for(auto it = begin; it != end; ++it)
         {
             ++patLen;
-            std::shared_ptr<node_type> child_node = current_node->getLink(*it);
+            node_type* child_node = current_node->getLink(*it);
             if (!child_node)
             {
-                child_node = std::make_shared<node_type>(root);
-                current_node->links[*it] = child_node;
+                std::unique_ptr<node_type> new_node = boost::make_unique<node_type>(root.get());
+                child_node = new_node.get();
+                current_node->links[*it] = std::move(new_node);
             }
             current_node = child_node;
         }
         current_node->pat.push_back(patLen);
     }
 
-    /// \fn operator ( RAIterator begin, RAIterator end, Out& cont)
+    /// \fn find ( RAIterator begin, RAIterator end, Callback cb)
     /// \brief Searches patterns in the corpus
+    /// \return true if all callback callings return true, else false
     ///
     /// \param begin The start of the data to search (Random Access Iterator)
     /// \param end   One past the end of the data to search (Random Access Iterator)
-    /// \param cont  Output container of pairs of iterators to corpus sequence
+    /// \param cb    Callback for matches
     ///
-    template <typename RAIterator, typename Out>
-    void operator()(RAIterator begin, RAIterator end, Out& cont)
+    template <typename RAIterator, typename Callback>
+    bool find(RAIterator begin, RAIterator end, Callback cb)
     {
+        bool result = true;
         init();
-        current_state = root;
+        current_state = root.get();
         for(auto it = begin; it != end; ++it)
         {
             step(*it);
-            getTermsForCurrentState(it, cont);
+            result &= getTermsForCurrentState(it, cb);
         }
+        return result;
     }
 private:
     void init()
     {
-        std::queue<std::shared_ptr<node_type>> q;
-        q.push(root);
+        std::queue<node_type*> q;
+        q.push(root.get());
         while (!q.empty())
         {
-            std::shared_ptr<node_type> current_node = q.front();
+            node_type* current_node = q.front();
             q.pop();
             for (auto iter = current_node->links.cbegin();
                  iter != current_node->links.cend(); ++iter)
             {
                 const value_type& symbol = iter->first;
-                std::shared_ptr<node_type> child = iter->second;
+                node_type* child = (iter->second).get();
 
                 // Defining .fail for the childnode
-                std::shared_ptr<node_type> temp_node = current_node->fail;
+                node_type* temp_node = current_node->fail;
                 while (temp_node)
                 {
-                    std::shared_ptr<node_type> fail_candidate = temp_node->getLink(symbol);
+                    node_type* fail_candidate = temp_node->getLink(symbol);
                     if (fail_candidate)
                     {
                         child->fail = fail_candidate;
@@ -160,7 +168,7 @@ private:
     {
         while (current_state)
         {
-            std::shared_ptr<node_type> candidate = current_state->getLink(c);
+            node_type* candidate = current_state->getLink(c);
             if (candidate)
             {
                 current_state = candidate;
@@ -168,28 +176,30 @@ private:
             }
             current_state = current_state->fail;
         }
-        current_state = root;
+        current_state = root.get();
     }
 
-    template <typename RAIterator, typename Out>
-    void getTermsForCurrentState(RAIterator pos, Out& cont)
+    template <typename RAIterator, typename Callback>
+    bool getTermsForCurrentState(RAIterator pos, Callback cb)
     {
+        bool result = true;
         if (current_state->isTerminal())
         {
             for (const auto value : current_state->pat)
             {
-                cont.push_back({1 + pos - value, pos + 1});
+                result &= cb(1 + pos - value, pos + 1);
             }
         }
-        std::shared_ptr<node_type> temp_node = current_state->term;
+        node_type* temp_node = current_state->term;
         while (temp_node)
         {
             for (const auto value : temp_node->pat)
             {
-                cont.push_back({1 + pos - value, pos + 1});
+                result &= cb(1 + pos - value, pos + 1);
             }
             temp_node = temp_node->term;
         }
+        return result;
     }
 };
 
@@ -205,7 +215,8 @@ using Aho_Corasick_HashMap = AhoCorasick<T, std::unordered_map, Hash, Comp>;
 
 /// \fn aho_corasick_map ( RAIterator corpus_begin, RAIterator corpus_end,
 ///                        ForwardIterator pat_begin, ForwardIterator pat_end,
-///                        ResultCont &out)
+///                        Callback &out)
+/// \return true if all callback callings return true, else false
 ///
 /// \param corpus_begin The start of the corpus sequence
 /// \param corpus_end   One past the end of the corpus sequence
@@ -214,18 +225,19 @@ using Aho_Corasick_HashMap = AhoCorasick<T, std::unordered_map, Hash, Comp>;
 /// \param out 		Container for results
 ///
 template <typename T, typename Predicate = std::less<T>, typename RAIterator,
-        typename ForwardIterator, typename ResultCont>
-void aho_corasick_map ( RAIterator corpus_begin, RAIterator corpus_end,
+        typename ForwardIterator, typename Callback>
+bool aho_corasick_map ( RAIterator corpus_begin, RAIterator corpus_end,
                         ForwardIterator pat_begin, ForwardIterator pat_end,
-                        ResultCont &out)
+                        Callback cb)
 {
     AhoCorasick<T, std::map, Predicate> obj(pat_begin, pat_end);
-    obj(corpus_begin, corpus_end, out);
+    return obj.find(corpus_begin, corpus_end, cb);
 }
 
 /// \fn aho_corasick_hashmap ( RAIterator corpus_begin, RAIterator corpus_end,
 ///                            ForwardIterator pat_begin, ForwardIterator pat_end,
-///                            ResultCont &out)
+///                            Callback &out)
+/// \return true if all callback callings return true, else false
 ///
 /// \param corpus_begin The start of the corpus sequence
 /// \param corpus_end   One past the end of the corpus sequence
@@ -234,13 +246,13 @@ void aho_corasick_map ( RAIterator corpus_begin, RAIterator corpus_end,
 /// \param out 		Container for results
 ///
 template <typename T, typename Hash = std::hash<T>, typename Comp = std::equal_to<T>, typename RAIterator,
-        typename ForwardIterator, typename ResultCont>
-void aho_corasick_hashmap ( RAIterator corpus_first, RAIterator corpus_last,
+        typename ForwardIterator, typename Callback>
+bool aho_corasick_hashmap ( RAIterator corpus_first, RAIterator corpus_last,
                             ForwardIterator pat_first, ForwardIterator pat_last,
-                            ResultCont &out)
+                            Callback cb)
 {
     AhoCorasick<T, std::unordered_map, Hash, Comp> obj(pat_first, pat_last);
-    obj(corpus_first, corpus_last, out);
+    return obj.find(corpus_first, corpus_last, cb);
 }
 }}
 

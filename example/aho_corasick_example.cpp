@@ -16,14 +16,17 @@
 
 int main()
 {
-    std::vector<std::string> pat({"he", "is", "she", "his", "her",
+    std::vector<std::string> pat({"228", "he", "is", "1488", "she", "his", "322", "her",
                                   "h", "hishera", "azaza"});
     std::string corp = "hisher";
     std::vector<std::pair<std::string::const_iterator, std::string::const_iterator>> out;
 
-    boost::algorithm::aho_corasick_map<char>(corp.begin(), corp.end(), pat.begin(), pat.end(), out);
+    bool result = boost::algorithm::aho_corasick_map<char>(corp.begin(), corp.end(), pat.begin(), pat.end(), 
+					     [&out](std::string::const_iterator begin, std::string::const_iterator end) -> bool
+					     { out.push_back({begin, end}); return true; });
 
-    for(const auto val: out)
+    std::cout << result << std::endl;
+    for(const auto& val: out)
     {
         auto begin = val.first;
         auto end = val.second;
