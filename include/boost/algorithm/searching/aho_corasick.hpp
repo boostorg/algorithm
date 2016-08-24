@@ -40,7 +40,7 @@ private:
         MapBorNode* getLink(const T& c) const
         {
             const auto iter = links.find(c);
-            return iter != links.cend() ? (iter->second).get() : nullptr;
+            return iter != links.cend() ? iter->second.get() : nullptr;
         }
 
         bool isTerminal() const
@@ -142,7 +142,7 @@ private:
                  iter != current_node->links.cend(); ++iter)
             {
                 const value_type& symbol = iter->first;
-                node_type* child = (iter->second).get();
+                node_type* child = iter->second.get();
 
                 // Defining .fail for the childnode
                 node_type* temp_node = current_node->fail;
@@ -215,14 +215,14 @@ using Aho_Corasick_HashMap = AhoCorasick<T, std::unordered_map, Hash, Comp>;
 
 /// \fn aho_corasick_map ( RAIterator corpus_begin, RAIterator corpus_end,
 ///                        ForwardIterator pat_begin, ForwardIterator pat_end,
-///                        Callback &out)
+///                        Callback cb)
 /// \return true if all callback callings return true, else false
 ///
 /// \param corpus_begin The start of the corpus sequence
 /// \param corpus_end   One past the end of the corpus sequence
 /// \param pat_begin	The start of the patterns sequence
-/// \param pat_end	One past the end of the patterns sequence
-/// \param out 		Container for results
+/// \param pat_end	    One past the end of the patterns sequence
+/// \param cb 		    Callback for matches
 ///
 template <typename T, typename Predicate = std::less<T>, typename RAIterator,
         typename ForwardIterator, typename Callback>
@@ -236,14 +236,14 @@ bool aho_corasick_map ( RAIterator corpus_begin, RAIterator corpus_end,
 
 /// \fn aho_corasick_hashmap ( RAIterator corpus_begin, RAIterator corpus_end,
 ///                            ForwardIterator pat_begin, ForwardIterator pat_end,
-///                            Callback &out)
+///                            Callback cb)
 /// \return true if all callback callings return true, else false
 ///
 /// \param corpus_begin The start of the corpus sequence
 /// \param corpus_end   One past the end of the corpus sequence
 /// \param pat_begin	The start of the patterns sequence
-/// \param pat_end	One past the end of the patterns sequence
-/// \param out 		Container for results
+/// \param pat_end	    One past the end of the patterns sequence
+/// \param cb 		    Callback for matches
 ///
 template <typename T, typename Hash = std::hash<T>, typename Comp = std::equal_to<T>, typename RAIterator,
         typename ForwardIterator, typename Callback>
