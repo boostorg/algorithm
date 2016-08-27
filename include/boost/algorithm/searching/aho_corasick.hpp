@@ -247,12 +247,12 @@ bool aho_corasick_map ( RAIterator corpus_begin, RAIterator corpus_end,
 ///
 template <typename T, typename Hash = std::hash<T>, typename Comp = std::equal_to<T>, typename RAIterator,
         typename ForwardIterator, typename Callback>
-bool aho_corasick_hashmap ( RAIterator corpus_first, RAIterator corpus_last,
-                            ForwardIterator pat_first, ForwardIterator pat_last,
+bool aho_corasick_hashmap ( RAIterator corpus_begin, RAIterator corpus_end,
+                            ForwardIterator pat_begin, ForwardIterator pat_end,
                             Callback cb)
 {
-    AhoCorasick<T, std::unordered_map, Hash, Comp> obj(pat_first, pat_last);
-    return obj.find(corpus_first, corpus_last, cb);
+    AhoCorasick<T, std::unordered_map, Hash, Comp> obj(pat_begin, pat_end);
+    return obj.find(corpus_begin, corpus_end, cb);
 }
 }}
 
