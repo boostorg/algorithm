@@ -256,4 +256,4 @@ bool aho_corasick_hashmap ( RAIterator corpus_begin, RAIterator corpus_end,
 }
 }}
 
-#endif //AHO_CORASIK_AHO_CORASIK_HPP
+#endif //BOOST_ALGORITHM_AHO_CORASICK_HPP
