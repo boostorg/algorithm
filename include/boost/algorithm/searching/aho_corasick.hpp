@@ -119,15 +119,17 @@ public:
     template <typename RAIterator, typename Callback>
     bool find(RAIterator begin, RAIterator end, Callback cb)
     {
-        bool result = true;
         init();
         current_state = root.get();
         for(auto it = begin; it != end; ++it)
         {
             step(*it);
-            result &= getTermsForCurrentState(it, cb);
+            if(!getTermsForCurrentState(it, cb))
+	    {
+		return false;
+	    }
         }
-        return result;
+        return true;
     }
 private:
     void init()
@@ -182,12 +184,14 @@ private:
     template <typename RAIterator, typename Callback>
     bool getTermsForCurrentState(RAIterator pos, Callback cb)
     {
-        bool result = true;
         if (current_state->isTerminal())
         {
             for (const auto value : current_state->pat)
             {
-                result &= cb(1 + pos - value, pos + 1);
+                if(!cb(1 + pos - value, pos + 1))
+		{
+		    return false;
+		}
             }
         }
         node_type* temp_node = current_state->term;
@@ -195,11 +199,14 @@ private:
         {
             for (const auto value : temp_node->pat)
             {
-                result &= cb(1 + pos - value, pos + 1);
+                if(!cb(1 + pos - value, pos + 1))
+		{
+		    return false;
+		}
             }
             temp_node = temp_node->term;
         }
-        return result;
+        return true;
     }
 };
 
