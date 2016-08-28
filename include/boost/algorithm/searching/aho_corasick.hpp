@@ -6,8 +6,8 @@
   See http://www.boost.org/ for latest version.
 */
 
-#ifndef AHO_CORASIK_AHO_CORASIK_HPP
-#define AHO_CORASIK_AHO_CORASIK_HPP
+#ifndef BOOST_ALGORITHM_AHO_CORASICK_HPP
+#define BOOST_ALGORITHM_AHO_CORASICK_HPP
 
 #include <vector>
 #include <queue>
@@ -22,7 +22,7 @@
 
 namespace boost { namespace algorithm {
 
-template <typename T, template<typename ...> typename Container, typename ...Args>
+template <typename T, template<typename ...> class Container, typename ...Args>
 class AhoCorasick
 {
 private:
