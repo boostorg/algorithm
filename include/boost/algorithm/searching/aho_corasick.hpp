@@ -23,21 +23,21 @@
 namespace boost { namespace algorithm {
 
 template <typename T, template<typename ...> class Container, typename ...Args>
-class AhoCorasick
+class aho_corasick
 {
 private:
-    class MapBorNode
+    class node
     {
     public:
-        Container<T, std::unique_ptr<MapBorNode>, Args...> links;
-        MapBorNode *fail, *term;
+        Container<T, std::unique_ptr<node>, Args...> links;
+        node *fail, *term;
         std::vector<size_t> pat;
 
-        MapBorNode(MapBorNode* fail_node = nullptr)
+        node(node* fail_node = nullptr)
                 : fail(fail_node), term(nullptr)
         { }
 
-        MapBorNode* getLink(const T& c) const
+        node* getLink(const T& c) const
         {
             const auto iter = links.find(c);
             return iter != links.cend() ? iter->second.get() : nullptr;
@@ -50,16 +50,17 @@ private:
     };
 public:
     using value_type = T;
-    using node_type = MapBorNode;
+    using node_type = node;
 private:
     std::unique_ptr<node_type> root;
     node_type* current_state;
     size_t countStrings = 0;
+    bool isInited = false;
 public:
-    AhoCorasick() : root(boost::make_unique<node_type>()) {}
+    aho_corasick() : root(boost::make_unique<node_type>()) {}
 
     template<typename ForwardIterator>
-    explicit AhoCorasick(ForwardIterator patBegin, ForwardIterator patEnd) : root(boost::make_unique<node_type>())
+    explicit aho_corasick(ForwardIterator patBegin, ForwardIterator patEnd) : root(boost::make_unique<node_type>())
     {
         while(patBegin != patEnd)
         {
@@ -69,7 +70,7 @@ public:
     }
 
     template<typename Range>
-    explicit AhoCorasick(const Range& range) : AhoCorasick(boost::begin(range), boost::end(range)) {}
+    explicit aho_corasick(const Range& range) : aho_corasick(boost::begin(range), boost::end(range)) {}
 
     /// \fn insert(const Range& range)
     /// \brief Insert pattern in trie
@@ -91,6 +92,7 @@ public:
     template<typename ForwardIterator>
     void insert(ForwardIterator begin, ForwardIterator end)
     {
+        isInited = false;
         size_t patLen = 0;
         node_type* current_node = root.get();
         for(auto it = begin; it != end; ++it)
@@ -119,15 +121,18 @@ public:
     template <typename RAIterator, typename Callback>
     bool find(RAIterator begin, RAIterator end, Callback cb)
     {
-        init();
+        if(!isInited)
+        {
+            init();
+        }
         current_state = root.get();
         for(auto it = begin; it != end; ++it)
         {
             step(*it);
             if(!getTermsForCurrentState(it, cb))
-	    {
-		return false;
-	    }
+	        {
+		        return false;
+	        }
         }
         return true;
     }
@@ -164,6 +169,7 @@ private:
                 q.push(child);
             }
         }
+        isInited = true;
     }
 
     void step(const value_type& c)
@@ -189,9 +195,9 @@ private:
             for (const auto value : current_state->pat)
             {
                 if(!cb(1 + pos - value, pos + 1))
-		{
-		    return false;
-		}
+                {
+		            return false;
+		        }
             }
         }
         node_type* temp_node = current_state->term;
@@ -200,9 +206,9 @@ private:
             for (const auto value : temp_node->pat)
             {
                 if(!cb(1 + pos - value, pos + 1))
-		{
-		    return false;
-		}
+		        {
+		            return false;
+		        }
             }
             temp_node = temp_node->term;
         }
@@ -212,10 +218,10 @@ private:
 
 //Object interface
 template <typename T, typename Pred = std::less<T>>
-using Aho_Corasick_Map = AhoCorasick<T, std::map, Pred>;
+using aho_corasick_map_obj = aho_corasick<T, std::map, Pred>;
 
 template <typename T, typename Hash = std::hash<T>, typename Comp = std::equal_to<T>>
-using Aho_Corasick_HashMap = AhoCorasick<T, std::unordered_map, Hash, Comp>;
+using aho_corasick_hashmap_obj = aho_corasick<T, std::unordered_map, Hash, Comp>;
 
 
 //Functional interface
@@ -237,7 +243,7 @@ bool aho_corasick_map ( RAIterator corpus_begin, RAIterator corpus_end,
                         ForwardIterator pat_begin, ForwardIterator pat_end,
                         Callback cb)
 {
-    AhoCorasick<T, std::map, Predicate> obj(pat_begin, pat_end);
+    aho_corasick<T, std::map, Predicate> obj(pat_begin, pat_end);
     return obj.find(corpus_begin, corpus_end, cb);
 }
 
@@ -258,7 +264,7 @@ bool aho_corasick_hashmap ( RAIterator corpus_begin, RAIterator corpus_end,
                             ForwardIterator pat_begin, ForwardIterator pat_end,
                             Callback cb)
 {
-    AhoCorasick<T, std::unordered_map, Hash, Comp> obj(pat_begin, pat_end);
+    aho_corasick<T, std::unordered_map, Hash, Comp> obj(pat_begin, pat_end);
     return obj.find(corpus_begin, corpus_end, cb);
 }
 }}
