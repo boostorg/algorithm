@@ -1,0 +1,1 @@
+ttgccacttagtcatcattacataagacagtctaaagtcc
