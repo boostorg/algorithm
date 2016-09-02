@@ -1,1 +1,0 @@
-cctattccggcctggtccggtatggaatgaacttataatcatggaatcgactcgatcatcagattataagttcataaccctagcccattcccattttggg
