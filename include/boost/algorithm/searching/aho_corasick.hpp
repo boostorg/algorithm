@@ -110,6 +110,19 @@ public:
         current_node->pat.push_back(patLen);
     }
 
+    /// \fn find ( const Range& range, Callback cb)
+    /// \brief Searches patterns in the corpus
+    /// \return true if all callback callings return true, else false
+    ///
+    /// \param range The range of the data to search
+    /// \param cb    Callback for matches
+    ///
+    template <typename Range, typename Callback>
+    bool find(const Range& range, Callback cb)
+    {
+        return find(boost::begin(range), boost::end(range), cb);
+    }
+
     /// \fn find ( RAIterator begin, RAIterator end, Callback cb)
     /// \brief Searches patterns in the corpus
     /// \return true if all callback callings return true, else false
