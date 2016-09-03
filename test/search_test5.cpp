@@ -151,10 +151,9 @@ BOOST_AUTO_TEST_CASE( test_main )
     {
         if (dirent->path().extension() != ".pat")
             continue;
-    //  std::cout << "Corpus is " << c1.size () << " entries long\n";
         unsigned m = atoi(dirent->path().stem().c_str());
         std::cout << "--- " << m << " ---" << std::endl;
         vec pat = ReadFromFile(dirent->path().c_str());
-        check_one ( c1, pat, -1 );       //  Find it at position zero
+        check_one ( c1, pat, -1 );
     }    
 }
