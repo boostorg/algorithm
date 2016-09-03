@@ -10,6 +10,7 @@
 #include <boost/algorithm/searching/boyer_moore.hpp>
 #include <boost/algorithm/searching/boyer_moore_horspool.hpp>
 #include <boost/algorithm/searching/knuth_morris_pratt.hpp>
+#include <boost/algorithm/searching/musser_nishanov_HAL.hpp>
 
 #define BOOST_TEST_MAIN
 #include <boost/test/unit_test.hpp>
@@ -44,10 +45,10 @@ typedef std::vector<char> vec;
     eTime = std::clock ();                                  \
     printRes ( #call, eTime - bTime, refDiff ); }
 
-#define runObject(obj, refDiff) { \
+#define runHALObject(obj, trait, refDiff) { \
     std::clock_t bTime, eTime;                              \
     bTime = std::clock ();                                  \
-    boost::algorithm::obj <vec::const_iterator>             \
+    boost::algorithm::obj<vec::const_iterator, vec::const_iterator, trait >             \
                 s_o ( needle.begin (), needle.end ());      \
     for ( i = 0; i < NUM_TRIES; ++i ) {                     \
         res = s_o ( haystack.begin (), haystack.end ());    \
@@ -62,7 +63,24 @@ typedef std::vector<char> vec;
     eTime = std::clock ();                                  \
     printRes ( #obj " object", eTime - bTime, refDiff ); }
     
-
+    #define runObject(obj, refDiff) { \
+    std::clock_t bTime, eTime;                              \
+    bTime = std::clock ();                                  \
+    boost::algorithm::obj <vec::const_iterator>             \
+    s_o ( needle.begin (), needle.end ());      \
+    for ( i = 0; i < NUM_TRIES; ++i ) {                     \
+        res = s_o ( haystack.begin (), haystack.end ());    \
+        if ( res != exp ) {                                 \
+            std::cout << "On run # " << i << " expected "   \
+            << exp.first - haystack.begin () << " got "           \
+            << res.first - haystack.begin () << std::endl;        \
+            throw std::runtime_error                        \
+            ( "Unexpected result from " #obj " object" );   \
+        }                                               \
+    }                                                   \
+    eTime = std::clock ();                                  \
+    printRes ( #obj " object", eTime - bTime, refDiff ); }
+    
 
 namespace {
 
@@ -136,7 +154,12 @@ namespace {
         runObject ( boyer_moore_horspool,        stdDiff );
         runOne    ( knuth_morris_pratt_search,   stdDiff );
         runObject ( knuth_morris_pratt,          stdDiff );
-        }
+        runOne    ( musser_nishanov_HAL_search,   stdDiff );
+        runHALObject ( musser_nishanov_HAL, boost::algorithm::search_trait<typename std::iterator_traits<vec::const_iterator>::value_type>, stdDiff );
+        runHALObject ( musser_nishanov_HAL, boost::algorithm::search_trait_dna2, stdDiff );
+        runHALObject ( musser_nishanov_HAL, boost::algorithm::search_trait_dna3, stdDiff );
+        runHALObject ( musser_nishanov_HAL, boost::algorithm::search_trait_dna4, stdDiff );
+    }
     }
 
 BOOST_AUTO_TEST_CASE( test_main )
