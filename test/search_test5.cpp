@@ -148,6 +148,7 @@ namespace {
         stdDiff = std::clock () - sTime;
         printRes ( "std::search", stdDiff, stdDiff );
 
+        typedef boost::algorithm::search_trait<typename std::iterator_traits<vec::const_iterator>::value_type> default_mn_search_traits;
         runOne    ( boyer_moore_search,          stdDiff );
         runObject ( boyer_moore,                 stdDiff );
         runOne    ( boyer_moore_horspool_search, stdDiff );
@@ -155,7 +156,7 @@ namespace {
         runOne    ( knuth_morris_pratt_search,   stdDiff );
         runObject ( knuth_morris_pratt,          stdDiff );
         runOne    ( musser_nishanov_HAL_search,   stdDiff );
-        runHALObject ( musser_nishanov_HAL, boost::algorithm::search_trait<typename std::iterator_traits<vec::const_iterator>::value_type>, stdDiff );
+        runHALObject ( musser_nishanov_HAL, default_mn_search_traits, stdDiff );
         runHALObject ( musser_nishanov_HAL, boost::algorithm::search_trait_dna2, stdDiff );
         runHALObject ( musser_nishanov_HAL, boost::algorithm::search_trait_dna3, stdDiff );
         runHALObject ( musser_nishanov_HAL, boost::algorithm::search_trait_dna4, stdDiff );
