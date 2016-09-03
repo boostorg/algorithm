@@ -52,15 +52,15 @@ public:
     using value_type = T;
     using node_type = node;
 private:
-    std::unique_ptr<node_type> root;
+    node_type root;
     node_type* current_state;
     size_t countStrings = 0;
     bool isInited = false;
 public:
-    aho_corasick() : root(boost::make_unique<node_type>()) {}
+    aho_corasick(){}
 
     template<typename ForwardIterator>
-    explicit aho_corasick(ForwardIterator patBegin, ForwardIterator patEnd) : root(boost::make_unique<node_type>())
+    explicit aho_corasick(ForwardIterator patBegin, ForwardIterator patEnd)
     {
         while(patBegin != patEnd)
         {
@@ -94,14 +94,14 @@ public:
     {
         isInited = false;
         size_t patLen = 0;
-        node_type* current_node = root.get();
+        node_type* current_node = &root;
         for(auto it = begin; it != end; ++it)
         {
             ++patLen;
             node_type* child_node = current_node->getLink(*it);
             if (!child_node)
             {
-                std::unique_ptr<node_type> new_node = boost::make_unique<node_type>(root.get());
+                std::unique_ptr<node_type> new_node = boost::make_unique<node_type>(&root);
                 child_node = new_node.get();
                 current_node->links[*it] = std::move(new_node);
             }
@@ -138,7 +138,7 @@ public:
         {
             init();
         }
-        current_state = root.get();
+        current_state = &root;
         for(auto it = begin; it != end; ++it)
         {
             step(*it);
@@ -153,7 +153,7 @@ private:
     void init()
     {
         std::queue<node_type*> q;
-        q.push(root.get());
+        q.push(&root);
         while (!q.empty())
         {
             node_type* current_node = q.front();
@@ -197,7 +197,7 @@ private:
             }
             current_state = current_state->fail;
         }
-        current_state = root.get();
+        current_state = &root;
     }
 
     template <typename RAIterator, typename Callback>
