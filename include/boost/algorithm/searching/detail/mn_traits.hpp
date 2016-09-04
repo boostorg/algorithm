@@ -4,6 +4,8 @@
 
 #include <iterator>
 
+#include <boost/integer.hpp>
+
 namespace boost { namespace algorithm {
 
 template <class T>
@@ -12,7 +14,7 @@ struct search_trait {
     enum {suffix_size = 0};
     template <class RandomAccessIterator>
     inline static 
-    typename std::iterator_traits<RandomAccessIterator>::value_type
+    typename boost::uint_t<sizeof(T) * 8>::exact
     hash(RandomAccessIterator) {
         return 0;              
     }
@@ -23,30 +25,27 @@ template <> struct search_trait<char> {
     enum {suffix_size = 1};
     template <class RandomAccessIterator>
     inline static 
-    typename std::iterator_traits<RandomAccessIterator>::value_type
-    hash(RandomAccessIterator i) {
-        return *i;              
+    char unsigned hash(RandomAccessIterator i) {
+        return *i;
     }
 };
 
-template <> struct search_trait<signed char> {
+template <> struct search_trait<char signed> {
     enum {hash_range_max = 256};
     enum {suffix_size = 1};
     template <class RandomAccessIterator>
     inline static 
-    typename std::iterator_traits<RandomAccessIterator>::value_type
-    hash(RandomAccessIterator i) {
+    char unsigned hash(RandomAccessIterator i) {
         return *i;              
     }
 };
 
-template <> struct search_trait<unsigned char> {
+template <> struct search_trait<char unsigned> {
     enum {hash_range_max = 256};
     enum {suffix_size = 1};
     template <class RandomAccessIterator>
     inline static 
-    typename std::iterator_traits<RandomAccessIterator>::value_type
-    hash(RandomAccessIterator i) {
+    char unsigned hash(RandomAccessIterator i) {
         return *i;              
     }
 };
