@@ -129,8 +129,11 @@ class musser_nishanov_HAL
 public:
     musser_nishanov_HAL(PatIter first, PatIter last) : pat_first(first), pat_last(last), k_pattern_length(std::distance(first, last)) 
     {
-        compute_next();
-        compute_skip();
+        if (k_pattern_length > 0)
+        {
+            compute_next();
+            compute_skip();
+        }
     }
     
     std::pair<CorpusIter, CorpusIter>
@@ -141,11 +144,11 @@ public:
         typename std::iterator_traits<CorpusIter>::value_type>::value ));
         
         BOOST_STATIC_ASSERT((Trait::suffix_size != 0));
-        BOOST_ASSERT(Trait::suffix_size < k_pattern_length);
         
         if (corpus_first == corpus_last) return std::make_pair(corpus_last, corpus_last);   // if nothing to search, we didn't find it!
         if (pat_first == pat_last ) return std::make_pair(corpus_first, corpus_first); // empty pattern matches at start
         
+        BOOST_ASSERT(Trait::suffix_size < k_pattern_length);
         const corpus_difference_type k_corpus_length  = std::distance ( corpus_first, corpus_last );
         //  If the pattern is larger than the corpus, we can't find it!
         if ( k_corpus_length < k_pattern_length ) 
