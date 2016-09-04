@@ -46,6 +46,8 @@ class musser_nishanov_HAL
         std::fill(skip.begin(), skip.end(), m - Trait::suffix_size + 1);
         for (pattern_difference_type j = Trait::suffix_size - 1; j < m - 1; ++j)
         {
+            // TODO: The type of this index should be the unsigned equivalent of
+            // whatever the char type is.
             unsigned char const index = Trait::hash(pat_first + j);
             skip[index] = m - 1 - j;
         }
@@ -71,7 +73,9 @@ class musser_nishanov_HAL
             if (k >= 0) break;
             do   // this loop is hot for data read
             {
-                unsigned int const index = Trait::hash(corpus_last + k);
+                // TODO: The type of this index should be the unsigned equivalent of
+                // whatever the char type is.
+                unsigned char const index = Trait::hash(corpus_last + k);
                 corpus_difference_type const increment = skip[index];
                 k += increment;
             }
