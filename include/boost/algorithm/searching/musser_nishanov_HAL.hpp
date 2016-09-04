@@ -27,11 +27,10 @@ class musser_nishanov_HAL
     
     void compute_next()
     {
-        pattern_difference_type const pattern_size = pat_last - pat_first;
         pattern_difference_type j = 0, t = -1;
-        next.reserve(pattern_size);
+        next.reserve(k_pattern_length);
         next.push_back(-1);
-        while (j < pattern_size - 1)
+        while (j < k_pattern_length - 1)
         {
             while (t >= 0 && pat_first[j] != pat_first[t])
                 t = next[t];
