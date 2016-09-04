@@ -42,11 +42,15 @@ class musser_nishanov_HAL
     
     void compute_skip()
     {
-        std::fill(skip.begin(), skip.end(), k_pattern_length - Trait::suffix_size + 1);
-        for (pattern_difference_type j = Trait::suffix_size - 1; j < k_pattern_length - 1; ++j)
-            skip[Trait::hash(pat_first + j)] = k_pattern_length - 1 - j;
-        mismatch_shift = skip[Trait::hash(pat_first + k_pattern_length - 1)];
-        skip[Trait::hash(pat_first + k_pattern_length - 1)] = 0;
+        pattern_difference_type const m = next.size();
+        std::fill(skip.begin(), skip.end(), m - Trait::suffix_size + 1);
+        for (pattern_difference_type j = Trait::suffix_size - 1; j < m - 1; ++j)
+        {
+            unsigned char const index = Trait::hash(pat_first + j);
+            skip[index] = m - 1 - j;
+        }
+        mismatch_shift = skip[Trait::hash(pat_first + m - 1)];
+        skip[Trait::hash(pat_first + m - 1)] = 0;
     }
     
     std::pair<CorpusIter, CorpusIter>
