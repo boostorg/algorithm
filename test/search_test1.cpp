@@ -10,6 +10,7 @@
 #include <boost/algorithm/searching/boyer_moore.hpp>
 #include <boost/algorithm/searching/boyer_moore_horspool.hpp>
 #include <boost/algorithm/searching/knuth_morris_pratt.hpp>
+#include <boost/algorithm/searching/musser_nishanov.hpp>
 
 #define BOOST_TEST_MAIN
 #include <boost/test/unit_test.hpp>
@@ -47,6 +48,7 @@ namespace {
         ret_type ret1r = ba::boyer_moore_search          (haystack, nBeg, nEnd);
         ret_type ret2  = ba::boyer_moore_horspool_search (hBeg, hEnd, nBeg, nEnd);
         ret_type ret3  = ba::knuth_morris_pratt_search   (hBeg, hEnd, nBeg, nEnd);
+        ret_type ret4  = ba::musser_nishanov_HAL_search  (hBeg, hEnd, nBeg, nEnd);
 
         iter_type it0  = std::search                     (hBeg, hEnd, nBeg, nEnd);
 //         iter_type it1  = ret1.first;
@@ -77,6 +79,11 @@ namespace {
                     std::string ( "results mismatch between boyer-moore and knuth-morris-pratt search" ));
                 }
 
+            if ( ret1.first != ret4.first || ret1.second != ret4.second ) {
+                throw std::runtime_error ( 
+                    std::string ( "results mismatch between boyer-moore and musser-nishanov-HAL search" ));
+                }
+
             }
 
         catch ( ... ) {
@@ -87,6 +94,7 @@ namespace {
             std::cout << "  bm(r):  " << std::distance ( hBeg, ret1r.first ) << "\n";
             std::cout << "  bmh:    " << std::distance ( hBeg, ret2.first ) << "\n";
             std::cout << "  kpm:    " << std::distance ( hBeg, ret3.first )<< "\n";
+            std::cout << "  mn:     " << std::distance ( hBeg, ret4.first )<< "\n";
             std::cout << std::flush;
             throw ;
             }
@@ -110,6 +118,7 @@ namespace {
         ret_type ret1 = ba::boyer_moore_search          (hBeg, hEnd, nBeg, nEnd);
         ret_type ret2 = ba::boyer_moore_horspool_search (hBeg, hEnd, nBeg, nEnd);
         ret_type ret3 = ba::knuth_morris_pratt_search   (hBeg, hEnd, nBeg, nEnd);
+        ret_type ret4 = ba::musser_nishanov_HAL_search  (hBeg, hEnd, nBeg, nEnd);
         const int dist = ret1.first == hEnd ? -1 : std::distance ( hBeg, ret1.first );
 
         std::cout << "(Pointers) Pattern is " << needle.length () << ", haysstack is " << haystack.length () << " chars long; " << std::endl;
@@ -129,6 +138,10 @@ namespace {
                     std::string ( "results mismatch between boyer-moore and knuth-morris-pratt search" ));
                 }
 
+            if ( ret1.first != ret4.first || ret1.second != ret4.second ) {
+                throw std::runtime_error ( 
+                    std::string ( "results mismatch between boyer-moore and musser-nishanov-HAL search" ));
+                }
             }
 
         catch ( ... ) {
@@ -138,6 +151,7 @@ namespace {
             std::cout << "  bm:     " << std::distance ( hBeg, ret1.first ) << "\n";
             std::cout << "  bmh:    " << std::distance ( hBeg, ret2.first ) << "\n";
             std::cout << "  kpm:    " << std::distance ( hBeg, ret3.first )<< "\n";
+            std::cout << "  mn:     " << std::distance ( hBeg, ret4.first )<< "\n";
             std::cout << std::flush;
             throw ;
             }
@@ -161,6 +175,7 @@ namespace {
         ba::boyer_moore<pattern_type>          bm    ( nBeg, nEnd );
         ba::boyer_moore_horspool<pattern_type> bmh   ( nBeg, nEnd );
         ba::knuth_morris_pratt<pattern_type>   kmp   ( nBeg, nEnd );
+        ba::musser_nishanov_HAL<pattern_type, pattern_type>   mn   ( nBeg, nEnd );
         
         iter_type it0   = std::search  (hBeg, hEnd, nBeg, nEnd);
         ret_type ret1   = bm           (hBeg, hEnd);
@@ -169,6 +184,7 @@ namespace {
        ret_type retr1r = bm_r         (haystack);
         ret_type ret2   = bmh          (hBeg, hEnd);
         ret_type ret3   = kmp          (hBeg, hEnd);
+        ret_type ret4   = mn          (hBeg, hEnd);
         const int dist  = ret1.first == hEnd ? -1 : std::distance ( hBeg, ret1.first );
 
         std::cout << "(Objects) Pattern is " << needle.length () << ", haysstack is " << haystack.length () << " chars long; " << std::endl;
@@ -203,6 +219,10 @@ namespace {
                     std::string ( "results mismatch between boyer-moore and knuth-morris-pratt search" ));
                 }
 
+            if ( ret1.first != ret4.first || ret1.second != ret4.second ) {
+                throw std::runtime_error ( 
+                    std::string ( "results mismatch between boyer-moore and musser-nishanov search" ));
+                }
             }
 
         catch ( ... ) {
@@ -215,6 +235,7 @@ namespace {
             std::cout << "  bm(r3):  " << std::distance ( hBeg, retr1r.first ) << "\n";
             std::cout << "  bmh:     " << std::distance ( hBeg, ret2.first ) << "\n";
             std::cout << "  kpm:    " << std::distance ( hBeg, ret3.first )<< "\n";
+            std::cout << "  mn:     " << std::distance ( hBeg, ret4.first )<< "\n";
             std::cout << std::flush;
             throw ;
             }
