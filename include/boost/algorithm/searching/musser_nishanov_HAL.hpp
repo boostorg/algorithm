@@ -155,7 +155,7 @@ public:
             return std::make_pair(corpus_last, corpus_last);
         
         //  Do the search 
-        return this->do_search ( corpus_first, corpus_last );
+        return do_search ( corpus_first, corpus_last );
     }
 };
 
