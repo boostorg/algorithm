@@ -5,6 +5,9 @@
 
 #include <boost/array.hpp>
 
+#include <boost/static_assert.hpp>
+#include <boost/assert.hpp>
+
 #include <iterator>
 #include <algorithm>
 #include <vector>
@@ -24,7 +27,7 @@ class musser_nishanov_HAL
     boost::array<corpus_difference_type, Trait::hash_range_max> skip;
     pattern_difference_type k_pattern_length;
     corpus_difference_type mismatch_shift;
-    
+
     void compute_next()
     {
         pattern_difference_type j = 0, t = -1;
