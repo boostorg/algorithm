@@ -11,14 +11,12 @@
 
 #include <vector>
 #include <queue>
-#include <map>
-#include <unordered_map>
 #include <functional>
-#include <memory>
 
 #include <boost/range/begin.hpp>
 #include <boost/range/end.hpp>
-#include <boost/make_unique.hpp>
+#include <boost/container/map.hpp>
+#include <boost/unordered_map.hpp>
 
 namespace boost { namespace algorithm {
 
@@ -29,7 +27,7 @@ private:
     class node
     {
     public:
-        Container<T, std::unique_ptr<node>, Args...> links;
+        Container<T, node, Args...> links;
         node *fail, *term;
         std::vector<size_t> pat;
 
@@ -37,10 +35,10 @@ private:
                 : fail(fail_node), term(nullptr)
         { }
 
-        node* getLink(const T& c) const
+        node* getLink(const T& c)
         {
-            const auto iter = links.find(c);
-            return iter != links.cend() ? iter->second.get() : nullptr;
+            auto iter = links.find(c);
+            return iter != links.end() ? &iter->second : nullptr;
         }
 
         bool isTerminal() const
@@ -101,9 +99,9 @@ public:
             node_type* child_node = current_node->getLink(*it);
             if (!child_node)
             {
-                std::unique_ptr<node_type> new_node = boost::make_unique<node_type>(&root);
-                child_node = new_node.get();
+                node new_node;
                 current_node->links[*it] = std::move(new_node);
+                child_node = &current_node->links[*it];
             }
             current_node = child_node;
         }
@@ -158,11 +156,11 @@ private:
         {
             node_type* current_node = q.front();
             q.pop();
-            for (auto iter = current_node->links.cbegin();
-                 iter != current_node->links.cend(); ++iter)
+            for (auto iter = current_node->links.begin();
+                 iter != current_node->links.end(); ++iter)
             {
                 const value_type& symbol = iter->first;
-                node_type* child = iter->second.get();
+                node_type* child = &iter->second;
 
                 // Defining .fail for the childnode
                 node_type* temp_node = current_node->fail;
@@ -231,10 +229,10 @@ private:
 
 //Object interface
 template <typename T, typename Pred = std::less<T>>
-using aho_corasick_map_obj = aho_corasick<T, std::map, Pred>;
+using aho_corasick_map_obj = aho_corasick<T, boost::container::map, Pred>;
 
 template <typename T, typename Hash = std::hash<T>, typename Comp = std::equal_to<T>>
-using aho_corasick_hashmap_obj = aho_corasick<T, std::unordered_map, Hash, Comp>;
+using aho_corasick_hashmap_obj = aho_corasick<T, boost::unordered_map, Hash, Comp>;
 
 
 //Functional interface
@@ -256,7 +254,7 @@ bool aho_corasick_map ( RAIterator corpus_begin, RAIterator corpus_end,
                         ForwardIterator pat_begin, ForwardIterator pat_end,
                         Callback cb)
 {
-    aho_corasick<T, std::map, Predicate> obj(pat_begin, pat_end);
+    aho_corasick<T, boost::container::map, Predicate> obj(pat_begin, pat_end);
     return obj.find(corpus_begin, corpus_end, cb);
 }
 
@@ -277,7 +275,7 @@ bool aho_corasick_hashmap ( RAIterator corpus_begin, RAIterator corpus_end,
                             ForwardIterator pat_begin, ForwardIterator pat_end,
                             Callback cb)
 {
-    aho_corasick<T, std::unordered_map, Hash, Comp> obj(pat_begin, pat_end);
+    aho_corasick<T, boost::unordered_map, Hash, Comp> obj(pat_begin, pat_end);
     return obj.find(corpus_begin, corpus_end, cb);
 }
 }}
