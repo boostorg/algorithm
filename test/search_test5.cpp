@@ -171,4 +171,7 @@ BOOST_AUTO_TEST_CASE( test_main )
         vec pat = ReadFromFile(dirent->path().c_str());
         check_one ( c1, pat, -1 );
     }    
+    
+    using boost::algorithm::musser_nishanov;
+    musser_nishanov<vec::const_iterator>(c1.begin(), c1.end());
 }
