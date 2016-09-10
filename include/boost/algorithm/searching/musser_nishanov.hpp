@@ -254,6 +254,7 @@ typename enable_if<
     
     std::pair<CorpusIter, CorpusIter> AL(CorpusIter corpus_first, CorpusIter corpus_last)
     {
+        throw std::runtime_error("Not implemented!");
         return std::make_pair(corpus_first, corpus_last);
     }
 
