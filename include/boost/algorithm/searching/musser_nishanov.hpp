@@ -7,7 +7,7 @@
 #include <boost/array.hpp>
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
-#include <boost/type_traits/is_same.hpp>
+#include <boost/type_traits/is_base_of.hpp>
 #include <boost/utility/enable_if.hpp>
 
 // #include <functional>
@@ -72,7 +72,7 @@ public:
      * Run the search object on a corpus with random-access iterators.
      */
     template <typename I>
-    typename enable_if<is_same<typename std::iterator_traits<I>::iterator_category, std::random_access_iterator_tag>, std::pair<I, I> >::type
+    typename enable_if<is_base_of<std::random_access_iterator_tag, typename std::iterator_traits<I>::iterator_category>, std::pair<I, I> >::type
     operator()(I corpus_first, I corpus_last)
     {
         return search(corpus_first, corpus_last);
@@ -82,7 +82,7 @@ public:
      * Run the search object on a corpus with forward or bidirectional iterators.
      */
     template <typename I>
-    typename disable_if<is_same<typename std::iterator_traits<I>::iterator_category, std::random_access_iterator_tag>, std::pair<I, I> >::type
+    typename disable_if<is_base_of<std::random_access_iterator_tag, typename std::iterator_traits<I>::iterator_category>, std::pair<I, I> >::type
     operator()(I corpus_first, I corpus_last)
     {
         return AL(corpus_first, corpus_last);
