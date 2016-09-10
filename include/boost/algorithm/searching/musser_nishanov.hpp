@@ -22,6 +22,10 @@ namespace boost { namespace algorithm {
 template <typename PatIter, typename CorpusIter = PatIter, typename Trait = search_trait<typename std::iterator_traits<PatIter>::value_type> >
 class musser_nishanov
 {
+    BOOST_STATIC_ASSERT (( boost::is_same<
+    typename std::iterator_traits<PatIter>::value_type, 
+    typename std::iterator_traits<CorpusIter>::value_type>::value ));
+    
     typedef typename std::iterator_traits<PatIter>::difference_type pattern_difference_type;
     typedef typename std::iterator_traits<CorpusIter>::difference_type corpus_difference_type;
 
