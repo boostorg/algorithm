@@ -179,7 +179,6 @@ typename enable_if<
     
     std::pair<CorpusIter, CorpusIter> HAL(CorpusIter corpus_first, CorpusIter corpus_last)
     {
-        pattern_difference_type j;
         corpus_difference_type const k_corpus_length = corpus_last - corpus_first;
         // Original location of compute_next.
         corpus_difference_type const adjustment = k_corpus_length + k_pattern_length;
@@ -204,7 +203,7 @@ typename enable_if<
                 k += mismatch_shift;
             else
             {
-                j = 1;
+                pattern_difference_type j = 1;
                 for (;;)
                 {
                     ++k;
