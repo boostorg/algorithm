@@ -19,8 +19,66 @@
  */
 namespace boost { namespace algorithm {
 
-template <typename PatIter, typename CorpusIter = PatIter, typename Trait = search_trait<typename std::iterator_traits<PatIter>::value_type> >
-class musser_nishanov
+template <typename PatIter, typename CorpusIter = PatIter, typename Trait = search_trait<typename std::iterator_traits<PatIter>::value_type>, typename Enable = void>
+class musser_nishanov;
+
+/**
+ * Musser-Nishanov Accelerated Linear search algorithm.
+ */
+template <typename PatIter, typename CorpusIter, typename Trait>
+class musser_nishanov<PatIter, CorpusIter, Trait, 
+typename disable_if<is_base_of<std::random_access_iterator_tag, typename std::iterator_traits<CorpusIter>::iterator_category> >::type>
+{
+    BOOST_STATIC_ASSERT (( boost::is_same<
+    typename std::iterator_traits<PatIter>::value_type, 
+    typename std::iterator_traits<CorpusIter>::value_type>::value ));
+    
+    typedef typename std::iterator_traits<PatIter>::difference_type pattern_difference_type;
+    typedef typename std::iterator_traits<CorpusIter>::difference_type corpus_difference_type;
+    
+    PatIter pat_first, pat_last;
+    std::vector<corpus_difference_type> next;
+    pattern_difference_type k_pattern_length;
+    
+    void compute_next()
+    {
+        pattern_difference_type j = 0, t = -1;
+        next.reserve(k_pattern_length);
+        next.push_back(-1);
+        while (j < k_pattern_length - 1)
+        {
+            while (t >= 0 && pat_first[j] != pat_first[t])
+                t = next[t];
+            ++j;
+            ++t;
+            next.push_back(pat_first[j] == pat_first[t] ? next[t] : t);
+        }
+    }
+    
+public:
+    musser_nishanov(PatIter pat_first, PatIter pat_last) : pat_first(pat_first), pat_last(pat_last), k_pattern_length(std::distance(pat_first, pat_last))
+    {
+        if (k_pattern_length > 0)
+            compute_next();
+    }
+
+    /**
+     * Run the search object on a corpus with forward or bidirectional iterators.
+     */
+    std::pair<CorpusIter, CorpusIter>
+    operator()(CorpusIter corpus_first, CorpusIter corpus_last) const
+    {
+        // return AL(corpus_first, corpus_last);
+    }
+};
+
+
+/**
+ * Musser-Nishanov Hashed Accelerated Linear search algorithm.
+ */
+template <typename PatIter, typename CorpusIter, typename Trait>
+class musser_nishanov<PatIter, CorpusIter, Trait, 
+typename enable_if<is_base_of<std::random_access_iterator_tag, typename std::iterator_traits<CorpusIter>::iterator_category> >::type>
 {
     BOOST_STATIC_ASSERT (( boost::is_same<
     typename std::iterator_traits<PatIter>::value_type, 
@@ -106,15 +164,6 @@ public:
         return search(corpus_first, corpus_last);
     }
     
-    /**
-     * Run the search object on a corpus with forward or bidirectional iterators.
-     */
-    template <typename I>
-    typename disable_if<is_base_of<std::random_access_iterator_tag, typename std::iterator_traits<I>::iterator_category>, std::pair<I, I> >::type
-    operator()(I corpus_first, I corpus_last)
-    {
-        return AL(corpus_first, corpus_last);
-    }
 };
 
 }} // namespace boost::algorithm
