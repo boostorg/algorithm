@@ -5,6 +5,7 @@
 #include <boost/algorithm/searching/detail/musser_nishanov_HAL.hpp>
 #include <boost/algorithm/searching/detail/mn_traits.hpp>
 #include <boost/array.hpp>
+#include <boost/bind.hpp>
 #include <boost/function.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
@@ -32,11 +33,16 @@ class musser_nishanov
     boost::function<std::pair<CorpusIter, CorpusIter>(CorpusIter, CorpusIter)> search;
     
     std::pair<CorpusIter, CorpusIter> HAL(CorpusIter corpus_first, CorpusIter corpus_last) {}
+    std::pair<CorpusIter, CorpusIter> AL(CorpusIter corpus_first, CorpusIter corpus_last) {}
     
 public:
     template <typename I>
     musser_nishanov(I pat_first, I pat_last) : pat_first(pat_first), pat_last(pat_last)
     {
+        if (Trait::suffix_size == 0 || k_pattern_length < Trait::suffix_size)
+            search = bind(&musser_nishanov::AL, *this, _1, _2);
+        else
+            search = bind(&musser_nishanov::HAL, *this, _1, _2);
     }
     
     template <typename I>
