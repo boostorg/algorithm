@@ -43,7 +43,7 @@ class musser_nishanov
     std::pair<CorpusIter, CorpusIter> HAL_initialize(CorpusIter corpus_first, CorpusIter corpus_last)
     {
         search = bind(&musser_nishanov::HAL, *this, _1, _2);
-        // TODO: compute skip table
+        compute_skip();
         return HAL(corpus_first, corpus_last);
     }
     
@@ -56,6 +56,34 @@ class musser_nishanov
     {
         return std::make_pair(corpus_first, corpus_last);
     }
+
+    void compute_next()
+    {
+        pattern_difference_type j = 0, t = -1;
+        next.reserve(k_pattern_length);
+        next.push_back(-1);
+        while (j < k_pattern_length - 1)
+        {
+            while (t >= 0 && pat_first[j] != pat_first[t])
+                t = next[t];
+            ++j;
+            ++t;
+            next.push_back(pat_first[j] == pat_first[t] ? next[t] : t);
+        }
+    }
+    
+    void compute_skip()
+    {
+        pattern_difference_type const m = next.size();
+        std::fill(skip.begin(), skip.end(), m - Trait::suffix_size + 1);
+        for (pattern_difference_type j = Trait::suffix_size - 1; j < m - 1; ++j)
+        {
+            // unsigned char const index = Trait::hash(pat_first + j);
+            skip[Trait::hash(pat_first + j)] = m - 1 - j;
+        }
+        mismatch_shift = skip[Trait::hash(pat_first + m - 1)];
+        skip[Trait::hash(pat_first + m - 1)] = 0;
+    }
     
 public:
     template <typename I>
@@ -65,7 +93,8 @@ public:
             search = bind(&musser_nishanov::AL, *this, _1, _2);
         else
             search = bind(&musser_nishanov::HAL_initialize, *this, _1, _2);
-        // TODO: Compute next table.
+        if (k_pattern_length > 0)
+            compute_next();
     }
     
     /**
