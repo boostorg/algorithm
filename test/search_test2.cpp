@@ -10,7 +10,7 @@
 #include <boost/algorithm/searching/boyer_moore.hpp>
 #include <boost/algorithm/searching/boyer_moore_horspool.hpp>
 #include <boost/algorithm/searching/knuth_morris_pratt.hpp>
-#include <boost/algorithm/searching/detail/musser_nishanov_HAL.hpp>
+#include <boost/algorithm/searching/musser_nishanov.hpp>
 
 #define BOOST_TEST_MAIN
 #include <boost/test/unit_test.hpp>
@@ -148,8 +148,8 @@ namespace {
         runObject ( boyer_moore_horspool,        stdDiff );
         runOne    ( knuth_morris_pratt_search,   stdDiff );
         runObject ( knuth_morris_pratt,          stdDiff );
-        runOne    ( musser_nishanov_HAL_search,  stdDiff );
-        runMNObject ( musser_nishanov_HAL,          stdDiff );
+        runOne    ( musser_nishanov_search,      stdDiff );
+        runMNObject ( musser_nishanov,           stdDiff );
         }
     }
 
