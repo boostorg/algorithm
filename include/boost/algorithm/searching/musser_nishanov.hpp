@@ -32,8 +32,13 @@ class musser_nishanov
     corpus_difference_type mismatch_shift;
     boost::function<std::pair<CorpusIter, CorpusIter>(CorpusIter, CorpusIter)> search;
     
-    std::pair<CorpusIter, CorpusIter> HAL(CorpusIter corpus_first, CorpusIter corpus_last) {}
-    std::pair<CorpusIter, CorpusIter> AL(CorpusIter corpus_first, CorpusIter corpus_last) {}
+    std::pair<CorpusIter, CorpusIter> HAL(CorpusIter corpus_first, CorpusIter corpus_last) {
+        return std::make_pair(corpus_first, corpus_last);
+    }
+    std::pair<CorpusIter, CorpusIter> AL(CorpusIter corpus_first, CorpusIter corpus_last)
+    {
+        return std::make_pair(corpus_first, corpus_last);
+    }
     
 public:
     template <typename I>
