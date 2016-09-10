@@ -32,9 +32,22 @@ class musser_nishanov
     corpus_difference_type mismatch_shift;
     boost::function<std::pair<CorpusIter, CorpusIter>(CorpusIter, CorpusIter)> search;
     
-    std::pair<CorpusIter, CorpusIter> HAL(CorpusIter corpus_first, CorpusIter corpus_last) {
+    /**
+     * Called the first time a search object is run on a corpus with random-access iterators.
+     * This means that the skip table is only calculated if it is required.
+     */
+    std::pair<CorpusIter, CorpusIter> HAL_initialize(CorpusIter corpus_first, CorpusIter corpus_last)
+    {
+        search = bind(&musser_nishanov::HAL, *this, _1, _2);
+        // TODO: compute skip table
+        return HAL(corpus_first, corpus_last);
+    }
+    
+    std::pair<CorpusIter, CorpusIter> HAL(CorpusIter corpus_first, CorpusIter corpus_last)
+    {
         return std::make_pair(corpus_first, corpus_last);
     }
+    
     std::pair<CorpusIter, CorpusIter> AL(CorpusIter corpus_first, CorpusIter corpus_last)
     {
         return std::make_pair(corpus_first, corpus_last);
@@ -42,26 +55,34 @@ class musser_nishanov
     
 public:
     template <typename I>
-    musser_nishanov(I pat_first, I pat_last) : pat_first(pat_first), pat_last(pat_last)
+    musser_nishanov(I pat_first, I pat_last) : pat_first(pat_first), pat_last(pat_last), k_pattern_length(std::distance(pat_first, pat_last))
     {
         if (Trait::suffix_size == 0 || k_pattern_length < Trait::suffix_size)
             search = bind(&musser_nishanov::AL, *this, _1, _2);
         else
-            search = bind(&musser_nishanov::HAL, *this, _1, _2);
+            search = bind(&musser_nishanov::HAL_initialize, *this, _1, _2);
+        // TODO: Compute next table.
     }
     
+    /**
+     * Run the search object on a corpus with random-access iterators.
+     */
     template <typename I>
     typename enable_if<is_same<typename std::iterator_traits<I>::iterator_category, std::random_access_iterator_tag>, std::pair<I, I> >::type
     operator()(I corpus_first, I corpus_last)
     {
+        return search(corpus_first, corpus_last);
     }
     
+    /**
+     * Run the search object on a corpus with forward or bidirectional iterators.
+     */
     template <typename I>
     typename disable_if<is_same<typename std::iterator_traits<I>::iterator_category, std::random_access_iterator_tag>, std::pair<I, I> >::type
     operator()(I corpus_first, I corpus_last)
     {
+        return AL(corpus_first, corpus_last);
     }
-    
 };
 
 }} // namespace boost::algorithm
