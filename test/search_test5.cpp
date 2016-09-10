@@ -1,12 +1,20 @@
 /* 
    Copyright (c) Marshall Clow 2010-2012.
-
+   Copyright (c) Jeremy W. Murphy 2016.
+   
    Distributed under the Boost Software License, Version 1.0. (See accompanying
    file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
     For more information, see http://www.boost.org
 */
 
+/**
+ * Search test 5 benchmarks how long it takes each algorithm to
+ * 1) initialize, and
+ * 2) find all occurences of a pattern in the corpus.
+ * 
+ * The corpus (and thus patterns) are DNA sequences.
+ */
 #include <boost/algorithm/searching/boyer_moore.hpp>
 #include <boost/algorithm/searching/boyer_moore_horspool.hpp>
 #include <boost/algorithm/searching/knuth_morris_pratt.hpp>
@@ -167,8 +175,5 @@ BOOST_AUTO_TEST_CASE( test_main )
         std::cout << "--- " << m << " ---" << std::endl;
         vec pat = ReadFromFile(dirent->path().c_str());
         check_one ( c1, pat, -1 );
-    }    
-    
-    using boost::algorithm::musser_nishanov;
-    musser_nishanov<vec::const_iterator>(c1.begin(), c1.end());
+    }
 }
