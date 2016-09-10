@@ -6,6 +6,9 @@
 #include <boost/array.hpp>
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
+#include <boost/mpl/bool.hpp>
+#include <boost/mpl/and.hpp>
+#include <boost/mpl/or.hpp>
 #include <boost/next_prior.hpp>
 #include <boost/type_traits/is_base_of.hpp>
 #include <boost/utility/enable_if.hpp>
@@ -28,7 +31,12 @@ class musser_nishanov;
  */
 template <typename PatIter, typename CorpusIter, typename Trait>
 class musser_nishanov<PatIter, CorpusIter, Trait, 
-typename disable_if<is_base_of<std::random_access_iterator_tag, typename std::iterator_traits<CorpusIter>::iterator_category> >::type>
+typename disable_if<
+    typename boost::mpl::and_<
+        boost::is_base_of<std::random_access_iterator_tag, typename std::iterator_traits<CorpusIter>::iterator_category>,
+        boost::mpl::bool_<Trait::suffix_size>
+    >::type 
+>::type>
 {
     BOOST_STATIC_ASSERT (( boost::is_same<
     typename std::iterator_traits<PatIter>::value_type, 
@@ -147,7 +155,12 @@ public:
  */
 template <typename PatIter, typename CorpusIter, typename Trait>
 class musser_nishanov<PatIter, CorpusIter, Trait, 
-typename enable_if<is_base_of<std::random_access_iterator_tag, typename std::iterator_traits<CorpusIter>::iterator_category> >::type>
+typename enable_if<
+    typename boost::mpl::and_<
+        boost::is_base_of<std::random_access_iterator_tag, typename std::iterator_traits<CorpusIter>::iterator_category>,
+        boost::mpl::bool_<Trait::suffix_size> 
+    >::type 
+>::type>
 {
     BOOST_STATIC_ASSERT (( boost::is_same<
     typename std::iterator_traits<PatIter>::value_type, 
@@ -215,7 +228,7 @@ typename enable_if<is_base_of<std::random_access_iterator_tag, typename std::ite
 public:
     musser_nishanov(PatIter pat_first, PatIter pat_last) : pat_first(pat_first), pat_last(pat_last), k_pattern_length(std::distance(pat_first, pat_last))
     {
-        if (Trait::suffix_size == 0 || k_pattern_length < Trait::suffix_size)
+        if (k_pattern_length < Trait::suffix_size)
             search = bind(&musser_nishanov::AL, *this, _1, _2);
         else
             search = bind(&musser_nishanov::HAL_initialize, *this, _1, _2);
