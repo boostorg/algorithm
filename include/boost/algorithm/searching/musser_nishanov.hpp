@@ -199,7 +199,7 @@ typename enable_if<
             }
             while (k < 0);
             if (k < k_pattern_length)
-                return std::make_pair(corpus_last, corpus_last);
+                return make_pair(corpus_last, corpus_last);
             k -= adjustment;
             
             BOOST_ASSERT(k < 0);
@@ -238,15 +238,15 @@ typename enable_if<
                             ++j;
                             if (j == k_pattern_length)
                             {
-                                return std::make_pair(corpus_last + k - k_pattern_length, corpus_last + k);
+                                return make_pair(corpus_last + k - k_pattern_length, corpus_last + k);
                             }
                             if (k == 0)
-                                return std::make_pair(corpus_last, corpus_last);
+                                return make_pair(corpus_last, corpus_last);
                         }
                     }
             }
         }
-        return std::make_pair(corpus_last, corpus_last);
+        return make_pair(corpus_last, corpus_last);
     }
     
     std::pair<CorpusIter, CorpusIter> AL(CorpusIter corpus_first, CorpusIter corpus_last)
