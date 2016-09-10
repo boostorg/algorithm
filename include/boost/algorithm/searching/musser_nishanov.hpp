@@ -223,12 +223,7 @@ public:
             compute_next();
     }
     
-    /**
-     * Run the search object on a corpus with random-access iterators.
-     */
-    template <typename I>
-    typename enable_if<is_base_of<std::random_access_iterator_tag, typename std::iterator_traits<I>::iterator_category>, std::pair<I, I> >::type
-    operator()(I corpus_first, I corpus_last)
+    std::pair<CorpusIter, CorpusIter> operator()(CorpusIter corpus_first, CorpusIter corpus_last)
     {
         return search(corpus_first, corpus_last);
     }
