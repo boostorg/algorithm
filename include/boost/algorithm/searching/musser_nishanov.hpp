@@ -54,6 +54,11 @@ typename disable_if<is_base_of<std::random_access_iterator_tag, typename std::it
             next.push_back(pat_first[j] == pat_first[t] ? next[t] : t);
         }
     }
+
+    std::pair<CorpusIter, CorpusIter> AL(CorpusIter corpus_first, CorpusIter corpus_last) const
+    {
+        return std::make_pair(corpus_first, corpus_last);
+    }
     
 public:
     musser_nishanov(PatIter pat_first, PatIter pat_last) : pat_first(pat_first), pat_last(pat_last), k_pattern_length(std::distance(pat_first, pat_last))
@@ -68,7 +73,7 @@ public:
     std::pair<CorpusIter, CorpusIter>
     operator()(CorpusIter corpus_first, CorpusIter corpus_last) const
     {
-        // return AL(corpus_first, corpus_last);
+        return AL(corpus_first, corpus_last);
     }
 };
 
