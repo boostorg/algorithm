@@ -1,7 +1,6 @@
 #ifndef BOOST_ALGORITHM_SEARCH_MUSSER_NISHANOV_HPP
 #define BOOST_ALGORITHM_SEARCH_MUSSER_NISHANOV_HPP
 
-#include <boost/algorithm/searching/detail/musser_nishanov_HAL.hpp>
 #include <boost/algorithm/searching/detail/mn_traits.hpp>
 #include <boost/array.hpp>
 #include <boost/bind.hpp>
@@ -217,10 +216,7 @@ typename enable_if<
         pattern_difference_type const m = next.size();
         std::fill(skip.begin(), skip.end(), m - Trait::suffix_size + 1);
         for (pattern_difference_type j = Trait::suffix_size - 1; j < m - 1; ++j)
-        {
-            // unsigned char const index = Trait::hash(pat_first + j);
             skip[Trait::hash(pat_first + j)] = m - 1 - j;
-        }
         mismatch_shift = skip[Trait::hash(pat_first + m - 1)];
         skip[Trait::hash(pat_first + m - 1)] = 0;
     }
@@ -240,7 +236,6 @@ public:
     {
         return search(corpus_first, corpus_last);
     }
-    
 };
 
 }} // namespace boost::algorithm
