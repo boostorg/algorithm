@@ -3,6 +3,7 @@
 
 #include <boost/algorithm/searching/detail/mn_traits.hpp>
 #include <boost/array.hpp>
+#include <boost/core/ref.hpp>
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
 #include <boost/mpl/bool.hpp>
@@ -282,10 +283,10 @@ public:
         {
             compute_next();
             if (k_pattern_length < Trait::suffix_size)
-                search = bind(&musser_nishanov::AL, *this, _1, _2);
+                search = bind(&musser_nishanov::AL, ref(*this), _1, _2);
             else
             {
-                search = bind(&musser_nishanov::HAL, *this, _1, _2);
+                search = bind(&musser_nishanov::HAL, ref(*this), _1, _2);
                 compute_skip();
             }
         }
