@@ -177,7 +177,7 @@ typename enable_if<
 
     std::pair<CorpusIter, CorpusIter> nul_pattern(CorpusIter corpus_first, CorpusIter) const
     {
-        return make_pair(corpus_first, corpus_first);
+        return std::make_pair(corpus_first, corpus_first);
     }    
     
     std::pair<CorpusIter, CorpusIter> HAL(CorpusIter corpus_first, CorpusIter corpus_last)
