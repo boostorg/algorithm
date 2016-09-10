@@ -25,17 +25,8 @@ namespace boost { namespace algorithm {
 template <typename PatIter, typename CorpusIter = PatIter, typename Trait = search_trait<typename std::iterator_traits<PatIter>::value_type>, typename Enable = void>
 class musser_nishanov;
 
-/**
- * Musser-Nishanov Accelerated Linear search algorithm.
- */
-template <typename PatIter, typename CorpusIter, typename Trait>
-class musser_nishanov<PatIter, CorpusIter, Trait, 
-typename disable_if<
-    typename boost::mpl::and_<
-        boost::is_base_of<std::random_access_iterator_tag, typename std::iterator_traits<CorpusIter>::iterator_category>,
-        boost::mpl::bool_<Trait::suffix_size>
-    >::type 
->::type>
+template <typename PatIter, typename CorpusIter = PatIter, typename Trait = search_trait<typename std::iterator_traits<PatIter>::value_type> >
+class accelerated_linear
 {
     BOOST_STATIC_ASSERT (( boost::is_same<
     typename std::iterator_traits<PatIter>::value_type, 
@@ -132,7 +123,7 @@ typename disable_if<
     }
     
 public:
-    musser_nishanov(PatIter pat_first, PatIter pat_last) : pat_first(pat_first), pat_last(pat_last), k_pattern_length(std::distance(pat_first, pat_last))
+    accelerated_linear(PatIter pat_first, PatIter pat_last) : pat_first(pat_first), pat_last(pat_last), k_pattern_length(std::distance(pat_first, pat_last))
     {
         if (k_pattern_length > 0)
             compute_next();
@@ -146,6 +137,23 @@ public:
     {
         return AL(corpus_first, corpus_last);
     }
+};
+
+
+/**
+ * Musser-Nishanov Accelerated Linear search algorithm.
+ */
+template <typename PatIter, typename CorpusIter, typename Trait>
+class musser_nishanov<PatIter, CorpusIter, Trait, 
+typename disable_if<
+    typename boost::mpl::and_<
+        boost::is_base_of<std::random_access_iterator_tag, typename std::iterator_traits<CorpusIter>::iterator_category>,
+        boost::mpl::bool_<Trait::suffix_size>
+    >::type 
+>::type> : public accelerated_linear<PatIter, CorpusIter, Trait>
+{
+public:
+    musser_nishanov(PatIter pat_first, PatIter pat_last) : accelerated_linear<PatIter, CorpusIter, Trait>(pat_first, pat_last) {}
 };
 
 
