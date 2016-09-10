@@ -174,14 +174,17 @@ typename enable_if<
     pattern_difference_type k_pattern_length;
     corpus_difference_type mismatch_shift;
     boost::function<std::pair<CorpusIter, CorpusIter>(CorpusIter, CorpusIter)> search;
-    
+
+    std::pair<CorpusIter, CorpusIter> nul_pattern(CorpusIter corpus_first, CorpusIter) const
+    {
+        return make_pair(corpus_first, corpus_first);
+    }    
     
     std::pair<CorpusIter, CorpusIter> HAL(CorpusIter corpus_first, CorpusIter corpus_last)
     {
         using std::make_pair;
         
-        if (pat_first == pat_last)
-            return make_pair(corpus_first, corpus_first);
+        BOOST_ASSERT(pat_first != pat_last);
         corpus_difference_type const k_corpus_length = corpus_last - corpus_first;
         // Original location of compute_next.
         corpus_difference_type const adjustment = k_corpus_length + k_pattern_length;
@@ -294,8 +297,7 @@ public:
             }
         }
         else
-            // This is a fairly arbitrary choice.
-            search = bind(&musser_nishanov::HAL, this, _1, _2);
+            search = bind(&musser_nishanov::nul_pattern, this, _1, _2);
     }
     
     std::pair<CorpusIter, CorpusIter> operator()(CorpusIter corpus_first, CorpusIter corpus_last)
