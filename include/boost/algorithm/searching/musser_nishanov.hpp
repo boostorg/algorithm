@@ -86,8 +86,7 @@ class musser_nishanov
     }
     
 public:
-    template <typename I>
-    musser_nishanov(I pat_first, I pat_last) : pat_first(pat_first), pat_last(pat_last), k_pattern_length(std::distance(pat_first, pat_last))
+    musser_nishanov(PatIter pat_first, PatIter pat_last) : pat_first(pat_first), pat_last(pat_last), k_pattern_length(std::distance(pat_first, pat_last))
     {
         if (Trait::suffix_size == 0 || k_pattern_length < Trait::suffix_size)
             search = bind(&musser_nishanov::AL, *this, _1, _2);
