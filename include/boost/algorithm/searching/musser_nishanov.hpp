@@ -54,6 +54,7 @@ class accelerated_linear
         }
     }
 
+public:
     std::pair<CorpusIter, CorpusIter> AL(CorpusIter corpus_first, CorpusIter corpus_last) const
     {
         using std::find;
@@ -122,21 +123,12 @@ class accelerated_linear
         return make_pair(corpus_last, corpus_last);
     }
     
-public:
     accelerated_linear(PatIter pat_first, PatIter pat_last) : pat_first(pat_first), pat_last(pat_last), k_pattern_length(std::distance(pat_first, pat_last))
     {
         if (k_pattern_length > 0)
             compute_next();
     }
 
-    /**
-     * Run the search object on a corpus with forward or bidirectional iterators.
-     */
-    std::pair<CorpusIter, CorpusIter>
-    operator()(CorpusIter corpus_first, CorpusIter corpus_last) const
-    {
-        return AL(corpus_first, corpus_last);
-    }
 };
 
 
@@ -150,10 +142,20 @@ typename disable_if<
         boost::is_base_of<std::random_access_iterator_tag, typename std::iterator_traits<CorpusIter>::iterator_category>,
         boost::mpl::bool_<Trait::suffix_size>
     >::type 
->::type> : public accelerated_linear<PatIter, CorpusIter, Trait>
+>::type> : private accelerated_linear<PatIter, CorpusIter, Trait>
 {
+    using accelerated_linear<PatIter, CorpusIter, Trait>::AL;
 public:
     musser_nishanov(PatIter pat_first, PatIter pat_last) : accelerated_linear<PatIter, CorpusIter, Trait>(pat_first, pat_last) {}
+
+    /**
+     * Run the search object on a corpus with forward or bidirectional iterators.
+     */
+    std::pair<CorpusIter, CorpusIter>
+    operator()(CorpusIter corpus_first, CorpusIter corpus_last) const
+    {
+        return AL(corpus_first, corpus_last);
+    }
 };
 
 
