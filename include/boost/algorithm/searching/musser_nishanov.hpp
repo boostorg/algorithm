@@ -1,3 +1,13 @@
+/* 
+   Copyright (c) Dave R. Musser & Gor V. Nishanov 1997.
+   Copyright (c) Jeremy W. Murphy 2016.
+
+   Distributed under the Boost Software License, Version 1.0. (See accompanying
+   file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+
+    For more information, see http://www.boost.org
+*/
+
 #ifndef BOOST_ALGORITHM_SEARCH_MUSSER_NISHANOV_HPP
 #define BOOST_ALGORITHM_SEARCH_MUSSER_NISHANOV_HPP
 
