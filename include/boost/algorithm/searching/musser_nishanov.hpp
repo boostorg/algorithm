@@ -199,6 +199,7 @@ typename enable_if<
                 return std::make_pair(corpus_last, corpus_last);
             k -= adjustment;
             
+            BOOST_ASSERT(k < 0);
             if (corpus_last[k] != pat_first[0])
                 k += mismatch_shift;
             else
