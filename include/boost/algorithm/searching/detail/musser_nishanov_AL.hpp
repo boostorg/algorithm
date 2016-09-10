@@ -46,69 +46,6 @@ ForwardIterator1 musser_nishanov_AL(ForwardIterator1 text,
                             ForwardIterator2 patternEnd)
 {
     using namespace std;
-    typedef typename std::iterator_traits<ForwardIterator2>::difference_type Distance2;
-    ForwardIterator1 advance_, hold;
-    ForwardIterator2 p, p1;
-    Distance2 j, m;
-    vector<Distance2> next;
-    vector<ForwardIterator2> pattern_iterator;
-    
-    compute_next(pattern, patternEnd, next, pattern_iterator);
-    m = next.size();
-    if (next.size() == 1)
-        return find(text, textEnd, *pattern);
-    
-    p1 = pattern;
-    ++p1;
-    while (text != textEnd)
-    {
-        text = find(text, textEnd, *pattern);
-        if (text == textEnd)
-            return textEnd;
-        p = p1;
-        j = 1;
-        hold = text;
-        if (++text == textEnd)
-            return textEnd;
-        while (*text == *p)
-        {
-            if (++p == patternEnd)
-                return hold;
-            if (++text == textEnd)
-                return textEnd;
-            ++j;
-        }
-        
-        for (;;)
-        {
-            j = next[j];
-            if (j < 0)
-            {
-                ++text;
-                break;
-            }
-            if (j == 0)
-                break;
-            p = pattern_iterator[j];
-            while (*text == *p)
-            {
-                ++text;
-                ++p;
-                ++j;
-                if (p == patternEnd)
-                {
-                    advance_ = hold;
-                    advance(advance_, m);
-                    while (advance_ != text)
-                        ++advance_, ++hold;
-                    return hold;
-                }
-                if (text == textEnd)
-                    return textEnd;
-            }
-        }
-    }
-    return textEnd;
 }
 
 }} // namespace boost::algorithm
