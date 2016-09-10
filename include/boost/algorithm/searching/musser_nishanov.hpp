@@ -179,6 +179,10 @@ typename enable_if<
     
     std::pair<CorpusIter, CorpusIter> HAL(CorpusIter corpus_first, CorpusIter corpus_last)
     {
+        using std::make_pair;
+        
+        if (pat_first == pat_last)
+            return make_pair(corpus_first, corpus_first);
         corpus_difference_type const k_corpus_length = corpus_last - corpus_first;
         // Original location of compute_next.
         corpus_difference_type const adjustment = k_corpus_length + k_pattern_length;
