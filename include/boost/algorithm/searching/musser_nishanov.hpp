@@ -61,8 +61,10 @@ typename disable_if<is_base_of<std::random_access_iterator_tag, typename std::it
         using std::find;
         using std::make_pair;
         
+        if (pat_first == pat_last)
+            return make_pair(corpus_first, corpus_first);            
+        
         PatIter p1;
-        pattern_difference_type j;
 
         if (next_.size() == 1)
         {
@@ -77,7 +79,7 @@ typename disable_if<is_base_of<std::random_access_iterator_tag, typename std::it
             if (corpus_first == corpus_last)
                 return make_pair(corpus_last, corpus_last);
             PatIter p = p1;
-            j = 1;
+            pattern_difference_type j = 1;
             CorpusIter hold = corpus_first;
             if (++corpus_first == corpus_last)
                 return make_pair(corpus_last, corpus_last);
