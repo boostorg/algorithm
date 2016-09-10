@@ -306,6 +306,13 @@ public:
     }
 };
 
+template <typename PatIter, typename CorpusIter>
+std::pair<CorpusIter, CorpusIter> musser_nishanov_search(CorpusIter corpus_first, CorpusIter corpus_last, PatIter pat_first, PatIter pat_last)
+{
+    musser_nishanov<PatIter, CorpusIter> mn(pat_first, pat_last);
+    return mn(corpus_first, corpus_last);
+}
+
 }} // namespace boost::algorithm
 
 #endif
