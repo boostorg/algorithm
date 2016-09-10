@@ -16,6 +16,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include <iostream>
+#include <list>
 #include <string>
 #include <vector>
 
@@ -43,13 +44,18 @@ namespace {
         pattern_type nBeg = needle.begin ();
         pattern_type nEnd = needle.end ();
 
+        std::list<char> const haystack_bd(hBeg, hEnd);
+        typedef typename std::list<char>::const_iterator list_iterator;
+        typedef typename std::pair<list_iterator, list_iterator> list_result;
+        
 //      iter_type ret0  = std::search                     (hBeg, hEnd, nBeg, nEnd);
         ret_type ret1  = ba::boyer_moore_search          (hBeg, hEnd, nBeg, nEnd);
         ret_type ret1r = ba::boyer_moore_search          (haystack, nBeg, nEnd);
         ret_type ret2  = ba::boyer_moore_horspool_search (hBeg, hEnd, nBeg, nEnd);
         ret_type ret3  = ba::knuth_morris_pratt_search   (hBeg, hEnd, nBeg, nEnd);
         ret_type ret4  = ba::musser_nishanov_search      (hBeg, hEnd, nBeg, nEnd);
-
+        list_result ret5 = ba::musser_nishanov_search    (haystack_bd.begin(), haystack_bd.end(), nBeg, nEnd);
+        
         iter_type it0  = std::search                     (hBeg, hEnd, nBeg, nEnd);
 //         iter_type it1  = ret1.first;
 //         iter_type it1r = ret1r.first;
@@ -83,6 +89,12 @@ namespace {
                 throw std::runtime_error ( 
                     std::string ( "results mismatch between boyer-moore and musser-nishanov-HAL search" ));
                 }
+                
+            if ( ret1.first - haystack.begin() != std::distance(haystack_bd.begin(), ret5.first) 
+                || haystack.end() - ret1.second != std::distance(ret5.second, haystack_bd.end()) ) {
+                throw std::runtime_error ( 
+                    std::string ( "results mismatch between boyer-moore and musser-nishanov-AL search" ));
+                }
             }
 
         catch ( ... ) {
@@ -93,7 +105,8 @@ namespace {
             std::cout << "  bm(r):  " << std::distance ( hBeg, ret1r.first ) << "\n";
             std::cout << "  bmh:    " << std::distance ( hBeg, ret2.first ) << "\n";
             std::cout << "  kpm:    " << std::distance ( hBeg, ret3.first )<< "\n";
-            std::cout << "  mn:     " << std::distance ( hBeg, ret4.first )<< "\n";
+            std::cout << "  mn_ra:  " << std::distance ( hBeg, ret4.first )<< "\n";
+            std::cout << "  mn_bd:  " << std::distance ( haystack_bd.begin(), ret5.first )<< "\n";
             std::cout << std::flush;
             throw ;
             }
