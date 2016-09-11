@@ -72,6 +72,9 @@ private:
 public:
     std::pair<CorpusIter, CorpusIter> operator()(CorpusIter corpus_first, CorpusIter corpus_last) const
     {
+        BOOST_ASSERT(std::distance(pat_first, pat_last) == k_pattern_length);
+        BOOST_ASSERT(size_t(k_pattern_length) == next_.size());
+
         using std::find;
         using std::make_pair;
         
@@ -207,12 +210,15 @@ typename enable_if<
     
     std::pair<CorpusIter, CorpusIter> HAL(CorpusIter corpus_first, CorpusIter corpus_last)
     {
+        BOOST_ASSERT(pat_first != pat_last);
+        BOOST_ASSERT(std::distance(pat_first, pat_last) == k_pattern_length);
+        BOOST_ASSERT(size_t(k_pattern_length) == next_.size());
+
         using std::make_pair;
         
-        BOOST_ASSERT(pat_first != pat_last);
         corpus_difference_type const k_corpus_length = corpus_last - corpus_first;
-        // Original location of compute_next.
         corpus_difference_type const adjustment = k_corpus_length + k_pattern_length;
+        // NOTE: The following line prevents this function from being const.
         skip[Trait::hash(pat_first + k_pattern_length - 1)] = k_corpus_length + 1;
         corpus_difference_type k = -k_corpus_length;
         for (;;)
@@ -279,6 +285,8 @@ typename enable_if<
 
     void compute_skip()
     {
+        BOOST_ASSERT(next_.size() >= Trait::suffix_size);
+        
         pattern_difference_type const m = next_.size();
         std::fill(skip.begin(), skip.end(), m - Trait::suffix_size + 1);
         for (pattern_difference_type j = Trait::suffix_size - 1; j < m - 1; ++j)
