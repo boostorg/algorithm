@@ -11,10 +11,6 @@
 #ifndef BOOST_ALGORITHM_SEARCH_DETAIL_MN_TRAITS
 #define BOOST_ALGORITHM_SEARCH_DETAIL_MN_TRAITS
 
-#include <iterator>
-
-#include <boost/integer.hpp>
-
 namespace boost { namespace algorithm {
 
 template <class T>
@@ -22,10 +18,9 @@ struct search_trait {
     enum {hash_range_max = 0};
     enum {suffix_size = 0};
     template <class RandomAccessIterator>
-    inline static 
-    typename boost::uint_t<sizeof(T) * 8>::exact
-    hash(RandomAccessIterator) {
-        return 0;              
+    inline static
+    T hash(RandomAccessIterator) {
+        return 0;
     }
 };
 
