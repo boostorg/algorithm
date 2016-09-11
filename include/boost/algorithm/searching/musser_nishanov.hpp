@@ -20,6 +20,7 @@
 #include <boost/mpl/or.hpp>
 #include <boost/next_prior.hpp>
 #include <boost/type_traits/is_base_of.hpp>
+#include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 
 #include <iterator>
