@@ -37,7 +37,7 @@ namespace detail {
  * Accelerated Linear (AL) search by Musser & Nishanov.
  * 
  */
-template <typename PatIter, typename CorpusIter = PatIter, typename Trait = search_trait<typename std::iterator_traits<PatIter>::value_type> >
+template <typename PatIter, typename CorpusIter = PatIter>
 class accelerated_linear
 {
     BOOST_STATIC_ASSERT (( boost::is_same<
@@ -165,9 +165,9 @@ typename disable_if<
         boost::is_base_of<std::random_access_iterator_tag, typename std::iterator_traits<CorpusIter>::iterator_category>,
         boost::mpl::bool_<Trait::suffix_size>
     >::type 
->::type> : public boost::algorithm::detail::accelerated_linear<PatIter, CorpusIter, Trait>
+>::type> : public boost::algorithm::detail::accelerated_linear<PatIter, CorpusIter>
 {
-    typedef boost::algorithm::detail::accelerated_linear<PatIter, CorpusIter, Trait> AcceleratedLinear;
+    typedef boost::algorithm::detail::accelerated_linear<PatIter, CorpusIter> AcceleratedLinear;
     
 public:
     musser_nishanov(PatIter pat_first, PatIter pat_last) : AcceleratedLinear(pat_first, pat_last) {}
@@ -184,9 +184,9 @@ typename enable_if<
         boost::is_base_of<std::random_access_iterator_tag, typename std::iterator_traits<CorpusIter>::iterator_category>,
         boost::mpl::bool_<Trait::suffix_size> 
     >::type 
->::type> : public boost::algorithm::detail::accelerated_linear<PatIter, CorpusIter, Trait>
+>::type> : public boost::algorithm::detail::accelerated_linear<PatIter, CorpusIter>
 {
-    typedef boost::algorithm::detail::accelerated_linear<PatIter, CorpusIter, Trait> AcceleratedLinear;
+    typedef boost::algorithm::detail::accelerated_linear<PatIter, CorpusIter> AcceleratedLinear;
     
     using typename AcceleratedLinear::pattern_difference_type;
     using typename AcceleratedLinear::corpus_difference_type;
