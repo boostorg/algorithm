@@ -153,9 +153,9 @@ namespace {
         runObject ( boyer_moore_horspool,        stdDiff );
         runObject ( knuth_morris_pratt,          stdDiff );
         runHALObject ( musser_nishanov, default_mn_search_traits, stdDiff );
-        runHALObject ( musser_nishanov, boost::algorithm::search_trait_dna2, stdDiff );
         runHALObject ( musser_nishanov, boost::algorithm::search_trait_dna3, stdDiff );
         runHALObject ( musser_nishanov, boost::algorithm::search_trait_dna4, stdDiff );
+        runHALObject ( musser_nishanov, boost::algorithm::search_trait_dna5, stdDiff );
     }
     }
 
