@@ -91,11 +91,11 @@ public:
             corpus_first = find(corpus_first, corpus_last, *pat_first);
             if (corpus_first == corpus_last)
                 return make_pair(corpus_last, corpus_last);
-            PatIter p = p1;
-            pattern_difference_type j = 1;
             CorpusIter hold = corpus_first;
             if (++corpus_first == corpus_last)
                 return make_pair(corpus_last, corpus_last);
+            PatIter p = p1;
+            pattern_difference_type j = 1;
             while (*corpus_first == *p)
             {
                 if (++p == pat_last)
