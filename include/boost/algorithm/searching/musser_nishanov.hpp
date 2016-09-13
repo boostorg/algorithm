@@ -86,7 +86,7 @@ public:
         if (next_.size() == 1)
         {
             CorpusIter const result = find(corpus_first, corpus_last, *pat_first);
-            return result == corpus_last ? make_pair(corpus_last, corpus_last) : make_pair(result, next(result));
+            return result == corpus_last ? make_pair(corpus_last, corpus_last) : make_pair(result, boost::next(result));
         }
         p1 = pat_first;
         ++p1;
@@ -103,7 +103,7 @@ public:
             while (*corpus_first == *p)
             {
                 if (++p == pat_last)
-                    return make_pair(hold, next(hold, k_pattern_length));
+                    return make_pair(hold, boost::next(hold, k_pattern_length));
                 if (++corpus_first == corpus_last)
                     return make_pair(corpus_last, corpus_last);
                 ++j;
@@ -131,7 +131,7 @@ public:
                         std::advance(succesor, next_.size());
                         while (succesor != corpus_first)
                             ++succesor, ++hold;
-                        return make_pair(hold, next(hold, k_pattern_length));
+                        return make_pair(hold, boost::next(hold, k_pattern_length));
                     }
                     if (corpus_first == corpus_last)
                         return make_pair(corpus_last, corpus_last);
