@@ -188,7 +188,7 @@ typename enable_if<
         boost::is_base_of<std::random_access_iterator_tag, typename std::iterator_traits<CorpusIter>::iterator_category>,
         boost::mpl::bool_<Trait::suffix_size> 
     >::type 
->::type> : public boost::algorithm::detail::accelerated_linear<PatIter, CorpusIter>
+>::type> : private boost::algorithm::detail::accelerated_linear<PatIter, CorpusIter>
 {
     typedef boost::algorithm::detail::accelerated_linear<PatIter, CorpusIter> AcceleratedLinear;
     
@@ -295,13 +295,19 @@ typename enable_if<
         skip[Trait::hash(pat_first + m - 1)] = 0;
     }
     
+    
+    std::pair<CorpusIter, CorpusIter> AL(CorpusIter corpus_first, CorpusIter corpus_last)
+    {
+        return AcceleratedLinear::operator()(corpus_first, corpus_last);
+    }
+    
 public:
     musser_nishanov(PatIter pat_first, PatIter pat_last) : AcceleratedLinear(pat_first, pat_last)
     {
         if (k_pattern_length > 0)
         {
             if (k_pattern_length < Trait::suffix_size)
-                search = bind(&AcceleratedLinear::operator(), this, _1, _2);
+                search = bind(&musser_nishanov::AL, this, _1, _2);
             else
             {
                 search = bind(&musser_nishanov::HAL, this, _1, _2);
