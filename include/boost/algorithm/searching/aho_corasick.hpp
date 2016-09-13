@@ -99,7 +99,7 @@ public:
             node_type* child_node = current_node->getLink(*it);
             if (!child_node)
             {
-                current_node->links[*it] = node();
+                current_node->links[*it] = node(&root);
                 child_node = &current_node->links[*it];
             }
             current_node = child_node;
