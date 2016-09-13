@@ -99,8 +99,7 @@ public:
             node_type* child_node = current_node->getLink(*it);
             if (!child_node)
             {
-                node new_node;
-                current_node->links[*it] = std::move(new_node);
+                current_node->links[*it] = node();
                 child_node = &current_node->links[*it];
             }
             current_node = child_node;
