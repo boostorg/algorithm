@@ -306,7 +306,7 @@ public:
     {
         if (k_pattern_length > 0)
         {
-            if (k_pattern_length < Trait::suffix_size)
+            if (k_pattern_length < Trait::suffix_size || k_pattern_length == 1)
                 search = bind(&musser_nishanov::AL, this, _1, _2);
             else
             {
