@@ -15,13 +15,13 @@
 
 #include <boost/range/begin.hpp>
 #include <boost/range/end.hpp>
-#include <boost/container/map.hpp>
-#include <boost/unordered_map.hpp>
+#include <boost/container/flat_map.hpp>
+
 
 namespace boost { namespace algorithm {
 
 template <typename T, template<typename ...> class Container, typename ...Args>
-class aho_corasick
+class aho_corasick_base
 {
 private:
     class node
@@ -55,10 +55,10 @@ private:
     size_t countStrings = 0;
     bool isInited = false;
 public:
-    aho_corasick(){}
+    aho_corasick_base(){}
 
     template<typename ForwardIterator>
-    explicit aho_corasick(ForwardIterator patBegin, ForwardIterator patEnd)
+    explicit aho_corasick_base(ForwardIterator patBegin, ForwardIterator patEnd)
     {
         while(patBegin != patEnd)
         {
@@ -68,7 +68,7 @@ public:
     }
 
     template<typename Range>
-    explicit aho_corasick(const Range& range) : aho_corasick(boost::begin(range), boost::end(range)) {}
+    explicit aho_corasick_base(const Range& range) : aho_corasick_base(boost::begin(range), boost::end(range)) {}
 
     /// \fn insert(const Range& range)
     /// \brief Insert pattern in trie
@@ -228,15 +228,12 @@ private:
 
 //Object interface
 template <typename T, typename Pred = std::less<T>>
-using aho_corasick_map_obj = aho_corasick<T, boost::container::map, Pred>;
-
-template <typename T, typename Hash = std::hash<T>, typename Comp = std::equal_to<T>>
-using aho_corasick_hashmap_obj = aho_corasick<T, boost::unordered_map, Hash, Comp>;
+using aho_corasick = aho_corasick_base<T, boost::container::flat_map, Pred>;
 
 
 //Functional interface
 
-/// \fn aho_corasick_map ( RAIterator corpus_begin, RAIterator corpus_end,
+/// \fn aho_corasick_search ( RAIterator corpus_begin, RAIterator corpus_end,
 ///                        ForwardIterator pat_begin, ForwardIterator pat_end,
 ///                        Callback cb)
 /// \return true if all callback callings return true, else false
@@ -249,34 +246,14 @@ using aho_corasick_hashmap_obj = aho_corasick<T, boost::unordered_map, Hash, Com
 ///
 template <typename T, typename Predicate = std::less<T>, typename RAIterator,
         typename ForwardIterator, typename Callback>
-bool aho_corasick_map ( RAIterator corpus_begin, RAIterator corpus_end,
+bool aho_corasick_search ( RAIterator corpus_begin, RAIterator corpus_end,
                         ForwardIterator pat_begin, ForwardIterator pat_end,
                         Callback cb)
 {
-    aho_corasick<T, boost::container::map, Predicate> obj(pat_begin, pat_end);
+    aho_corasick_base<T, boost::container::map, Predicate> obj(pat_begin, pat_end);
     return obj.find(corpus_begin, corpus_end, cb);
 }
 
-/// \fn aho_corasick_hashmap ( RAIterator corpus_begin, RAIterator corpus_end,
-///                            ForwardIterator pat_begin, ForwardIterator pat_end,
-///                            Callback cb)
-/// \return true if all callback callings return true, else false
-///
-/// \param corpus_begin The start of the corpus sequence
-/// \param corpus_end   One past the end of the corpus sequence
-/// \param pat_begin	The start of the patterns sequence
-/// \param pat_end	    One past the end of the patterns sequence
-/// \param cb 		    Callback for matches
-///
-template <typename T, typename Hash = std::hash<T>, typename Comp = std::equal_to<T>, typename RAIterator,
-        typename ForwardIterator, typename Callback>
-bool aho_corasick_hashmap ( RAIterator corpus_begin, RAIterator corpus_end,
-                            ForwardIterator pat_begin, ForwardIterator pat_end,
-                            Callback cb)
-{
-    aho_corasick<T, boost::unordered_map, Hash, Comp> obj(pat_begin, pat_end);
-    return obj.find(corpus_begin, corpus_end, cb);
-}
 }}
 
 #endif //BOOST_ALGORITHM_AHO_CORASICK_HPP
