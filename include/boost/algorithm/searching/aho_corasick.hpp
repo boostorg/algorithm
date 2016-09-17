@@ -250,7 +250,7 @@ bool aho_corasick_search ( RAIterator corpus_begin, RAIterator corpus_end,
                         ForwardIterator pat_begin, ForwardIterator pat_end,
                         Callback cb)
 {
-    aho_corasick_base<T, boost::container::map, Predicate> obj(pat_begin, pat_end);
+    aho_corasick_base<T, boost::container::flat_map, Predicate> obj(pat_begin, pat_end);
     return obj.find(corpus_begin, corpus_end, cb);
 }
 
