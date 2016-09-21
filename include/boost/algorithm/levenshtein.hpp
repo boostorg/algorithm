@@ -106,7 +106,7 @@ damerau_distance(Range1 range1, Range2 range2,
                  const VarType InsertCost = 1, const VarType DeleteCost = 1,
                  const VarType ReplaceCost = 1, const VarType TransposeCost = 1)
 {
-    return damerau_distance(boost::begin(range1), boost::end(range1),
+    return damerau_distance<VarType>(boost::begin(range1), boost::end(range1),
                             boost::begin(range2), boost::end(range2),
                             InsertCost, DeleteCost, ReplaceCost, TransposeCost);
 }
@@ -168,7 +168,7 @@ levenshtein_distance(Range1 range1, Range2 range2,
                      const VarType InsertCost = 1, const VarType DeleteCost = 1,
                      const VarType ReplaceCost = 1)
 {
-    return levenshtein_distance(boost::begin(range1), boost::end(range1),
+    return levenshtein_distance<VarType>(boost::begin(range1), boost::end(range1),
                                 boost::begin(range2), boost::end(range2),
                                 InsertCost, DeleteCost, ReplaceCost);
 }

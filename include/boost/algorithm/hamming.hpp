@@ -17,7 +17,6 @@
 namespace boost { namespace algorithm {
 
 
-//TODO: Return value for sequences with different lengths
 template<typename VarType = int, typename ForwardIterator1, typename ForwardIterator2>
 VarType
 hamming_distance(ForwardIterator1 beginS1, ForwardIterator1 endS1,
@@ -47,7 +46,7 @@ template<typename VarType = int, typename Range1, typename Range2>
 VarType
 hamming_distance(Range1 range1, Range2 range2)
 {
-    return hamming_distance(boost::begin(range1), boost::end(range1),
+    return hamming_distance<VarType>(boost::begin(range1), boost::end(range1),
                             boost::begin(range2), boost::end(range2));
 };
 
