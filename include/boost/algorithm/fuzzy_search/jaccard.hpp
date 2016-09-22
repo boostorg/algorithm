@@ -66,4 +66,4 @@ VarType jaccard_coefficient(Range1 range1, Range2 range2)
 };
 }}
 
-#endif //BOOST_ALGORITHM_BOOST_ALGORITHM_JACCARD_HPP_HPP
+#endif //BOOST_ALGORITHM_BOOST_ALGORITHM_JACCARD_HPP
