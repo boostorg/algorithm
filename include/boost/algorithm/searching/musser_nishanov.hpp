@@ -146,49 +146,14 @@ public:
         if (k_pattern_length > 0)
             compute_next();
     }
-
-};
-
-} // namespace detail
-
-
-/**
- * One class, two identities based on corpus iterator and the suffix size trait.
- */
-template <typename PatIter, typename CorpusIter = PatIter, typename Trait = search_trait<typename std::iterator_traits<PatIter>::value_type>, typename Enable = void>
-class musser_nishanov;
-
-
-/**
- * Musser-Nishanov Accelerated Linear search algorithm.
- */
-template <typename PatIter, typename CorpusIter, typename Trait>
-class musser_nishanov<PatIter, CorpusIter, Trait, 
-typename disable_if<
-    typename boost::mpl::and_<
-        boost::is_base_of<std::random_access_iterator_tag, typename std::iterator_traits<CorpusIter>::iterator_category>,
-        boost::mpl::bool_<Trait::suffix_size>
-    >::type 
->::type> : public boost::algorithm::detail::accelerated_linear<PatIter, CorpusIter>
-{
-    typedef boost::algorithm::detail::accelerated_linear<PatIter, CorpusIter> AcceleratedLinear;
-    
-public:
-    musser_nishanov(PatIter pat_first, PatIter pat_last) : AcceleratedLinear(pat_first, pat_last) {}
 };
 
 
 /**
- * Musser-Nishanov Hashed Accelerated Linear search algorithm.
+ * Musser-Nishanov Hashed Accelerated Linear (HAL) search algorithm.
  */
 template <typename PatIter, typename CorpusIter, typename Trait>
-class musser_nishanov<PatIter, CorpusIter, Trait, 
-typename enable_if<
-    typename boost::mpl::and_<
-        boost::is_base_of<std::random_access_iterator_tag, typename std::iterator_traits<CorpusIter>::iterator_category>,
-        boost::mpl::bool_<Trait::suffix_size> 
-    >::type 
->::type> : private boost::algorithm::detail::accelerated_linear<PatIter, CorpusIter>
+class hashed_accelerated_linear : private boost::algorithm::detail::accelerated_linear<PatIter, CorpusIter>
 {
     typedef boost::algorithm::detail::accelerated_linear<PatIter, CorpusIter> AcceleratedLinear;
     
@@ -198,11 +163,11 @@ typename enable_if<
     using AcceleratedLinear::pat_first;
     using AcceleratedLinear::pat_last;
     using AcceleratedLinear::next_;
-
+    
     boost::array<corpus_difference_type, Trait::hash_range_max> skip;
     corpus_difference_type mismatch_shift;
     boost::function<std::pair<CorpusIter, CorpusIter>(CorpusIter, CorpusIter)> search;
-
+    
     std::pair<CorpusIter, CorpusIter> nul_pattern(CorpusIter corpus_first, CorpusIter) const
     {
         return std::make_pair(corpus_first, corpus_first);
@@ -213,7 +178,7 @@ typename enable_if<
         BOOST_ASSERT(pat_first != pat_last);
         BOOST_ASSERT(std::distance(pat_first, pat_last) == k_pattern_length);
         BOOST_ASSERT(size_t(k_pattern_length) == next_.size());
-
+        
         using std::make_pair;
         
         corpus_difference_type const k_corpus_length = corpus_last - corpus_first;
@@ -282,7 +247,7 @@ typename enable_if<
         return make_pair(corpus_last, corpus_last);
     }
     
-
+    
     void compute_skip()
     {
         BOOST_ASSERT(next_.size() >= Trait::suffix_size);
@@ -302,26 +267,72 @@ typename enable_if<
     }
     
 public:
-    musser_nishanov(PatIter pat_first, PatIter pat_last) : AcceleratedLinear(pat_first, pat_last)
+    hashed_accelerated_linear(PatIter pat_first, PatIter pat_last) : AcceleratedLinear(pat_first, pat_last)
     {
         if (k_pattern_length > 0)
         {
             if (k_pattern_length < Trait::suffix_size || k_pattern_length == 1)
-                search = bind(&musser_nishanov::AL, this, _1, _2);
+                search = bind(&hashed_accelerated_linear::AL, this, _1, _2);
             else
             {
-                search = bind(&musser_nishanov::HAL, this, _1, _2);
+                search = bind(&hashed_accelerated_linear::HAL, this, _1, _2);
                 compute_skip();
             }
         }
         else
-            search = bind(&musser_nishanov::nul_pattern, this, _1, _2);
+            search = bind(&hashed_accelerated_linear::nul_pattern, this, _1, _2);
     }
     
     std::pair<CorpusIter, CorpusIter> operator()(CorpusIter corpus_first, CorpusIter corpus_last)
     {
         return search(corpus_first, corpus_last);
     }
+};
+
+} // namespace detail
+
+
+/**
+ * One class, two identities based on corpus iterator and the suffix size trait.
+ */
+template <typename PatIter, typename CorpusIter = PatIter, typename Trait = search_trait<typename std::iterator_traits<PatIter>::value_type>, typename Enable = void>
+class musser_nishanov;
+
+
+/**
+ * Musser-Nishanov Accelerated Linear search algorithm.
+ */
+template <typename PatIter, typename CorpusIter, typename Trait>
+class musser_nishanov<PatIter, CorpusIter, Trait, 
+typename disable_if<
+    typename boost::mpl::and_<
+        boost::is_base_of<std::random_access_iterator_tag, typename std::iterator_traits<CorpusIter>::iterator_category>,
+        boost::mpl::bool_<Trait::suffix_size>
+    >::type 
+>::type> : public boost::algorithm::detail::accelerated_linear<PatIter, CorpusIter>
+{
+    typedef boost::algorithm::detail::accelerated_linear<PatIter, CorpusIter> AcceleratedLinear;
+    
+public:
+    musser_nishanov(PatIter pat_first, PatIter pat_last) : AcceleratedLinear(pat_first, pat_last) {}
+};
+
+
+/**
+ * Musser-Nishanov Hashed Accelerated Linear search algorithm.
+ */
+template <typename PatIter, typename CorpusIter, typename Trait>
+class musser_nishanov<PatIter, CorpusIter, Trait, 
+typename enable_if<
+    typename boost::mpl::and_<
+        boost::is_base_of<std::random_access_iterator_tag, typename std::iterator_traits<CorpusIter>::iterator_category>,
+        boost::mpl::bool_<Trait::suffix_size> 
+    >::type 
+>::type> : public boost::algorithm::detail::hashed_accelerated_linear<PatIter, CorpusIter, Trait>
+{
+    typedef boost::algorithm::detail::hashed_accelerated_linear<PatIter, CorpusIter, Trait> HashedAcceleratedLinear;
+public:
+    musser_nishanov(PatIter pat_first, PatIter pat_last) : HashedAcceleratedLinear(pat_first, pat_last) {}
 };
 
 
