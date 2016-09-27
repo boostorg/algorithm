@@ -14,9 +14,11 @@
 #include <boost/algorithm/searching/detail/mn_traits.hpp>
 #include <boost/array.hpp>
 #include <boost/bind.hpp>
+#include <boost/concept/assert.hpp>
+#include <boost/concept_check.hpp>
 #include <boost/function.hpp>
-#include <boost/mpl/bool.hpp>
 #include <boost/mpl/and.hpp>
+#include <boost/mpl/bool.hpp>
 #include <boost/mpl/or.hpp>
 #include <boost/next_prior.hpp>
 #include <boost/type_traits/is_base_of.hpp>
@@ -164,26 +166,52 @@ class hashed_accelerated_linear : private boost::algorithm::detail::accelerated_
     using AcceleratedLinear::pat_last;
     using AcceleratedLinear::next_;
     
-    boost::array<corpus_difference_type, Trait::hash_range_max> skip;
+    typedef boost::array<corpus_difference_type, Trait::hash_range_max> skip_container;
+    typedef boost::function<std::pair<CorpusIter, CorpusIter>(CorpusIter, CorpusIter)> search_function;
+
+    skip_container skip_;
     corpus_difference_type mismatch_shift;
-    boost::function<std::pair<CorpusIter, CorpusIter>(CorpusIter, CorpusIter)> search;
+    search_function search;
     
     std::pair<CorpusIter, CorpusIter> nul_pattern(CorpusIter corpus_first, CorpusIter) const
     {
         return std::make_pair(corpus_first, corpus_first);
     }    
     
+
+    // These HAL(first, last) overloads are just to differentiate const and non-const.
+   
+    std::pair<CorpusIter, CorpusIter> HAL(CorpusIter corpus_first, CorpusIter corpus_last) const
+    {
+        // Make a copy so that the real HAL can modify it.
+        skip_container skip(skip_);
+        return HAL(corpus_first, corpus_last, skip.begin());
+    }
+    
+
     std::pair<CorpusIter, CorpusIter> HAL(CorpusIter corpus_first, CorpusIter corpus_last)
     {
+        // Go ahead and modify the object.
+        return HAL(corpus_first, corpus_last, skip_.begin());
+    }
+    
+    
+    //This is the real HAL algorithm.
+    template <typename I>
+    std::pair<CorpusIter, CorpusIter> HAL(CorpusIter corpus_first, CorpusIter corpus_last, I skip) const
+    {
+        BOOST_CONCEPT_ASSERT((boost::Mutable_RandomAccessIterator<I>));
+        
         BOOST_ASSERT(pat_first != pat_last);
         BOOST_ASSERT(std::distance(pat_first, pat_last) == k_pattern_length);
         BOOST_ASSERT(size_t(k_pattern_length) == next_.size());
-        
+
         using std::make_pair;
         
         corpus_difference_type const k_corpus_length = corpus_last - corpus_first;
         corpus_difference_type const adjustment = k_corpus_length + k_pattern_length;
-        // NOTE: The following line prevents this function from being const.
+        // NOTE: This assignment requires the skip iterator to be mutable, and
+        // the implementation would be greatly simplified if a way around it could be found.
         skip[Trait::hash(pat_first + k_pattern_length - 1)] = k_corpus_length + 1;
         corpus_difference_type k = -k_corpus_length;
         for (;;)
@@ -253,17 +281,28 @@ class hashed_accelerated_linear : private boost::algorithm::detail::accelerated_
         BOOST_ASSERT(next_.size() >= Trait::suffix_size);
         
         pattern_difference_type const m = next_.size();
-        std::fill(skip.begin(), skip.end(), m - Trait::suffix_size + 1);
+        std::fill(skip_.begin(), skip_.end(), m - Trait::suffix_size + 1);
         for (pattern_difference_type j = Trait::suffix_size - 1; j < m - 1; ++j)
-            skip[Trait::hash(pat_first + j)] = m - 1 - j;
-        mismatch_shift = skip[Trait::hash(pat_first + m - 1)];
-        skip[Trait::hash(pat_first + m - 1)] = 0;
+            skip_[Trait::hash(pat_first + j)] = m - 1 - j;
+        mismatch_shift = skip_[Trait::hash(pat_first + m - 1)];
+        skip_[Trait::hash(pat_first + m - 1)] = 0;
     }
     
     
-    std::pair<CorpusIter, CorpusIter> AL(CorpusIter corpus_first, CorpusIter corpus_last)
+    std::pair<CorpusIter, CorpusIter> AL(CorpusIter corpus_first, CorpusIter corpus_last) const
     {
         return AcceleratedLinear::operator()(corpus_first, corpus_last);
+    }
+    
+    // Choose the const or non-const HAL search function.
+    search_function HAL_function() const
+    {
+        return bind(static_cast<std::pair<CorpusIter, CorpusIter>(hashed_accelerated_linear::*)(CorpusIter, CorpusIter) const>(&hashed_accelerated_linear::HAL), this, _1, _2);
+    }
+
+    search_function HAL_function()
+    {
+        return bind(static_cast<std::pair<CorpusIter, CorpusIter>(hashed_accelerated_linear::*)(CorpusIter, CorpusIter)>(&hashed_accelerated_linear::HAL), this, _1, _2);
     }
     
 public:
@@ -275,7 +314,7 @@ public:
                 search = bind(&hashed_accelerated_linear::AL, this, _1, _2);
             else
             {
-                search = bind(&hashed_accelerated_linear::HAL, this, _1, _2);
+                search = HAL_function();
                 compute_skip();
             }
         }
