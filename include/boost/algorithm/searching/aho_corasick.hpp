@@ -52,7 +52,6 @@ public:
 private:
     node_type root;
     node_type* current_state;
-    size_t countStrings = 0;
     bool isInited = false;
 public:
     aho_corasick_base(){}

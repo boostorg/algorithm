@@ -22,6 +22,8 @@ The algorithm was conceived in 1975 by Alfred V. Aho  and Margaret J. Corasick. 
 
 Nomenclature: The nomenclature is similar to that of the Knuth Morris Pratt implementation in Boost.Algorithm. The sequence being searched for is referred to as the "pattern", and the sequence being searched in is referred to as the "corpus".
 
+See more in "Set Matching and Aho–Corasick Algorithm", lecture slides by Pekka Kilpeläinen(http://www.cs.uku.fi/~kilpelai/BSA05/lectures/slides04.pdf).
+
 [heading Interface]
 
 For flexibility, the Aho-Corasick algorithm has two interfaces; an object-based interface and a procedural one. The object-based interface builds the trie in the constructor, and uses 'find()' to make suffix links and perform the search. The procedural interface builds the trie(with building suffix links) and does the search all in one step. If you are going to be searching for the same pattern in multiple corpora, then you should use the object interface, and only build the tries once.
