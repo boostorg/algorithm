@@ -44,3 +44,13 @@ boostbook standalone
     <xsl:param>toc.max.depth=2
     <xsl:param>generate.section.toc.level=1
   ;
+
+###############################################################################
+alias boostdoc
+    : algorithm ../string/doc/string_algo.xml
+    :
+    : <dependency>autodoc <dependency>../string/doc//autodoc
+    : ;
+explicit boostdoc ;
+alias boostrelease ;
+explicit boostrelease ;
