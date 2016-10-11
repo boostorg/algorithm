@@ -1,5 +1,13 @@
-#ifndef MANACKER_H
-#define MANACKER_H
+/*
+  Copyright (c) Alexander Zaitsev <zamazan4ik@gmail.com>, 2016
+  Distributed under the Boost Software License, Version 1.0. (See
+  accompanying file LICENSE_1_0.txt or copy at
+  http://www.boost.org/LICENSE_1_0.txt)
+  See http://www.boost.org/ for latest version.
+*/
+
+#ifndef BOOST_ALGORITHM_MANACKER_HPP
+#define BOOST_ALGORITHM_MANACKER_HPP
 
 #include <string>
 #include <vector>
@@ -15,6 +23,7 @@ std::vector<std::pair<RAIterator, RAIterator>> manacker(RAIterator begin, RAIter
     size_t length = std::distance(begin, end);
     std::vector<int> ansPalN2(length), ansPal2(length);
 
+    //Find palindroms like 2*N+1
     int leftBorder = 0, rightBorder = -1, tempMirror;//start digits for algortihm
     for (int i = 0; i < length; ++i)
     {
@@ -35,6 +44,10 @@ std::vector<std::pair<RAIterator, RAIterator>> manacker(RAIterator begin, RAIter
 
     //---------------------------------------------------------------
 
+    //Find palindroms like 2*N
+    //See PalN2.
+    //P.S. About magic numbers : you can read about this in the description of the algorithm of Manacker.
+    //These numbers need for finding palindroms like 2*N because not allowed to find centre of these palindrom
     leftBorder = 0, rightBorder = -1, tempMirror = 0;
     for (int i = 0; i < length; ++i)
     {
@@ -55,7 +68,6 @@ std::vector<std::pair<RAIterator, RAIterator>> manacker(RAIterator begin, RAIter
     }
 
     //------------------------------------------------------
-    std::cout << std::endl;
 
     std::vector<std::pair<RAIterator, RAIterator>> result;
     for(size_t i = 0; i < length; ++i)
@@ -78,12 +90,4 @@ auto manacker(Range range)
 
 }}
 
-//Find palindroms like 2*N+1
-
-
-//Find palindroms like 2*N
-//See PalN2.
-//P.S. About magic numbers : you can read about this in the description of the algorithm of Manacker.
-//These numbers need for finding palindroms like 2*N because not allowed to find centre of these palindrom
-
-#endif // MANACKER_H
+#endif // BOOST_ALGORITHM_MANACKER_HPP
