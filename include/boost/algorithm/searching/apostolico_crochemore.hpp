@@ -47,11 +47,9 @@ void calcShiftTable(patIter pat_begin, patIter pat_end, std::vector<int>& t, Pre
     }
 }
 
-template <typename corpusIter, typename patIter,
-          typename Predicate = std::equal_to<typename std::iterator_traits<corpusIter>::value_type>>
+template <typename corpusIter, typename patIter>
 std::vector<corpusIter> apostolico_crochemore_search(corpusIter corp_begin, corpusIter corp_end,
-                                                     patIter pat_begin, patIter pat_end,
-                                                     Predicate p = Predicate())
+                                                     patIter pat_begin, patIter pat_end)
 {
     int size_x = std::distance(pat_begin, pat_end),
         size_y = std::distance(corp_begin, corp_end);
@@ -62,7 +60,7 @@ std::vector<corpusIter> apostolico_crochemore_search(corpusIter corp_begin, corp
     //precalc step
     calcShiftTable(pat_begin, pat_end, t);
     //count l value
-    for (l = 1; p(pat_begin[l - 1], pat_begin[l]); l++);
+    for (l = 1; pat_begin[l - 1] == pat_begin[l]; l++);
 
     if (l == size_x)
         l = 0;
@@ -72,14 +70,14 @@ std::vector<corpusIter> apostolico_crochemore_search(corpusIter corp_begin, corp
     while (j <= size_y - size_x)
     {
         // if x[i] = y[i + j], then next three is (i + 1, j, k)
-        while (i < size_x && p(pat_begin[i], corp_begin[i + j]))
+        while (i < size_x && pat_begin[i] == corp_begin[i + j])
         {
             ++i;
         }
         if (i >= size_x)
         {
             // if k < l и x[k] = y[j + k], then next three is (i, j, k + 1)
-            while (k < l && p(pat_begin[k], corp_begin[j + k]))
+            while (k < l && pat_begin[k] == corp_begin[j + k])
             {
                 ++k;
             }
@@ -116,37 +114,29 @@ std::vector<corpusIter> apostolico_crochemore_search(corpusIter corp_begin, corp
 }
 
 
-/*
-template <typename corpusRange, typename patIter,
-          typename Predicate =
-          std::equal_to<typename std::iterator_traits<boost::range_iterator<corpusRange>::type>::value_type>>
-std::vector<boost::range_iterator<corpusRange>::type>
-apostolico_crochemore_search(corpusRange corp_range, patIter pat_begin, patIter pat_end, Predicate p = Predicate())
+template <typename corpusRange, typename patIter>
+std::vector<typename boost::range_iterator<corpusRange>::type>
+apostolico_crochemore_search(const corpusRange& corp_range, patIter pat_begin, patIter pat_end)
 {
-    return apostolico_crochemore_search(boost::begin(corp_range), boost::end(corp_range), pat_begin, pat_end, p);
+    return apostolico_crochemore_search(boost::begin(corp_range), boost::end(corp_range), pat_begin, pat_end);
 }
 
 
-template <typename corpusIter, typename patRange,
-        typename Predicate =
-        std::equal_to<typename std::iterator_traits<corpusIter>::value_type>>
+template <typename corpusIter, typename patRange>
 std::vector<corpusIter> apostolico_crochemore_search(corpusIter corp_begin, corpusIter corp_end,
-                                                     patRange pat_range, Predicate p = Predicate())
+                                                     const patRange& pat_range)
 {
-    return apostolico_crochemore_search(corp_begin, corp_end, boost::begin(pat_range), boost::end(pat_range), p);
+    return apostolico_crochemore_search(corp_begin, corp_end, boost::begin(pat_range), boost::end(pat_range));
 }
 
 
-template <typename corpusRange, typename patRange,
-        typename Predicate =
-        std::equal_to<typename std::iterator_traits<boost::range_iterator<corpusRange>::type>::value_type>>
-std::vector<boost::range_iterator<corpusRange>::type>
-apostolico_crochemore_search(corpusRange corp_range, patRange pat_range, Predicate p = Predicate())
+template <typename corpusRange, typename patRange>
+std::vector<typename boost::range_iterator<corpusRange>::type>
+apostolico_crochemore_search(const corpusRange& corp_range, const patRange& pat_range)
 {
     return apostolico_crochemore_search(boost::begin(corp_range), boost::end(corp_range),
-                                        boost::begin(pat_range), boost::end(pat_range), p);
+                                        boost::begin(pat_range), boost::end(pat_range));
 }
-*/
 
 }
 }
