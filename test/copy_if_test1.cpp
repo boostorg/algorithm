@@ -25,10 +25,25 @@
 namespace ba = boost::algorithm;
 // namespace ba = boost;
 
-bool is_true  ( int v ) { return true; }
-bool is_false ( int v ) { return false; }
-bool is_even  ( int v ) { return v % 2 == 0; }
-bool is_odd   ( int v ) { return v % 2 == 1; }
+BOOST_CXX14_CONSTEXPR bool is_true  ( int v ) { return true; }
+BOOST_CXX14_CONSTEXPR bool is_false ( int v ) { return false; }
+BOOST_CXX14_CONSTEXPR bool is_even  ( int v ) { return v % 2 == 0; }
+BOOST_CXX14_CONSTEXPR bool is_odd   ( int v ) { return v % 2 == 1; }
+
+BOOST_CXX14_CONSTEXPR inline bool constexpr_helper(const int* from, const int* to) {
+    bool res = true;
+
+    int out_data[64] = {0};
+    int* out = out_data;
+    ba::copy_if ( from, to, out, is_false);
+    
+    res = (res && out == out_data);
+    ba::copy_if ( from, to, out, is_true);
+    
+    res = (res && out == out_data + (to - from));
+    
+    return res;
+}
 
 template <typename Container>
 void test_copy_if ( Container const &c ) {
@@ -163,6 +178,9 @@ void test_sequence1 () {
     test_copy_if ( v );
     test_copy_while ( v );
     test_copy_until ( v );
+    
+    BOOST_CXX14_CONSTEXPR bool constexpr_res = constexpr_helper(0, 0);
+    BOOST_CHECK ( constexpr_res );
     
     std::list<int> l;
     for ( int i = 25; i > 15; --i )

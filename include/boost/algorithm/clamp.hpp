@@ -46,7 +46,7 @@ namespace boost { namespace algorithm {
 ///                 p ( a, b ) returns a boolean.
 ///
   template<typename T, typename Pred> 
-  T const & clamp ( T const& val, 
+  BOOST_CXX14_CONSTEXPR T const & clamp ( T const& val, 
     typename boost::mpl::identity<T>::type const & lo, 
     typename boost::mpl::identity<T>::type const & hi, Pred p )
   {
@@ -68,7 +68,7 @@ namespace boost { namespace algorithm {
 /// \param hi    The upper bound of the range to be clamped to
 ///
   template<typename T> 
-  T const& clamp ( const T& val, 
+  BOOST_CXX14_CONSTEXPR T const& clamp ( const T& val, 
     typename boost::mpl::identity<T>::type const & lo, 
     typename boost::mpl::identity<T>::type const & hi )
   {
@@ -87,7 +87,7 @@ namespace boost { namespace algorithm {
 /// \param hi    The upper bound of the range to be clamped to
 ///
   template<typename InputIterator, typename OutputIterator> 
-  OutputIterator clamp_range ( InputIterator first, InputIterator last, OutputIterator out,
+  BOOST_CXX14_CONSTEXPR OutputIterator clamp_range ( InputIterator first, InputIterator last, OutputIterator out,
     typename std::iterator_traits<InputIterator>::value_type const & lo, 
     typename std::iterator_traits<InputIterator>::value_type const & hi )
   {
@@ -108,7 +108,7 @@ namespace boost { namespace algorithm {
 /// \param hi    The upper bound of the range to be clamped to
 ///
   template<typename Range, typename OutputIterator> 
-  typename boost::disable_if_c<boost::is_same<Range, OutputIterator>::value, OutputIterator>::type
+  BOOST_CXX14_CONSTEXPR typename boost::disable_if_c<boost::is_same<Range, OutputIterator>::value, OutputIterator>::type
   clamp_range ( const Range &r, OutputIterator out,
     typename std::iterator_traits<typename boost::range_iterator<const Range>::type>::value_type const & lo, 
     typename std::iterator_traits<typename boost::range_iterator<const Range>::type>::value_type const & hi )
@@ -133,7 +133,7 @@ namespace boost { namespace algorithm {
 
 ///
   template<typename InputIterator, typename OutputIterator, typename Pred> 
-  OutputIterator clamp_range ( InputIterator first, InputIterator last, OutputIterator out,
+  BOOST_CXX14_CONSTEXPR OutputIterator clamp_range ( InputIterator first, InputIterator last, OutputIterator out,
     typename std::iterator_traits<InputIterator>::value_type const & lo, 
     typename std::iterator_traits<InputIterator>::value_type const & hi, Pred p )
   {
@@ -160,7 +160,7 @@ namespace boost { namespace algorithm {
 //  Disable this template if the first two parameters are the same type;
 //  In that case, the user will get the two iterator version.
   template<typename Range, typename OutputIterator, typename Pred> 
-  typename boost::disable_if_c<boost::is_same<Range, OutputIterator>::value, OutputIterator>::type
+  BOOST_CXX14_CONSTEXPR typename boost::disable_if_c<boost::is_same<Range, OutputIterator>::value, OutputIterator>::type
   clamp_range ( const Range &r, OutputIterator out,
     typename std::iterator_traits<typename boost::range_iterator<const Range>::type>::value_type const & lo, 
     typename std::iterator_traits<typename boost::range_iterator<const Range>::type>::value_type const & hi,
