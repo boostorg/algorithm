@@ -70,6 +70,7 @@ std::vector<std::pair<RAIterator, RAIterator>> manacker(RAIterator begin, RAIter
     //------------------------------------------------------
 
     std::vector<std::pair<RAIterator, RAIterator>> result;
+    result.reserve(2 * length);
     for(size_t i = 0; i < length; ++i)
     {
         result.push_back({begin + i - ansPalN2[i], begin + i + ansPalN2[i] + 1});
