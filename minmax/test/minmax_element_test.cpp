@@ -11,6 +11,7 @@
 #include <vector>
 #include <list>
 #include <set>
+#include <random>
 #include <cstdlib>
 
 #include <boost/config.hpp> /* prevents some nasty warns in MSVC */
@@ -19,6 +20,15 @@
 
 #define BOOST_TEST_MAIN
 #include <boost/test/unit_test.hpp>
+
+namespace boost { namespace detail {
+
+inline std::random_device & get_common_random_device() {
+	static std::random_device generator;
+	return generator;
+}
+
+}}
 
 class custom {
   int m_x;
@@ -223,7 +233,7 @@ void test(int n BOOST_APPEND_EXPLICIT_TEMPLATE_TYPE(Value))
   test_range(first, last, n);
 
   // Populate test vector with random values
-  std::random_shuffle(first, last);
+  std::shuffle(first, last, std::default_random_engine(boost::detail::get_common_random_device()()));
   test_range(first, last, n);
 }
 

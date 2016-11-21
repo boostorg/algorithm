@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <iostream>
+#include <random>
 namespace ba = boost::algorithm;
 
 template <typename Iter>
@@ -58,6 +59,8 @@ void check_sequence ( Iter first, Iter last, Iter sf, Iter sl, Pred p )
 
 BOOST_AUTO_TEST_CASE( test_main )
 {
+    std::default_random_engine gen;
+
 	{
 	std::vector<int> v;
 	for ( int i = 0; i < 10; ++i )
@@ -72,14 +75,14 @@ BOOST_AUTO_TEST_CASE( test_main )
 // 	BOOST_CHECK_EQUAL(v[5], 5);
 	
 //	Mix them up and try again - single element
-	std::random_shuffle(v.begin(), v.end());
+	std::shuffle(v.begin(), v.end(), gen);
 	ba::partition_subrange(b, v.end(), b + 7, b + 8);
 	check_sequence        (b, v.end(), b + 7, b + 8);
 
 // 	BOOST_CHECK_EQUAL(v[7], 7);
 
 //	Mix them up and try again - at the end
-	std::random_shuffle(v.begin(), v.end());
+	std::shuffle(v.begin(), v.end(), gen);
 	ba::partition_subrange(b, v.end(), b + 7, v.end());
 	check_sequence        (b, v.end(), b + 7, v.end());
 
@@ -88,7 +91,7 @@ BOOST_AUTO_TEST_CASE( test_main )
 // 	BOOST_CHECK_EQUAL(v[9], 9);
 
 //	Mix them up and try again - at the beginning
-	std::random_shuffle(v.begin(), v.end());
+	std::shuffle(v.begin(), v.end(), gen);
 	ba::partition_subrange(b, v.end(), b, b + 2);
 	check_sequence        (b, v.end(), b, b + 2);
 
@@ -96,12 +99,12 @@ BOOST_AUTO_TEST_CASE( test_main )
 // 	BOOST_CHECK_EQUAL(v[1], 1);
 
 //	Mix them up and try again - empty subrange
-	std::random_shuffle(v.begin(), v.end());
+	std::shuffle(v.begin(), v.end(), gen);
 	ba::partition_subrange(b, v.end(), b, b);
 	check_sequence        (b, v.end(), b, b);
 
 //	Mix them up and try again - entire subrange
-	std::random_shuffle(v.begin(), v.end());
+	std::shuffle(v.begin(), v.end(), gen);
 	ba::partition_subrange(b, v.end(), b, v.end());
 	check_sequence        (b, v.end(), b, v.end());
 	}
@@ -120,14 +123,14 @@ BOOST_AUTO_TEST_CASE( test_main )
 // 	BOOST_CHECK_EQUAL(v[5], 4);
 
 //	Mix them up and try again - single element
-	std::random_shuffle(v.begin(), v.end());
+	std::shuffle(v.begin(), v.end(), gen);
 	ba::partition_subrange(b, v.end(), b + 7, b + 8, std::greater<int>());
 	check_sequence        (b, v.end(), b + 7, b + 8, std::greater<int>());
 
 // 	BOOST_CHECK_EQUAL(v[7], 2);
 
 //	Mix them up and try again - at the end
-	std::random_shuffle(v.begin(), v.end());
+	std::shuffle(v.begin(), v.end(), gen);
 	ba::partition_subrange(b, v.end(), b + 7, v.end(), std::greater<int>());
 	check_sequence        (b, v.end(), b + 7, v.end(), std::greater<int>());
 
@@ -136,7 +139,7 @@ BOOST_AUTO_TEST_CASE( test_main )
 // 	BOOST_CHECK_EQUAL(v[9], 0);
 
 //	Mix them up and try again - at the beginning
-	std::random_shuffle(v.begin(), v.end());
+	std::shuffle(v.begin(), v.end(), gen);
 	ba::partition_subrange(b, v.end(), b, b + 2, std::greater<int>());
 	check_sequence        (b, v.end(), b, b + 2, std::greater<int>());
 
@@ -144,12 +147,12 @@ BOOST_AUTO_TEST_CASE( test_main )
 // 	BOOST_CHECK_EQUAL(v[1], 8);
 
 //	Mix them up and try again - empty subrange
-	std::random_shuffle(v.begin(), v.end());
+	std::shuffle(v.begin(), v.end(), gen);
 	ba::partition_subrange(b, v.end(), b, b, std::greater<int>());
 	check_sequence        (b, v.end(), b, b, std::greater<int>());
 
 //	Mix them up and try again - entire subrange
-	std::random_shuffle(v.begin(), v.end());
+	std::shuffle(v.begin(), v.end(), gen);
 	ba::partition_subrange(b, v.end(), b, v.end(), std::greater<int>());
 	check_sequence        (b, v.end(), b, v.end(), std::greater<int>());
 	}
