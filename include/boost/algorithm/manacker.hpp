@@ -6,87 +6,129 @@
   See http://www.boost.org/ for latest version.
 */
 
+/// \file  manacker.hpp
+/// \brief Finds all palindromes in a sequence.
+/// \author Alexander Zaitsev
+
 #ifndef BOOST_ALGORITHM_MANACKER_HPP
 #define BOOST_ALGORITHM_MANACKER_HPP
 
 #include <string>
 #include <vector>
+#include <utility>
+#include <algorithm>
 
 #include <boost/range/begin.hpp>
 #include <boost/range/end.hpp>
 
 namespace boost { namespace algorithm {
 
-template<typename RAIterator>
-std::vector<std::pair<RAIterator, RAIterator>> manacker(RAIterator begin, RAIterator end)
-{
-    size_t length = std::distance(begin, end);
-    std::vector<int> ansPalN2(length), ansPal2(length);
 
-    //Find palindroms like 2*N+1
-    int leftBorder = 0, rightBorder = -1, tempMirror;//start digits for algortihm
-    for (int i = 0; i < length; ++i)
+
+template <typename Iter, typename BinaryPredicate = std::equal_to<typename std::iterator_traits<Iter>::value_type>>
+class manacker_class
+{
+public:
+    manacker_class(Iter begin, Iter end, BinaryPredicate p = BinaryPredicate())
+            : begin_(begin), end_(end), p_(p)
     {
-        tempMirror = (i > rightBorder ? 0 : std::min(ansPalN2[leftBorder + rightBorder - i], rightBorder - i)) +
-                     1;//find mirror of current index
-        while (i + tempMirror < length && i - tempMirror >= 0 &&
-               begin[i - tempMirror] == begin[i + tempMirror])//increase our index
+        length_ = std::distance(begin_, end_);
+        answer_.resize(length_);
+    }
+
+    template<typename Range>
+    manacker_class(const Range& r, BinaryPredicate p = BinaryPredicate())
+            : manacker_class(boost::begin(r), boost::end(r), p)
+    {
+    }
+
+    std::pair<Iter, Iter> next()
+    {
+        //if cannot find palindrome, returns {corp_end, corp_end}
+        std::pair<Iter, Iter> ans;
+        if(flag_ == 0)
+        {
+            ans = calcOdd();
+        }
+        else if(flag_ == 1)
+        {
+            ans = calcEven();
+        }
+        else
+        {
+            return std::pair<Iter, Iter>(end_, end_);
+        }
+
+        if(i == length_)
+        {
+            restoreToDefault();
+        }
+
+
+        return ans;
+    }
+private:
+    void restoreToDefault()
+    {
+        ++flag_;
+        leftBorder = 0, rightBorder = -1, tempMirror = 0, i = 0;
+        std::fill(answer_.begin(), answer_.end(), 0);
+    }
+
+
+    std::pair<Iter, Iter> calcOdd()
+    {
+        tempMirror = (i > rightBorder ? 0 : std::min(answer_[leftBorder + rightBorder - i],
+                                                     rightBorder - i)) + 1;//find mirror of current index
+        while (i + tempMirror < length_ && i - tempMirror >= 0 &&
+               p_(begin_[i - tempMirror], begin_[i + tempMirror]))//increase our index
         {
             ++tempMirror;
         }
-        ansPalN2[i] = --tempMirror;
+        answer_[i] = --tempMirror;
         if (i + tempMirror > rightBorder)//try to increase our right border of palindrom
         {
             leftBorder = i - tempMirror;
             rightBorder = i + tempMirror;
         }
+        int pos = i++;
+        return std::pair<Iter, Iter>(begin_ + pos - answer_[pos], begin_ + pos + answer_[pos] + 1);
     }
 
-    //---------------------------------------------------------------
-
-    //Find palindroms like 2*N
-    //See PalN2.
-    //P.S. About magic numbers : you can read about this in the description of the algorithm of Manacker.
-    //These numbers need for finding palindroms like 2*N because not allowed to find centre of these palindrom
-    leftBorder = 0, rightBorder = -1, tempMirror = 0;
-    for (int i = 0; i < length; ++i)
+    std::pair<Iter, Iter> calcEven()
     {
-        tempMirror =
-                (i > rightBorder ? 0 : std::min(ansPal2[leftBorder + rightBorder - i + 1], rightBorder - i + 1)) +
-                1;
-        while (i + tempMirror - 1 < length && i - tempMirror >= 0 &&
-               begin[i - tempMirror] == begin[i + tempMirror - 1])
+        for (; i < length_; ++i)
         {
-            ++tempMirror;
+            tempMirror =
+                    (i > rightBorder ? 0 : std::min(answer_[leftBorder + rightBorder - i + 1],
+                                                    rightBorder - i + 1)) + 1;
+            while (i + tempMirror - 1 < length_ && i - tempMirror >= 0 &&
+                   p_(begin_[i - tempMirror], begin_[i + tempMirror - 1]))
+            {
+                ++tempMirror;
+            }
+            answer_[i] = --tempMirror;
+            if (i + tempMirror - 1 > rightBorder)
+            {
+                leftBorder = i - tempMirror;
+                rightBorder = i + tempMirror - 1;
+            }
+
+            if(answer_[i] != 0)
+                break;
         }
-        ansPal2[i] = --tempMirror;
-        if (i + tempMirror - 1 > rightBorder)
-        {
-            leftBorder = i - tempMirror;
-            rightBorder = i + tempMirror - 1;
-        }
+        int pos = i++;
+        return std::pair<Iter, Iter>(begin_ + pos - answer_[pos], begin_ + pos + answer_[pos]);
     }
+private:
+    Iter begin_, end_;
+    BinaryPredicate p_;
+    int length_, i = 0;
+    int leftBorder = 0, rightBorder = -1, tempMirror = 0, flag_ = 0;
 
-    //------------------------------------------------------
-
-    std::vector<std::pair<RAIterator, RAIterator>> result;
-    for(size_t i = 0; i < length; ++i)
-    {
-        result.push_back({begin + i - ansPalN2[i], begin + i + ansPalN2[i] + 1});
-    }
-    for(size_t i = 0; i < length; ++i)
-    {
-        if(ansPal2[i] != 0)
-            result.push_back({begin + i - ansPal2[i], begin + i + ansPal2[i]});
-    }
-    return result;
-}
-
-template<typename Range>
-auto manacker(Range range)
-{
-    return manacker(boost::begin(range), boost::end(range));
+    std::vector<int> answer_;
 };
+
 
 }}
 
