@@ -152,8 +152,8 @@ Requirements:
         
 
         template<typename Iter, typename Container>
-        void compute_bm_prefix ( Iter pat_first, Iter pat_last, Container &prefix ) {
-            const std::size_t count = std::distance ( pat_first, pat_last );
+        void compute_bm_prefix ( Iter first, Iter last, Container &prefix ) {
+            const std::size_t count = std::distance ( first, last );
             BOOST_ASSERT ( count > 0 );
             BOOST_ASSERT ( prefix.size () == count );
                             
@@ -161,12 +161,12 @@ Requirements:
             std::size_t k = 0;
             for ( std::size_t i = 1; i < count; ++i ) {
                 BOOST_ASSERT ( k < count );
-                while ( k > 0 && ( pat_first[k] != pat_first[i] )) {
+                while ( k > 0 && ( first[k] != first[i] )) {
                     BOOST_ASSERT ( k < count );
                     k = prefix [ k - 1 ];
                     }
                     
-                if ( pat_first[k] == pat_first[i] )
+                if ( first[k] == first[i] )
                     k++;
                 prefix [ i ] = k;
                 }
