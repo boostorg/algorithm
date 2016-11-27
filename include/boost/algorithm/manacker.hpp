@@ -46,24 +46,21 @@ public:
     {
         //if cannot find palindrome, returns {corp_end, corp_end}
         std::pair<Iter, Iter> ans;
-        if(flag_ == 0)
+        switch (flag_)
         {
-            ans = calcOdd();
-        }
-        else if(flag_ == 1)
-        {
-            ans = calcEven();
-        }
-        else
-        {
-            return std::pair<Iter, Iter>(end_, end_);
+            case 0:
+                ans = calcOdd(); break;
+            case 1:
+                ans = calcEven(); break;
+            default:
+                return std::pair<Iter, Iter>(end_, end_);
         }
 
+        ++i;
         if(i == length_)
         {
             restoreToDefault();
         }
-
 
         return ans;
     }
@@ -91,8 +88,7 @@ private:
             leftBorder = i - tempMirror;
             rightBorder = i + tempMirror;
         }
-        int pos = i++;
-        return std::pair<Iter, Iter>(begin_ + pos - answer_[pos], begin_ + pos + answer_[pos] + 1);
+        return std::pair<Iter, Iter>(begin_ + i - answer_[i], begin_ + i + answer_[i] + 1);
     }
 
     std::pair<Iter, Iter> calcEven()
@@ -117,8 +113,9 @@ private:
             if(answer_[i] != 0)
                 break;
         }
-        int pos = i++;
-        return std::pair<Iter, Iter>(begin_ + pos - answer_[pos], begin_ + pos + answer_[pos]);
+        if(i == length_)
+            return std::pair<Iter, Iter>(end_, end_);
+        return std::pair<Iter, Iter>(begin_ + i - answer_[i], begin_ + i + answer_[i]);
     }
 private:
     Iter begin_, end_;
@@ -132,4 +129,4 @@ private:
 
 }}
 
-#endif // BOOST_ALGORITHM_MANACKER_HPP
+#endif // BOOST_ALGORITHM_
