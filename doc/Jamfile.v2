@@ -47,10 +47,10 @@ boostbook standalone
 
 ###############################################################################
 alias boostdoc
-    : algorithm ../string/doc/string_algo.xml
+    : ../string/doc/string_algo.xml
     :
-    : <dependency>autodoc <dependency>../string/doc//autodoc
+    : <dependency>../string/doc//autodoc
     : ;
 explicit boostdoc ;
-alias boostrelease ;
+alias boostrelease : standalone ;
 explicit boostrelease ;
