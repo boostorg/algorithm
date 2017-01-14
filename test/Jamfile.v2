@@ -26,6 +26,7 @@ alias unit_test_framework
      [ compile-fail search_fail1.cpp  : : : : ]
      [ compile-fail search_fail2.cpp  : : : : ]
      [ compile-fail search_fail3.cpp  : : : : ]
+     [ run aho_corasick_test.cpp aho_corasick_test	  : : : : aho_corasick_test ]
 
 # Misc tests
      [ run clamp_test.cpp unit_test_framework         : : : : clamp_test ]

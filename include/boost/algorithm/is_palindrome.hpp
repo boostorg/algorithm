@@ -63,7 +63,7 @@ bool is_palindrome(BidirectionalIterator begin, BidirectionalIterator end, Predi
 /// \return true if the entire sequence is palindrome
 ///
 /// \param begin    The start of the input sequence
-/// \param end		One past the end of the input sequence
+/// \param end	    One past the end of the input sequence
 ///
 /// \note This function will return true for empty sequences and for palindromes.
 ///     For other sequences function will return false.
