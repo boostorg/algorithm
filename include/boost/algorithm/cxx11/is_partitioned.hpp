@@ -39,7 +39,7 @@ bool is_partitioned ( InputIterator first, InputIterator last, UnaryPredicate p 
 }
 
 /// \fn is_partitioned ( const Range &r, UnaryPredicate p )
-/// \brief Generates an increasing sequence of values, and stores them in the input Range.
+/// \brief Tests to see if a sequence is partitioned according to a predicate
 /// 
 /// \param r        The input range
 /// \param p        The predicate to test the values with
