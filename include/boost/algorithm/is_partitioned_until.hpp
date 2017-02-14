@@ -1,5 +1,5 @@
 /*
-   Copyright (c) Alexander Zaitsev 2017.
+   Copyright (c) Alexander Zaitsev <zamazan4ik@gmail.by>, 2017.
 
    Distributed under the Boost Software License, Version 1.0. (See accompanying
    file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -51,7 +51,7 @@ InputIterator is_partitioned_until ( InputIterator first, InputIterator last, Un
 ///     Returns last if the entire sequence is partitioned.
 ///     Complexity: O(N).
 template <typename Range, typename UnaryPredicate>
-typename boost::range_iterator<Range>::type is_partitioned_until ( const Range &r, UnaryPredicate p )
+typename boost::range_iterator<const Range>::type is_partitioned_until ( const Range &r, UnaryPredicate p )
 {
     return boost::algorithm::is_partitioned_until (boost::begin(r), boost::end(r), p);
 }

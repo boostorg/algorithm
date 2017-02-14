@@ -67,6 +67,7 @@ Thanks to all the people who have reviewed this library and made suggestions for
 [include gather.qbk]
 [include hex.qbk]
 [include is_palindrome.qbk]
+[include is_partitioned_until.qbk]
 [endsect]
 
 
