@@ -18,7 +18,8 @@
 namespace boost { namespace algorithm {
 
 /// \fn is_partitioned_until ( InputIterator first, InputIterator last, UnaryPredicate p )
-/// \brief Tests to see if a sequence is partitioned according to a predicate
+/// \brief Tests to see if a sequence is partitioned according to a predicate. 
+///	   In other words, all the items in the sequence that satisfy the predicate are at the beginning of the sequence.
 ///
 /// \param first    The start of the input sequence
 /// \param last     One past the end of the input sequence
@@ -42,7 +43,8 @@ InputIterator is_partitioned_until ( InputIterator first, InputIterator last, Un
 }
 
 /// \fn is_partitioned_until ( const Range &r, UnaryPredicate p )
-/// \brief Tests to see if a sequence is partitioned according to a predicate
+/// \brief Tests to see if a sequence is partitioned according to a predicate. 
+///	   In other words, all the items in the sequence that satisfy the predicate are at the beginning of the sequence.
 ///
 /// \param r        The input range
 /// \param p        The predicate to test the values with

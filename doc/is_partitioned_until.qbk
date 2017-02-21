@@ -11,14 +11,14 @@ Distributed under the Boost Software License, Version 1.0.
 
 The header file 'is_partitioned_until.hpp' contains two variants of a single algorithm, `is_partitioned_until`. The algorithm tests to see if a sequence is partitioned according to a predicate; in other words, all the items in the sequence that satisfy the predicate are at the beginning of the sequence.
 
-The routine `is_partitioned_until` takes a sequence and a predicate. It returns the first iterator 'it' in the sequence [first, last) for which is_partitioned(first, it, p) is false. Returns last if the entire sequence is partitioned.
+The routine `is_partitioned_until` takes a sequence and a predicate. It returns the last iterator 'it' in the sequence [begin, end) for which the is_partitioned(begin, it) is true.
 
 `is_partitioned_until` come in two forms; the first one takes two iterators to define the range. The second form takes a single range parameter, and uses Boost.Range to traverse it.
 
 
 [heading interface]
 
-The function `is_partitioned_until` returns the first iterator 'it' in the sequence [first, last) for which is_partitioned(first, it, p) is false. Returns last if the entire sequence is partitioned. There are two versions; one takes two iterators, and the other takes a range.
+The function `is_partitioned_until` returns the last iterator 'it' in the sequence [begin, end) for which the is_partitioned(begin, it) is true. There are two versions; one takes two iterators, and the other takes a range.
 
 ``
 template<typename InputIterator, typename Predicate>
@@ -55,7 +55,7 @@ Both of the variants of `is_partitioned_until` take their parameters by value or
 
 [heading Notes]
 
-* `is_partitioned_until` returns iterator to the end for empty ranges, no matter what predicate is passed to test against. 
+* `is_partitioned_until` returns iterator to the end for empty and single-element ranges, no matter what predicate is passed to test against. 
 
 [endsect]
 
