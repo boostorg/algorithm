@@ -83,15 +83,15 @@ public:
         if (pat_first == pat_last)
             return make_pair(corpus_first, corpus_first);            
         
-        PatIter p1;
-
         if (next_.size() == 1)
         {
             CorpusIter const result = find(corpus_first, corpus_last, *pat_first);
             return result == corpus_last ? make_pair(corpus_last, corpus_last) : make_pair(result, boost::next(result));
         }
-        p1 = pat_first;
+        
+        PatIter p1 = pat_first;
         ++p1;
+        
         while (corpus_first != corpus_last)
         {
             corpus_first = find(corpus_first, corpus_last, *pat_first);
