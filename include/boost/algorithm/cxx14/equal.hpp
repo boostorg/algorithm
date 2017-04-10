@@ -13,7 +13,7 @@
 #define BOOST_ALGORITHM_EQUAL_HPP
 
 #include <algorithm>    // for std::equal
-#include <functional>   // for std::equal_to
+#include <iterator>
 
 #ifdef __cpp_lib_array_constexpr // or cpp17 compiler
 // if compiled according to C++17 standard or std functions are constexpr
