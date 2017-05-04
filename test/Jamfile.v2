@@ -70,6 +70,9 @@ alias unit_test_framework
 
 # Is_palindrome tests
      [ run is_palindrome_test.cpp unit_test_framework    : : : : is_palindrome_test ]
+     
+# Is_partitioned_until tests
+     [ run is_partitioned_until_test.cpp unit_test_framework    : : : : is_partitioned_until_test ]
    ;
 }
 

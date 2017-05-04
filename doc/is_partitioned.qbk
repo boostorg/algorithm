@@ -57,7 +57,7 @@ Both of the variants of `is_partitioned` take their parameters by value or const
 
 * The iterator-based version of the routine `is_partitioned` is also available as part of the C++11 standard.
 
-* `is_partitioned` returns true for empty ranges, no matter what predicate is passed to test against. 
+* `is_partitioned` returns true for empty and single-element ranges, no matter what predicate is passed to test against. 
 
 [endsect]
 
