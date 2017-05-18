@@ -40,7 +40,7 @@ namespace detail {
  * Accelerated Linear (AL) search by Musser & Nishanov.
  * 
  */
-template <typename PatIter, typename CorpusIter = PatIter>
+template <typename PatIter, typename CorpusIter>
 class accelerated_linear
 {
     BOOST_STATIC_ASSERT (( boost::is_same<
