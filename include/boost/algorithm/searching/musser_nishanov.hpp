@@ -72,6 +72,12 @@ private:
     }
 
 public:
+    accelerated_linear(PatIter pat_first, PatIter pat_last) : pat_first(pat_first), pat_last(pat_last), k_pattern_length(std::distance(pat_first, pat_last))
+    {
+        if (k_pattern_length > 0)
+            compute_next();
+    }
+    
     std::pair<CorpusIter, CorpusIter> operator()(CorpusIter corpus_first, CorpusIter corpus_last) const
     {
         BOOST_ASSERT(std::distance(pat_first, pat_last) == k_pattern_length);
@@ -143,11 +149,7 @@ public:
         return make_pair(corpus_last, corpus_last);
     }
     
-    accelerated_linear(PatIter pat_first, PatIter pat_last) : pat_first(pat_first), pat_last(pat_last), k_pattern_length(std::distance(pat_first, pat_last))
     {
-        if (k_pattern_length > 0)
-            compute_next();
-    }
 };
 
 
