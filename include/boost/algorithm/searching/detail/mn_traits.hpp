@@ -11,6 +11,10 @@
 #ifndef BOOST_ALGORITHM_SEARCH_DETAIL_MN_TRAITS
 #define BOOST_ALGORITHM_SEARCH_DETAIL_MN_TRAITS
 
+#include <boost/functional/hash.hpp>
+
+#include <string>
+
 namespace boost { namespace algorithm {
 
 template <class T>
@@ -51,6 +55,19 @@ template <> struct search_trait<char unsigned> {
     inline static 
     char unsigned hash(RandomAccessIterator i) {
         return *i;              
+    }
+};
+
+// NOTE: This std::string specialization is experimental.
+// It simply fills the gap that would otherwise be here.
+template <> struct search_trait<std::string> {
+    enum {hash_range_max = 256};
+    enum {suffix_size = 1};
+    template <class RandomAccessIterator>
+    inline static
+    int hash(RandomAccessIterator i) {
+        static boost::hash<std::string> string_hash;
+        return string_hash(*i) % hash_range_max;
     }
 };
 
