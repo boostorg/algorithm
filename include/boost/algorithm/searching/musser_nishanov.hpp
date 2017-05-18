@@ -422,6 +422,35 @@ musser_nishanov_search ( CorpusRange &corpus, const PatternRange &pattern )
     return mn(boost::begin(corpus), boost::end(corpus));
 }
 
+
+//  Creator functions -- take a pattern range, return an object
+template <typename Range>
+musser_nishanov<typename boost::range_iterator<const Range>::type>
+make_musser_nishanov(const Range &r) {
+    typedef typename boost::range_iterator<const Range>::type pattern_iterator;
+    return musser_nishanov<pattern_iterator>(boost::begin(r), boost::end(r));
+}
+
+
+// This overload permits specification of the corpus iterator type.
+template <typename PatternRange, typename CorpusRange>
+musser_nishanov<typename boost::range_iterator<const PatternRange>::type, typename boost::range_iterator<const CorpusRange>::type>
+make_musser_nishanov(const PatternRange &r, const CorpusRange &) {
+    typedef typename boost::range_iterator<const PatternRange>::type pattern_iterator;
+    typedef typename boost::range_iterator<const CorpusRange>::type corpus_iterator;
+    return musser_nishanov<pattern_iterator, corpus_iterator>(boost::begin(r), boost::end(r));
+}
+
+
+// This overload permits specification of corpus iterator and search trait class.
+template <typename PatternRange, typename CorpusRange, typename Trait>
+musser_nishanov<typename boost::range_iterator<const PatternRange>::type, typename boost::range_iterator<const CorpusRange>::type>
+make_musser_nishanov(const PatternRange &r, const CorpusRange &) {
+    typedef typename boost::range_iterator<const PatternRange>::type pattern_iterator;
+    typedef typename boost::range_iterator<const CorpusRange>::type corpus_iterator;
+    return musser_nishanov<pattern_iterator, corpus_iterator, Trait>(boost::begin(r), boost::end(r));
+}
+
 }} // namespace boost::algorithm
 
 #endif
