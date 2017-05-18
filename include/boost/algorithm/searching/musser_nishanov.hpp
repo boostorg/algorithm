@@ -149,7 +149,11 @@ public:
         return make_pair(corpus_last, corpus_last);
     }
     
+    template <typename Range>
+    std::pair<CorpusIter, CorpusIter> operator()(const Range &corpus) const
     {
+        return (*this)(boost::begin(corpus), boost::end(corpus));
+    }    
 };
 
 
@@ -167,6 +171,7 @@ class hashed_accelerated_linear : private boost::algorithm::detail::accelerated_
     using AcceleratedLinear::pat_first;
     using AcceleratedLinear::pat_last;
     using AcceleratedLinear::next_;
+    using AcceleratedLinear::operator();
     
     typedef boost::array<corpus_difference_type, Trait::hash_range_max> skip_container;
     typedef boost::function<std::pair<CorpusIter, CorpusIter>(CorpusIter, CorpusIter)> search_function;
