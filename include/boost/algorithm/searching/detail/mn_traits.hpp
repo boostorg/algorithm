@@ -28,6 +28,19 @@ struct search_trait {
     }
 };
 
+
+template <>
+struct search_trait<short unsigned> {
+    enum {hash_range_max = 1u << sizeof(short unsigned) * 8};
+    enum {suffix_size = sizeof(short unsigned)};
+    template <class RandomAccessIterator>
+    inline static
+    short unsigned hash(RandomAccessIterator i) {
+        return *i;
+    }
+};
+
+
 template <> struct search_trait<char> {
     enum {hash_range_max = 256};
     enum {suffix_size = 1};
