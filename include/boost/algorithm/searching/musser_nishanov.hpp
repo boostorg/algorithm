@@ -389,6 +389,39 @@ std::pair<CorpusIter, CorpusIter> musser_nishanov_search(CorpusIter corpus_first
     return mn(corpus_first, corpus_last);
 }
 
+
+template <typename PatternRange, typename CorpusIter>
+std::pair<CorpusIter, CorpusIter> musser_nishanov_search(CorpusIter corpus_first, CorpusIter corpus_last, const PatternRange &pattern)
+{
+    typedef typename boost::range_iterator<const PatternRange>::type pattern_iterator;
+    musser_nishanov<pattern_iterator, CorpusIter> mn(boost::begin(pattern), boost::end(pattern));
+    return mn(corpus_first, corpus_last);
+}
+
+
+template <typename patIter, typename CorpusRange>
+typename boost::disable_if_c<
+    boost::is_same<CorpusRange, patIter>::value, 
+    std::pair<typename boost::range_iterator<CorpusRange>::type, typename boost::range_iterator<CorpusRange>::type> >
+::type
+musser_nishanov_search ( CorpusRange &corpus, patIter pat_first, patIter pat_last )
+{
+    typedef typename boost::range_iterator<const CorpusRange>::type corpus_iterator;
+    musser_nishanov<patIter, corpus_iterator> mn(pat_first, pat_last);
+    return mn(boost::begin(corpus), boost::end(corpus));
+}
+
+
+template <typename PatternRange, typename CorpusRange>
+std::pair<typename boost::range_iterator<CorpusRange>::type, typename boost::range_iterator<CorpusRange>::type>
+musser_nishanov_search ( CorpusRange &corpus, const PatternRange &pattern )
+{
+    typedef typename boost::range_iterator<const PatternRange>::type pattern_iterator;
+    typedef typename boost::range_iterator<const CorpusRange>::type corpus_iterator;
+    musser_nishanov<pattern_iterator, corpus_iterator> mn(boost::begin(pattern), boost::end(pattern));
+    return mn(boost::begin(corpus), boost::end(corpus));
+}
+
 }} // namespace boost::algorithm
 
 #endif
