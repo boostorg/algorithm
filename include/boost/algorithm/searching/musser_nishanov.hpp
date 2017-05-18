@@ -171,7 +171,6 @@ class hashed_accelerated_linear : private boost::algorithm::detail::accelerated_
     using AcceleratedLinear::pat_first;
     using AcceleratedLinear::pat_last;
     using AcceleratedLinear::next_;
-    using AcceleratedLinear::operator();
     
     typedef boost::array<corpus_difference_type, Trait::hash_range_max> skip_container;
     typedef boost::function<std::pair<CorpusIter, CorpusIter>(CorpusIter, CorpusIter)> search_function;
@@ -313,6 +312,8 @@ class hashed_accelerated_linear : private boost::algorithm::detail::accelerated_
     }
     
 public:
+    using AcceleratedLinear::operator();
+
     hashed_accelerated_linear(PatIter pat_first, PatIter pat_last) : AcceleratedLinear(pat_first, pat_last)
     {
         if (k_pattern_length > 0)
