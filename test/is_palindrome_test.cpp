@@ -38,9 +38,6 @@ struct functorComparator
     }
 };
 
-#define	Begin(arr)	(arr)
-#define	End(arr)	(arr+(sizeof(arr)/(sizeof(arr[0]))))
-
 void test_is_palindrome()
 {
     const std::list<int> empty;
@@ -54,14 +51,14 @@ void test_is_palindrome()
     // Test a default operator==
     BOOST_CHECK ( ba::is_palindrome(empty));
     BOOST_CHECK ( ba::is_palindrome(singleElement));
-    BOOST_CHECK (!ba::is_palindrome(Begin(oddNonPalindrome),  End(oddNonPalindrome)));
-    BOOST_CHECK ( ba::is_palindrome(Begin(oddPalindrome),     End(oddPalindrome)));
-    BOOST_CHECK ( ba::is_palindrome(Begin(evenPalindrome),    End(evenPalindrome)));
-    BOOST_CHECK (!ba::is_palindrome(Begin(evenNonPalindrome), End(evenNonPalindrome)));
+    BOOST_CHECK (!ba::is_palindrome(boost::begin(oddNonPalindrome),  boost::end(oddNonPalindrome)));
+    BOOST_CHECK ( ba::is_palindrome(boost::begin(oddPalindrome),     boost::end(oddPalindrome)));
+    BOOST_CHECK ( ba::is_palindrome(boost::begin(evenPalindrome),    boost::end(evenPalindrome)));
+    BOOST_CHECK (!ba::is_palindrome(boost::begin(evenNonPalindrome), boost::end(evenNonPalindrome)));
 
     //Test the custom comparators
     BOOST_CHECK ( ba::is_palindrome(empty.begin(), empty.end(), functorComparator()));
-    BOOST_CHECK (!ba::is_palindrome(Begin(oddNonPalindrome), End(oddNonPalindrome), funcComparator<int>));
+    BOOST_CHECK (!ba::is_palindrome(boost::begin(oddNonPalindrome), boost::end(oddNonPalindrome), funcComparator<int>));
     BOOST_CHECK ( ba::is_palindrome(evenPalindrome, std::equal_to<int>()));
     
     //Test C-strings like cases
