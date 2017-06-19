@@ -18,7 +18,7 @@
 #include <list>
 
 template<typename T>
-struct is_ : public std::unary_function<T, bool> {
+struct is_ {
     BOOST_CXX14_CONSTEXPR is_ ( T v ) : val_ ( v ) {}
     BOOST_CXX14_CONSTEXPR bool operator () ( T comp ) const { return val_ == comp; }
 private:
@@ -94,7 +94,7 @@ void test_one ()
     
     BOOST_CXX14_CONSTEXPR bool constexpr_res = (
         !ba::one_of   ( some_numbers, is_<int> ( 6 ))
-        && ba::one_of ( some_numbers, some_numbers + 3, is_<int> ( 1 ))
+        && ba::one_of ( some_numbers + 1, some_numbers + 3, is_<int> ( 1 ))
     );
 
     BOOST_CHECK ( constexpr_res );
