@@ -69,7 +69,7 @@ void test_reduce_init_op()
     char ia[] = {1, 2, 3, 4, 5, 6, 7, 8};
     unsigned sa = sizeof(ia) / sizeof(ia[0]);
     unsigned res = boost::algorithm::reduce(ia, ia+sa, 1U, std::multiplies<unsigned>());
-    assert(res == 40320);		// 8! will not fit into a char
+    BOOST_CHECK(res == 40320);		// 8! will not fit into a char
     }
 }
 
