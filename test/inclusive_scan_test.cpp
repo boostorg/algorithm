@@ -13,6 +13,7 @@
 #include <algorithm>
 
 #include <boost/config.hpp>
+#include <boost/algorithm/cxx11/iota.hpp>
 #include <boost/algorithm/cxx17/inclusive_scan.hpp>
 
 #include "iterator_test.hpp"
@@ -36,7 +37,7 @@ void basic_tests_op()
 
     {
     std::vector<int> v(10);
-    std::iota(v.begin(), v.end(), 0);
+    ba::iota(v.begin(), v.end(), 0);
     ba::inclusive_scan(v.begin(), v.end(), v.begin(), std::plus<int>());
     for (size_t i = 0; i < v.size(); ++i)
         assert(v[i] == triangle(i));
@@ -44,7 +45,7 @@ void basic_tests_op()
 
     {
     std::vector<int> v(10);
-    std::iota(v.begin(), v.end(), 1);
+    ba::iota(v.begin(), v.end(), 1);
     ba::inclusive_scan(v.begin(), v.end(), v.begin(), std::plus<int>());
     for (size_t i = 0; i < v.size(); ++i)
         assert(v[i] == triangle(i + 1));
@@ -75,7 +76,7 @@ void basic_tests_init()
 
     {
     std::vector<int> v(10);
-    std::iota(v.begin(), v.end(), 0);
+    ba::iota(v.begin(), v.end(), 0);
     ba::inclusive_scan(v.begin(), v.end(), v.begin(), std::plus<int>(), 40);
     for (size_t i = 0; i < v.size(); ++i)
         assert(v[i] == 40 + triangle(i));
@@ -83,7 +84,7 @@ void basic_tests_init()
 
     {
     std::vector<int> v(10);
-    std::iota(v.begin(), v.end(), 1);
+    ba::iota(v.begin(), v.end(), 1);
     ba::inclusive_scan(v.begin(), v.end(), v.begin(), std::plus<int>(), 30);
     for (size_t i = 0; i < v.size(); ++i)
         assert(v[i] == 30 + triangle(i + 1));
@@ -115,7 +116,7 @@ void basic_tests_op_init()
 
     {
     std::vector<int> v(10);
-    std::iota(v.begin(), v.end(), 0);
+    ba::iota(v.begin(), v.end(), 0);
     ba::inclusive_scan(v.begin(), v.end(), v.begin(), std::plus<int>(), 40);
     for (size_t i = 0; i < v.size(); ++i)
         BOOST_CHECK(v[i] == 40 + triangle(i));
@@ -123,7 +124,7 @@ void basic_tests_op_init()
 
     {
     std::vector<int> v(10);
-    std::iota(v.begin(), v.end(), 1);
+    ba::iota(v.begin(), v.end(), 1);
     ba::inclusive_scan(v.begin(), v.end(), v.begin(), std::plus<int>(), 30);
     for (size_t i = 0; i < v.size(); ++i)
         BOOST_CHECK(v[i] == 30 + triangle(i + 1));

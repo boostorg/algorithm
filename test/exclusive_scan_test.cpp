@@ -13,6 +13,7 @@
 #include <algorithm>
 
 #include <boost/config.hpp>
+#include <boost/algorithm/cxx11/iota.hpp>
 #include <boost/algorithm/cxx17/exclusive_scan.hpp>
 
 #include "iterator_test.hpp"
@@ -36,7 +37,7 @@ void basic_tests_init()
 
     {
     std::vector<int> v(10);
-    std::iota(v.begin(), v.end(), 0);
+    ba::iota(v.begin(), v.end(), 0);
     ba::exclusive_scan(v.begin(), v.end(), v.begin(), 30);
     for (size_t i = 0; i < v.size(); ++i)
         BOOST_CHECK(v[i] == 30 + triangle(i-1));
@@ -44,7 +45,7 @@ void basic_tests_init()
 
     {
     std::vector<int> v(10);
-    std::iota(v.begin(), v.end(), 1);
+    ba::iota(v.begin(), v.end(), 1);
     ba::exclusive_scan(v.begin(), v.end(), v.begin(), 40);
     for (size_t i = 0; i < v.size(); ++i)
         BOOST_CHECK(v[i] == 40 + triangle(i));
