@@ -69,6 +69,7 @@ Thanks to all the people who have reviewed this library and made suggestions for
 [include is_palindrome.qbk]
 [include is_partitioned_until.qbk]
 [include apply_permutation.qbk]
+[include shuffle_weighted.qbk]
 [endsect]
 
 
