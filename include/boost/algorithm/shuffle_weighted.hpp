@@ -6,10 +6,6 @@
   http://www.boost.org/LICENSE_1_0.txt)
 
   See http://www.boost.org/ for latest version.
-
-
-  Based on: Weighted Random Sampling (2005; Efraimidis, Spirakis)
-  http://utopia.duth.gr/~pefraimi/research/data/2007EncOfAlg.pdf
   
 */
 
