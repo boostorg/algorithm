@@ -25,8 +25,6 @@
 #include <type_traits>
 #include <cmath>
 
-#include "/home/zamazan4ik/OpenSource/apply_permutation/apply_permutation.hpp"
-
 #include <boost/range/begin.hpp>
 #include <boost/range/end.hpp>
 

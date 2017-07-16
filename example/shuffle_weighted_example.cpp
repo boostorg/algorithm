@@ -12,7 +12,7 @@
 #include <iostream>
 #include <random>
 
-#include "shuffle_weighted.hpp"
+#include <boost/algorithm/shuffle_weighted.hpp>
 
 
 namespace ba = boost::algorithm;
