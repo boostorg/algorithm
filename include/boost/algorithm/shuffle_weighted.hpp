@@ -41,31 +41,55 @@ namespace boost { namespace algorithm {
 /// \param g             Uniform random number generator
 ///
 /// \note Weight sequence size should be equal to item size. Otherwise behavior is undefined.
-///       Complexity: O(N).
-template<typename RandomAccessIterator1, typename RandomAccessIterator2, typename UniformRandomBitGenerator>
-void shuffle_weighted(RandomAccessIterator1 item_begin, RandomAccessIterator1 item_end, RandomAccessIterator2 weight_begin, UniformRandomBitGenerator&& g)
+///       Complexity: O(N^2).
+template <class ForwardIterator1, class ForwardIterator2, class UniformRandomBitGenerator>
+void shuffle_weighted(ForwardIterator1 item_begin, ForwardIterator1 item_end, 
+                      ForwardIterator2 weight_begin, UniformRandomBitGenerator&& g)
 {
-    using Diff = typename std::iterator_traits<RandomAccessIterator1>::difference_type;
-    std::vector<std::pair<double, Diff>> order
-            (std::distance(item_begin, item_end));
-    std::uniform_real_distribution<double> random(0, 1.0);
-    size_t index = 0;
-    for (auto& x : order)
+    using weight_t = typename std::iterator_traits<ForwardIterator2>::value_type;
+    
+    weight_t total_weight = 0;
+    auto weight_iter = weight_begin;
+    for(auto it = item_begin; it != item_end; 
+        it = std::next(it), 
+        weight_iter = std::next(weight_iter))
     {
-        x = std::pair<double, Diff>(-std::pow(random(g), 1.0 / weight_begin[index]), index);
-        ++index;
-    }
-    //TODO: Is there reason use Boost.Sort here?
-    std::sort(order.begin(), order.end());
-    std::vector<Diff> res_order;
-    res_order.reserve(order.size());
-    for (const auto& x : order)
-    {
-        res_order.push_back(x.second);
+        total_weight += *weight_iter;
     }
 
-    boost::algorithm::apply_permutation(item_begin, item_end, res_order.begin());
+    using uniform_distr_t = std::conditional_t<
+        std::is_integral<weight_t>::value,
+        std::uniform_int_distribution<weight_t>,
+        std::uniform_real_distribution<weight_t>
+    >;
+    typedef typename uniform_distr_t::param_type param_type;
+
+    uniform_distr_t distribution;
+    for (; item_begin != item_end; 
+         item_begin = std::next(item_begin), 
+         weight_begin = std::next(weight_begin)) 
+    {
+        weight_t current_weights_sum = 0;
+        const weight_t random_value = distribution(g, param_type(0, total_weight));
+
+        auto weight_iter = weight_begin;
+        for (auto it = item_begin; it != item_end; 
+             it = std::next(it), 
+             weight_iter = std::next(weight_iter))
+        {
+            const weight_t weight = *weight_iter;
+            current_weights_sum += weight;
+            if (current_weights_sum >= random_value)
+            {
+                std::iter_swap(item_begin, it);
+                std::iter_swap(weight_begin, weight_iter);
+                total_weight -= weight;
+                break;
+            }
+        }
+    }
 }
+
 
 /// \fn shuffle_weighted (Range1& item_range, Range2& weight_range, UniformRandomBitGenerator&& g )
 /// \brief Rearranges the elements in the range [item_begin,item_end) randomly with weights from weight_begin range, using g as uniform random number generator.
@@ -75,12 +99,11 @@ void shuffle_weighted(RandomAccessIterator1 item_begin, RandomAccessIterator1 it
 /// \param g             Uniform random number generator
 ///
 /// \note Weight sequence size should be equal to item size. Otherwise behavior is undefined.
-///       Complexity: O(N).
-template<typename Range1, typename Range2, typename UniformRandomBitGenerator>
-void shuffle_weighted(Range1& item_range, Range2& weight_range, UniformRandomBitGenerator&& g)
+///       Complexity: O(N^2).
+template <class Range1, class Range2, class UniformRandomBitGenerator>
+void shuffle_weighted(Range1 item_range, Range2 weight_range, UniformRandomBitGenerator&& g) 
 {
-    shuffle_weighted(boost::begin(item_range), boost::end(item_range),
-                     boost::begin(weight_range), g);
+    shuffle_weighted(boost::begin(item_range), boost::end(item_range), boost::begin(weight_range), std::forward<UniformRandomBitGenerator>(g));
 }
 
 }}
