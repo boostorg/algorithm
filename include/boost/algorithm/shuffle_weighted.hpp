@@ -17,10 +17,15 @@
 #define BOOST_ALGORITHM_SHUFFLE_WEIGHTED_HPP
 
 #include <algorithm>
-#include <random>
 #include <type_traits>
-#include <cmath>
 
+#include <boost/algorithm/apply_permutation.hpp>
+
+#include <boost/random.hpp>
+#include <boost/type_traits/is_integral.hpp>
+#include <boost/type_traits/conditional.hpp>
+#include <boost/fusion/iterator/next.hpp>
+#include <boost/move/utility.hpp>
 #include <boost/range/begin.hpp>
 #include <boost/range/end.hpp>
 
@@ -36,40 +41,40 @@ namespace boost { namespace algorithm {
 ///
 /// \note Weight sequence size should be equal to item size. Otherwise behavior is undefined.
 ///       Complexity: O(N^2).
-template <class ForwardIterator1, class ForwardIterator2, class UniformRandomBitGenerator>
+template <typename ForwardIterator1, typename ForwardIterator2, typename UniformRandomBitGenerator>
 void shuffle_weighted(ForwardIterator1 item_begin, ForwardIterator1 item_end, 
                       ForwardIterator2 weight_begin, UniformRandomBitGenerator&& g)
 {
-    using weight_t = typename std::iterator_traits<ForwardIterator2>::value_type;
+    typedef typename std::iterator_traits<ForwardIterator2>::value_type weight_t;
     
     weight_t total_weight = 0;
-    auto weight_iter = weight_begin;
-    for(auto it = item_begin; it != item_end; 
-        it = std::next(it), 
-        weight_iter = std::next(weight_iter))
+    ForwardIterator2 weight_iter = weight_begin;
+    for(ForwardIterator1 it = item_begin; it != item_end; 
+        it = boost::next(it), 
+        weight_iter = boost::next(weight_iter))
     {
         total_weight += *weight_iter;
     }
 
-    using uniform_distr_t = std::conditional_t<
-        std::is_integral<weight_t>::value,
-        std::uniform_int_distribution<weight_t>,
-        std::uniform_real_distribution<weight_t>
-    >;
+    typedef typename boost::conditional<
+        boost::is_integral<weight_t>::value,
+        boost::random::uniform_int_distribution<weight_t>,
+        boost::random::uniform_real_distribution<weight_t>
+    >::type uniform_distr_t;
     typedef typename uniform_distr_t::param_type param_type;
 
     uniform_distr_t distribution;
     for (; item_begin != item_end; 
-         item_begin = std::next(item_begin), 
-         weight_begin = std::next(weight_begin)) 
+         item_begin = boost::next(item_begin), 
+         weight_begin = boost::next(weight_begin)) 
     {
         weight_t current_weights_sum = 0;
         const weight_t random_value = distribution(g, param_type(0, total_weight));
 
-        auto weight_iter = weight_begin;
-        for (auto it = item_begin; it != item_end; 
-             it = std::next(it), 
-             weight_iter = std::next(weight_iter))
+        ForwardIterator2 weight_iter = weight_begin;
+        for (ForwardIterator1 it = item_begin; it != item_end; 
+             it = boost::next(it), 
+             weight_iter = boost::next(weight_iter))
         {
             const weight_t weight = *weight_iter;
             current_weights_sum += weight;
@@ -94,10 +99,10 @@ void shuffle_weighted(ForwardIterator1 item_begin, ForwardIterator1 item_end,
 ///
 /// \note Weight sequence size should be equal to item size. Otherwise behavior is undefined.
 ///       Complexity: O(N^2).
-template <class Range1, class Range2, class UniformRandomBitGenerator>
+template <typename Range1, typename Range2, typename UniformRandomBitGenerator>
 void shuffle_weighted(Range1 item_range, Range2 weight_range, UniformRandomBitGenerator&& g) 
 {
-    shuffle_weighted(boost::begin(item_range), boost::end(item_range), boost::begin(weight_range), std::forward<UniformRandomBitGenerator>(g));
+    shuffle_weighted(boost::begin(item_range), boost::end(item_range), boost::begin(weight_range), boost::forward<UniformRandomBitGenerator>(g));
 }
 
 }}

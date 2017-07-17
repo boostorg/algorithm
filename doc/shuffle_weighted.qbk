@@ -62,8 +62,6 @@ All of the variants of `shuffle_weighted` takes their parameters by iterators or
 
 * `shuffle_weighted` works also on empty sequences.
 
-* Require C++11 or higher compiler.
-
 [endsect]
 
 [/ File shuffle_weighted.qbk
