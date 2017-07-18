@@ -18,6 +18,7 @@ namespace ba = boost::algorithm;
 
 int main ( int /*argc*/, char * /*argv*/ [] )
 {
+    // WARNING: Example require C++11 or newer compiler
     {
         std::cout << "apply_permutation with iterators:\n";
         std::vector<int> vec{1, 2, 3, 4, 5}, order{4, 2, 3, 1, 0};
