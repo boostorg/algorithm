@@ -17,7 +17,6 @@
 #define BOOST_ALGORITHM_SHUFFLE_WEIGHTED_HPP
 
 #include <algorithm>
-#include <type_traits>
 
 #include <boost/algorithm/apply_permutation.hpp>
 
@@ -41,9 +40,15 @@ namespace boost { namespace algorithm {
 ///
 /// \note Weight sequence size should be equal to item size. Otherwise behavior is undefined.
 ///       Complexity: O(N^2).
+#if __cplusplus > 199711L
 template <typename ForwardIterator1, typename ForwardIterator2, typename UniformRandomBitGenerator>
 void shuffle_weighted(ForwardIterator1 item_begin, ForwardIterator1 item_end, 
                       ForwardIterator2 weight_begin, UniformRandomBitGenerator&& g)
+#else
+template <typename ForwardIterator1, typename ForwardIterator2, typename UniformRandomBitGenerator>
+void shuffle_weighted(ForwardIterator1 item_begin, ForwardIterator1 item_end, 
+                      ForwardIterator2 weight_begin, UniformRandomBitGenerator& g)
+#endif
 {
     typedef typename std::iterator_traits<ForwardIterator2>::value_type weight_t;
     
@@ -100,10 +105,16 @@ void shuffle_weighted(ForwardIterator1 item_begin, ForwardIterator1 item_end,
 /// \note Weight sequence size should be equal to item size. Otherwise behavior is undefined.
 ///       Complexity: O(N^2).
 template <typename Range1, typename Range2, typename UniformRandomBitGenerator>
-void shuffle_weighted(Range1 item_range, Range2 weight_range, UniformRandomBitGenerator&& g) 
+#if __cplusplus > 199711L
+void shuffle_weighted(Range1& item_range, Range2& weight_range, UniformRandomBitGenerator&& g)
 {
     shuffle_weighted(boost::begin(item_range), boost::end(item_range), boost::begin(weight_range), boost::forward<UniformRandomBitGenerator>(g));
 }
-
+#else
+void shuffle_weighted(Range1& item_range, Range2& weight_range, UniformRandomBitGenerator& g)
+{
+    shuffle_weighted(boost::begin(item_range), boost::end(item_range), boost::begin(weight_range), g);
+}
+#endif
 }}
 #endif //BOOST_ALGORITHM_SHUFFLE_WEIGHTED_HPP

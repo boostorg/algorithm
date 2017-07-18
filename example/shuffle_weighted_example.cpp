@@ -19,6 +19,7 @@ namespace ba = boost::algorithm;
 
 int main ( int /*argc*/, char * /*argv*/ [] )
 {
+    // WARNING: Example require C++11 or newer compiler
     std::random_device rd;
     std::mt19937 g(rd());
     {

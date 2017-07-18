@@ -22,6 +22,11 @@ The routines come in 2 forms; the first one takes two iterators to define the it
 There are two versions of algorithms:
 1) takes three iterators and random generator.
 2) takes two ranges and random generator.
+
+Also there are two versions for old compilers (which doesn't support C++11 or higher standard).
+Difference is only one: C++11 or higher version takes UniformRandomBitGenerator parameter as universal reference, version for old compiler takes UniformRandomBitGenerator as reference.
+
+For C++11 or higher compilers:
 ``
 template<typename ForwardIterator1, typename ForwardIterator2, typename UniformRandomBitGenerator>
 void shuffle_weighted(ForwardIterator1 item_begin, ForwardIterator1 item_end, ForwardIterator2 weight_begin, UniformRandomBitGenerator&& g);
@@ -29,6 +34,13 @@ template<typename Range1, typename Range2, typename UniformRandomBitGenerator>
 void shuffle_weighted(Range1& item_range, Range2& weight_range, UniformRandomBitGenerator&& g);
 ``
 
+For old compilers:
+``
+template<typename ForwardIterator1, typename ForwardIterator2, typename UniformRandomBitGenerator>
+void shuffle_weighted(ForwardIterator1 item_begin, ForwardIterator1 item_end, ForwardIterator2 weight_begin, UniformRandomBitGenerator& g);
+template<typename Range1, typename Range2, typename UniformRandomBitGenerator>
+void shuffle_weighted(Range1& item_range, Range2& weight_range, UniformRandomBitGenerator& g);
+``
 
 [heading Examples]
 
@@ -62,6 +74,7 @@ All of the variants of `shuffle_weighted` takes their parameters by iterators or
 
 * `shuffle_weighted` works also on empty sequences.
 
+* Be careful: weights can be changed inside the function.
 [endsect]
 
 [/ File shuffle_weighted.qbk

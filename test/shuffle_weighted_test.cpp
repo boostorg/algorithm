@@ -12,48 +12,50 @@
 #define BOOST_TEST_MAIN
 
 #include <vector>
-#include <list>
-#include <iterator>
-#include <functional>
-#include <iostream>
-#include <random>
 
 #include <boost/algorithm/shuffle_weighted.hpp>
 
-
-
+#include <boost/random/random_device.hpp>
 #include <boost/test/unit_test.hpp>
 
 namespace ba = boost::algorithm;
-
+namespace br = boost::random;
 
 void test_shuffle_weighted()
 {
     {
         // Empty case
         
-        std::mt19937_64 d;
+        br::mt19937_64 d;
         std::vector<int> vec, weights;
+        
         ba::shuffle_weighted(vec, weights, d);
         BOOST_CHECK(vec.empty () && weights.empty());
     }
     {
         // One element case
         
-        std::mt19937_64 d;
-        std::vector<int> vec({1}), weights({1});
+        br::mt19937_64 d;
+        std::vector<int> vec, weights;
+        vec.push_back(1);
+        weights.push_back(1);
         std::vector<int> new_vec = vec, new_weights = weights;
+        
         ba::shuffle_weighted(new_vec, new_weights, d);
         BOOST_CHECK(vec == new_vec && weights == new_weights);
     }
     {
         // Two element case
         
-        std::mt19937_64 d;
-        std::vector<int> vec({1, 2}), rev_vec({2, 1}), weights({1, 2});
+        br::mt19937_64 d;
+        std::vector<int> vec, rev_vec, weights;
+        vec.push_back(1); vec.push_back(2);
+        rev_vec.push_back(2); rev_vec.push_back(1);
+        weights = vec;
         std::vector<int> new_vec = vec, new_weights = weights;
+        
         ba::shuffle_weighted(new_vec, new_weights, d);
-        BOOST_CHECK((vec == new_vec || rev_vec == new_vec) && weights == new_weights);
+        BOOST_CHECK(vec == new_vec || rev_vec == new_vec);
     }
 }
 
