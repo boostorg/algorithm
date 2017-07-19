@@ -19,6 +19,7 @@
 #define BOOST_ALGORITHM_APPLY_PERMUTATION_HPP
 
 #include <algorithm>
+#include <utility>
 #include <iterator>
 
 #include <boost/range/begin.hpp>
