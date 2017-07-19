@@ -15,7 +15,7 @@
 
 #include <boost/algorithm/shuffle_weighted.hpp>
 
-#include <boost/random/random_device.hpp>
+#include <boost/random/mersenne_twister.hpp>
 #include <boost/test/unit_test.hpp>
 
 namespace ba = boost::algorithm;
