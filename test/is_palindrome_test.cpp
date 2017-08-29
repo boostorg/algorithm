@@ -18,6 +18,7 @@
 #include <iostream>
 #include <list>
 #include <vector>
+#include <iterator>
 
 
 namespace ba = boost::algorithm;

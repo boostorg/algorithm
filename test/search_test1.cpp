@@ -53,7 +53,7 @@ namespace {
 //         iter_type it1r = ret1r.first;
 //         iter_type it2  = ret2.first;
 //         iter_type it3  = ret3.first;
-        const int dist = ret1.first == hEnd ? -1 : std::distance ( hBeg, ret1.first );
+        const int dist = ret1.first == hEnd ? -1 : static_cast<int>(std::distance ( hBeg, ret1.first ));
 
         std::cout << "(Iterators) Pattern is " << needle.length () << ", haysstack is " << haystack.length () << " chars long; " << std::endl;
         try {
@@ -110,7 +110,7 @@ namespace {
         ret_type ret1 = ba::boyer_moore_search          (hBeg, hEnd, nBeg, nEnd);
         ret_type ret2 = ba::boyer_moore_horspool_search (hBeg, hEnd, nBeg, nEnd);
         ret_type ret3 = ba::knuth_morris_pratt_search   (hBeg, hEnd, nBeg, nEnd);
-        const int dist = ret1.first == hEnd ? -1 : std::distance ( hBeg, ret1.first );
+        const int dist = ret1.first == hEnd ? -1 : static_cast<int>(std::distance ( hBeg, ret1.first ));
 
         std::cout << "(Pointers) Pattern is " << needle.length () << ", haysstack is " << haystack.length () << " chars long; " << std::endl;
         try {
@@ -169,7 +169,7 @@ namespace {
        ret_type retr1r = bm_r         (haystack);
         ret_type ret2   = bmh          (hBeg, hEnd);
         ret_type ret3   = kmp          (hBeg, hEnd);
-        const int dist  = ret1.first == hEnd ? -1 : std::distance ( hBeg, ret1.first );
+        const int dist  = ret1.first == hEnd ? -1 : static_cast<int>(std::distance ( hBeg, ret1.first ));
 
         std::cout << "(Objects) Pattern is " << needle.length () << ", haysstack is " << haystack.length () << " chars long; " << std::endl;
         try {

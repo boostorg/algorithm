@@ -117,7 +117,7 @@ BOOST_AUTO_TEST_CASE( test_main )
     std::cout << "---- Middle -----" << std::endl;
     check_one ( c1, p1f, -2 );      //  Don't know answer
     std::cout << "------ End ------" << std::endl;
-    check_one ( c1, p1e, c1.size() - p1e.size ());  
+    check_one ( c1, p1e, static_cast<int>(c1.size() - p1e.size ()));  
     std::cout << "--- Not found ---" << std::endl;
     check_one ( c1, p1n, -1 );      //  Not found
     }

@@ -25,8 +25,8 @@
 namespace ba = boost::algorithm;
 // namespace ba = boost;
 
-bool is_true  ( int v ) { return true; }
-bool is_false ( int v ) { return false; }
+bool is_true  ( int ) { return true; }
+bool is_false ( int ) { return false; }
 bool is_even  ( int v ) { return v % 2 == 0; }
 bool is_odd   ( int v ) { return v % 2 == 1; }
 
