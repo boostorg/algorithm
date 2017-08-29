@@ -8,7 +8,7 @@
 #include <vector>
 #include <iostream>
 
-#if __cplusplus >= 201103L
+#if (__cplusplus >= 201103L) || defined(BOOST_NO_CXX98_RANDOM_SHUFFLE)
 #include <random>
 
 std::default_random_engine gen;
@@ -57,7 +57,7 @@ BOOST_AUTO_TEST_CASE( test_main )
 	std::vector<int> v;
 	for ( int i = 0; i < 10; ++i )
 		v.push_back(i);
-	
+
 	const std::vector<int>::iterator b = v.begin();
 	ba::sort_subrange(b, v.end(), b + 3, b + 6);
 	check_sequence   (b, v.end(), b + 3, b + 6);
@@ -65,7 +65,7 @@ BOOST_AUTO_TEST_CASE( test_main )
 	BOOST_CHECK_EQUAL(v[3], 3);
 	BOOST_CHECK_EQUAL(v[4], 4);
 	BOOST_CHECK_EQUAL(v[5], 5);
-	
+
 //	Mix them up and try again - single element
 	do_shuffle(v.begin(), v.end());
 	ba::sort_subrange(b, v.end(), b + 7, b + 8);
@@ -105,7 +105,7 @@ BOOST_AUTO_TEST_CASE( test_main )
 	std::vector<int> v;
 	for ( int i = 0; i < 10; ++i )
 		v.push_back(i);
-	
+
 	const std::vector<int>::iterator b = v.begin();
 	ba::sort_subrange(b, v.end(), b + 3, b + 6, std::greater<int>());
 	check_sequence   (b, v.end(), b + 3, b + 6, std::greater<int>());
