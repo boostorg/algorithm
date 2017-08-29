@@ -15,16 +15,24 @@
 #include <algorithm>    // for std::equal
 #include <iterator>
 
+#ifdef __cpp_lib_array_constexpr // or cpp17 compiler
+// if compiled according to C++17 standard or std functions are constexpr
+#define BOOST_CONSTEXPR_IF_STD_CONSTEXPR constexpr
+#else
+#define BOOST_CONSTEXPR_IF_STD_CONSTEXPR
+#endif
+
 namespace boost { namespace algorithm {
 
 namespace detail {
 
     template <class T1, class T2>
     struct eq {
-        bool operator () ( const T1& v1, const T2& v2 ) const { return v1 == v2 ;}
+        BOOST_CONSTEXPR bool operator () ( const T1& v1, const T2& v2 ) const { return v1 == v2 ;}
         };
     
     template <class RandomAccessIterator1, class RandomAccessIterator2, class BinaryPredicate>
+    BOOST_CONSTEXPR_IF_STD_CONSTEXPR 
     bool equal ( RandomAccessIterator1 first1, RandomAccessIterator1 last1, 
                  RandomAccessIterator2 first2, RandomAccessIterator2 last2, BinaryPredicate pred,
                  std::random_access_iterator_tag, std::random_access_iterator_tag )
@@ -37,6 +45,7 @@ namespace detail {
     }
 
     template <class InputIterator1, class InputIterator2, class BinaryPredicate>
+    BOOST_CXX14_CONSTEXPR 
     bool equal ( InputIterator1 first1, InputIterator1 last1, 
                  InputIterator2 first2, InputIterator2 last2, BinaryPredicate pred,
                  std::input_iterator_tag, std::input_iterator_tag )
@@ -60,6 +69,7 @@ namespace detail {
 /// \param last2     One past the end of the second range.
 /// \param pred      A predicate for comparing the elements of the ranges
 template <class InputIterator1, class InputIterator2, class BinaryPredicate>
+BOOST_CXX14_CONSTEXPR
 bool equal ( InputIterator1 first1, InputIterator1 last1, 
              InputIterator2 first2, InputIterator2 last2, BinaryPredicate pred )
 {
@@ -78,6 +88,7 @@ bool equal ( InputIterator1 first1, InputIterator1 last1,
 /// \param first2    The start of the second range.
 /// \param last2     One past the end of the second range.
 template <class InputIterator1, class InputIterator2>
+BOOST_CXX14_CONSTEXPR
 bool equal ( InputIterator1 first1, InputIterator1 last1, 
              InputIterator2 first2, InputIterator2 last2 )
 {
