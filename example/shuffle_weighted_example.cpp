@@ -26,7 +26,7 @@ int main ( int /*argc*/, char * /*argv*/ [] )
         std::cout << "shuffle_weighted with iterators:\n";
         std::vector<int> vec{1, 2, 3, 4, 5}, order{4, 2, 3, 1, 0};
 
-        ba::shuffle_weighted(vec.begin(), vec.end(), order.begin(), g);
+        ba::shuffle_weighted(vec.begin(), vec.end(), order.begin(), order.end(), g);
         for (const auto& x : vec)
         {
             std::cout << x << ", ";

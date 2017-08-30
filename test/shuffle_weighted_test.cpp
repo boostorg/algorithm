@@ -57,6 +57,19 @@ void test_shuffle_weighted()
         ba::shuffle_weighted(new_vec, new_weights, d);
         BOOST_CHECK(vec == new_vec || rev_vec == new_vec);
     }
+    {
+        // Two element case, iterator interface
+        
+        br::mt19937_64 d;
+        std::vector<int> vec, rev_vec, weights;
+        vec.push_back(1); vec.push_back(2);
+        rev_vec.push_back(2); rev_vec.push_back(1);
+        weights = vec;
+        std::vector<int> new_vec = vec, new_weights = weights;
+        
+        ba::shuffle_weighted(new_vec.begin(), new_vec.end(), new_weights.begin(), new_weights.end(), d);
+        BOOST_CHECK(vec == new_vec || rev_vec == new_vec);
+    }
 }
 
 

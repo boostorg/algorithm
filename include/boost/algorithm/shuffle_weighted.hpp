@@ -44,11 +44,13 @@ namespace boost { namespace algorithm {
 #ifndef BOOST_NO_CXX11_RVALUE_REFERENCES
 template <typename ForwardIterator1, typename ForwardIterator2, typename UniformRandomBitGenerator>
 void shuffle_weighted(ForwardIterator1 item_begin, ForwardIterator1 item_end, 
-                      ForwardIterator2 weight_begin, UniformRandomBitGenerator&& g)
+                      ForwardIterator2 weight_begin, ForwardIterator2 weight_end,
+					  UniformRandomBitGenerator&& g)
 #else
 template <typename ForwardIterator1, typename ForwardIterator2, typename UniformRandomBitGenerator>
 void shuffle_weighted(ForwardIterator1 item_begin, ForwardIterator1 item_end, 
-                      ForwardIterator2 weight_begin, UniformRandomBitGenerator& g)
+                      ForwardIterator2 weight_begin, ForwardIterator2 weight_end,
+					  UniformRandomBitGenerator& g)
 #endif
 {
     typedef typename std::iterator_traits<ForwardIterator2>::value_type weight_t;
@@ -106,12 +108,12 @@ template <typename Range1, typename Range2, typename UniformRandomBitGenerator>
 #ifndef BOOST_NO_CXX11_RVALUE_REFERENCES
 void shuffle_weighted(Range1& item_range, Range2& weight_range, UniformRandomBitGenerator&& g)
 {
-    shuffle_weighted(boost::begin(item_range), boost::end(item_range), boost::begin(weight_range), static_cast<UniformRandomBitGenerator&&>(g));
+    shuffle_weighted(boost::begin(item_range), boost::end(item_range), boost::begin(weight_range), boost::end(weight_range), static_cast<UniformRandomBitGenerator&&>(g));
 }
 #else
 void shuffle_weighted(Range1& item_range, Range2& weight_range, UniformRandomBitGenerator& g)
 {
-    shuffle_weighted(boost::begin(item_range), boost::end(item_range), boost::begin(weight_range), g);
+    shuffle_weighted(boost::begin(item_range), boost::end(item_range), boost::begin(weight_range), boost::end(weight_range), g);
 }
 #endif
 }}

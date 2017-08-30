@@ -20,7 +20,7 @@ The routines come in 2 forms; the first one takes two iterators to define the it
 [heading interface]
 
 There are two versions of algorithms:
-1) takes three iterators and random generator.
+1) takes four iterators and random generator.
 2) takes two ranges and random generator.
 
 Also there are two versions for old compilers (which doesn't support C++11 or higher standard).
@@ -29,7 +29,7 @@ Difference is only one: C++11 or higher version takes UniformRandomBitGenerator 
 For C++11 or higher compilers:
 ``
 template<typename ForwardIterator1, typename ForwardIterator2, typename UniformRandomBitGenerator>
-void shuffle_weighted(ForwardIterator1 item_begin, ForwardIterator1 item_end, ForwardIterator2 weight_begin, UniformRandomBitGenerator&& g);
+void shuffle_weighted(ForwardIterator1 item_begin, ForwardIterator1 item_end, ForwardIterator2 weight_begin, ForwardIterator2 weight_end, UniformRandomBitGenerator&& g);
 template<typename Range1, typename Range2, typename UniformRandomBitGenerator>
 void shuffle_weighted(Range1& item_range, Range2& weight_range, UniformRandomBitGenerator&& g);
 ``
@@ -37,7 +37,7 @@ void shuffle_weighted(Range1& item_range, Range2& weight_range, UniformRandomBit
 For old compilers:
 ``
 template<typename ForwardIterator1, typename ForwardIterator2, typename UniformRandomBitGenerator>
-void shuffle_weighted(ForwardIterator1 item_begin, ForwardIterator1 item_end, ForwardIterator2 weight_begin, UniformRandomBitGenerator& g);
+void shuffle_weighted(ForwardIterator1 item_begin, ForwardIterator1 item_end, ForwardIterator2 weight_begin, ForwardIterator2 weight_end, UniformRandomBitGenerator& g);
 template<typename Range1, typename Range2, typename UniformRandomBitGenerator>
 void shuffle_weighted(Range1& item_range, Range2& weight_range, UniformRandomBitGenerator& g);
 ``
