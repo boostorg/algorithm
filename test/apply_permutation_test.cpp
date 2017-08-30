@@ -26,7 +26,7 @@ void test_apply_permutation()
     {
         std::vector<int> vec, order, result;
         
-        ba::apply_permutation(vec.begin(), vec.end(), order.begin());
+        ba::apply_permutation(vec.begin(), vec.end(), order.begin(), order.end());
         BOOST_CHECK(vec == result);
     }
     //1 element
@@ -36,7 +36,7 @@ void test_apply_permutation()
         order.push_back(0);
         result = vec;
         
-        ba::apply_permutation(vec.begin(), vec.end(), order.begin());
+        ba::apply_permutation(vec.begin(), vec.end(), order.begin(), order.end());
         BOOST_CHECK(vec == result);
     }
     //2 elements, no changes
@@ -46,7 +46,7 @@ void test_apply_permutation()
         order.push_back(0); order.push_back(1);
         result = vec;
         
-        ba::apply_permutation(vec.begin(), vec.end(), order.begin());
+        ba::apply_permutation(vec.begin(), vec.end(), order.begin(), order.end());
         BOOST_CHECK(vec == result);
     }
     //2 elements, changed
@@ -56,7 +56,7 @@ void test_apply_permutation()
         order.push_back(1); order.push_back(0);
         result.push_back(2); result.push_back(1);
         
-        ba::apply_permutation(vec.begin(), vec.end(), order.begin());
+        ba::apply_permutation(vec.begin(), vec.end(), order.begin(), order.end());
         BOOST_CHECK(vec == result);
     }
     //Multiple elements, no changes
@@ -66,7 +66,7 @@ void test_apply_permutation()
         order.push_back(0); order.push_back(1); order.push_back(2); order.push_back(3); order.push_back(4);
         result = vec;
         
-        ba::apply_permutation(vec.begin(), vec.end(), order.begin());
+        ba::apply_permutation(vec.begin(), vec.end(), order.begin(), order.end());
         BOOST_CHECK(vec == result);
     }
     //Multiple elements, changed
@@ -76,7 +76,7 @@ void test_apply_permutation()
         order.push_back(4); order.push_back(3); order.push_back(2); order.push_back(1); order.push_back(0);
         result.push_back(5); result.push_back(4); result.push_back(3); result.push_back(2); result.push_back(1);
         
-        ba::apply_permutation(vec.begin(), vec.end(), order.begin());
+        ba::apply_permutation(vec.begin(), vec.end(), order.begin(), order.end());
         BOOST_CHECK(vec == result);
     }
     //Just test range interface
@@ -97,7 +97,7 @@ void test_apply_reverse_permutation()
     {
         std::vector<int> vec, order, result;
         
-        ba::apply_reverse_permutation(vec.begin(), vec.end(), order.begin());
+        ba::apply_reverse_permutation(vec.begin(), vec.end(), order.begin(), order.end());
         BOOST_CHECK(vec == result);
     }
     //1 element
@@ -107,7 +107,7 @@ void test_apply_reverse_permutation()
         order.push_back(0);
         result = vec;
         
-        ba::apply_reverse_permutation(vec.begin(), vec.end(), order.begin());
+        ba::apply_reverse_permutation(vec.begin(), vec.end(), order.begin(), order.end());
         BOOST_CHECK(vec == result);
     }
     //2 elements, no changes
@@ -117,7 +117,7 @@ void test_apply_reverse_permutation()
         order.push_back(0); order.push_back(1);
         result = vec;
         
-        ba::apply_reverse_permutation(vec.begin(), vec.end(), order.begin());
+        ba::apply_reverse_permutation(vec.begin(), vec.end(), order.begin(), order.end());
         BOOST_CHECK(vec == result);
     }
     //2 elements, changed
@@ -127,7 +127,7 @@ void test_apply_reverse_permutation()
         order.push_back(1); order.push_back(0);
         result.push_back(2); result.push_back(1);
         
-        ba::apply_reverse_permutation(vec.begin(), vec.end(), order.begin());
+        ba::apply_reverse_permutation(vec.begin(), vec.end(), order.begin(), order.end());
         BOOST_CHECK(vec == result);
     }
     //Multiple elements, no changes
@@ -137,7 +137,7 @@ void test_apply_reverse_permutation()
         order.push_back(0); order.push_back(1); order.push_back(2); order.push_back(3); order.push_back(4);
         result = vec;
         
-        ba::apply_reverse_permutation(vec.begin(), vec.end(), order.begin());
+        ba::apply_reverse_permutation(vec.begin(), vec.end(), order.begin(), order.end());
         BOOST_CHECK(vec == result);
     }
     //Multiple elements, changed
@@ -147,7 +147,7 @@ void test_apply_reverse_permutation()
         order.push_back(4); order.push_back(3); order.push_back(2); order.push_back(1); order.push_back(0);
         result.push_back(5); result.push_back(4); result.push_back(3); result.push_back(2); result.push_back(1);
         
-        ba::apply_reverse_permutation(vec.begin(), vec.end(), order.begin());
+        ba::apply_reverse_permutation(vec.begin(), vec.end(), order.begin(), order.end());
         BOOST_CHECK(vec == result);
     }
     //Just test range interface

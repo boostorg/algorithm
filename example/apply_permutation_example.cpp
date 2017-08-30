@@ -23,7 +23,7 @@ int main ( int /*argc*/, char * /*argv*/ [] )
         std::cout << "apply_permutation with iterators:\n";
         std::vector<int> vec{1, 2, 3, 4, 5}, order{4, 2, 3, 1, 0};
 
-        ba::apply_permutation(vec.begin(), vec.end(), order.begin());
+        ba::apply_permutation(vec.begin(), vec.end(), order.begin(), order.end());
         for (const auto& x : vec)
         {
             std::cout << x << ", ";
@@ -34,7 +34,7 @@ int main ( int /*argc*/, char * /*argv*/ [] )
         std::cout << "apply_reverse_permutation with iterators:\n";
         std::vector<int> vec{1, 2, 3, 4, 5}, order{4, 2, 3, 1, 0};
 
-        ba::apply_reverse_permutation(vec.begin(), vec.end(), order.begin());
+        ba::apply_reverse_permutation(vec.begin(), vec.end(), order.begin(), order.end());
         for (const auto& x : vec)
         {
             std::cout << x << ", ";
