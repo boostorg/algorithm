@@ -58,6 +58,7 @@ protected:
 private:
     void compute_next()
     {
+        BOOST_ASSERT(k_pattern_length > 0);
         pattern_difference_type j = 0, t = -1;
         next_.reserve(k_pattern_length);
         next_.push_back(-1);
