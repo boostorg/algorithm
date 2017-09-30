@@ -20,12 +20,11 @@ This algorithm was designed to be a generic sequence matching algorithm suitable
 The algorithm and original code was written in 1997 by David Musser and Gor Nishanov.
 Their paper is available from arXiv ([@https://arxiv.org/abs/0810.0264]) or from Dave Musser's homepage at Rensselaer Polytechnic Institute ([@http://www.cs.rpi.edu/~musser/gp/gensearch1.pdf]).
 
-It is based on Knuth-Morris-Pratt with the addition of a hash-coded form of the skip loop from Boyer-Moore. 
+It is based on Knuth-Morris-Pratt (KMP) with the addition of a hash-coded form of the skip loop from Boyer-Moore. It has the same worst-case bound of 2n on the number of comparisons as KMP. The average case performance appears to be slightly better than Boyer-Moore-Horspool (which is in turn slightly better than better than Boyer-Moore). 
+It also features a fallback algorithm for when the corpus does not provide random-access iterators.
 
 
-The Boyer-Moore algorithm uses two precomputed tables to give better performance than a naive search. These tables depend on the pattern being searched for, and give the Boyer-Moore algorithm larger a memory footprint and startup costs than a simpler algorithm, but these costs are recovered quickly during the searching process, especially if the pattern is longer than a few elements.
-
-However, the Boyer-Moore algorithm cannot be used with comparison predicates like `std::search`.
+However, as is the case with the other accelerated search algorithms, it cannot be used with comparison predicates like `std::search`.
 
 Nomenclature: I refer to the sequence being searched for as the "pattern", and the sequence being searched in as the "corpus".
 
