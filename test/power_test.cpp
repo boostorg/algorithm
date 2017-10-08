@@ -58,7 +58,7 @@ void test_power_constexpr ()
     BOOST_CHECK(check_power2);
     BOOST_CXX14_CONSTEXPR bool check_power3 = 
         ba::power(3, 3) == 27;
-    BOOST_CHECK(check_power1);
+    BOOST_CHECK(check_power3);
     BOOST_CXX14_CONSTEXPR bool check_power4 = 
         ba::power(2, 30) == 0x40000000;
     BOOST_CHECK(check_power4);
