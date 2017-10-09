@@ -1,0 +1,84 @@
+[/ File shuffle_weighted.qbk]
+
+[section:shuffle_weighted shuffle_weighted]
+
+[/license
+Copyright (c) 2017 Alexander Zaitsev
+
+Distributed under the Boost Software License, Version 1.0.
+(See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+]
+
+The header file 'shuffle_weighted.hpp' contains shuffle_weighted algorithm. There is range-based version.
+The algorithms rearrange the elements randomly with weights, using random number generator.
+
+The routine `shuffle_weighted` takes a item sequence and a weight sequences.
+
+The routines come in 2 forms; the first one takes two iterators to define the item range, one iterator to define the beginning of weight range and random generator. The second form takes range to define the item sequence, range to define weight sequence and random generator.
+
+
+[heading interface]
+
+There are two versions of algorithms:
+1) takes four iterators and random generator.
+2) takes two ranges and random generator.
+
+Also there are two versions for old compilers (which doesn't support C++11 or higher standard).
+Difference is only one: C++11 or higher version takes UniformRandomBitGenerator parameter as universal reference, version for old compiler takes UniformRandomBitGenerator as reference.
+
+For C++11 or higher compilers:
+``
+template<typename ForwardIterator1, typename ForwardIterator2, typename UniformRandomBitGenerator>
+void shuffle_weighted(ForwardIterator1 item_begin, ForwardIterator1 item_end, ForwardIterator2 weight_begin, ForwardIterator2 weight_end, UniformRandomBitGenerator&& g);
+template<typename Range1, typename Range2, typename UniformRandomBitGenerator>
+void shuffle_weighted(Range1& item_range, Range2& weight_range, UniformRandomBitGenerator&& g);
+``
+
+For old compilers:
+``
+template<typename ForwardIterator1, typename ForwardIterator2, typename UniformRandomBitGenerator>
+void shuffle_weighted(ForwardIterator1 item_begin, ForwardIterator1 item_end, ForwardIterator2 weight_begin, ForwardIterator2 weight_end, UniformRandomBitGenerator& g);
+template<typename Range1, typename Range2, typename UniformRandomBitGenerator>
+void shuffle_weighted(Range1& item_range, Range2& weight_range, UniformRandomBitGenerator& g);
+``
+
+[heading Examples]
+
+Given the containers:
+std::vector<int> emp_vec, emp_order,
+std::vector<int> one{1}, one_order{1},
+std::vector<int> two{1, 2}, two_order{1, 2}, then
+``
+
+shuffle_weighted(emp_vec, emp_order))  --> no changes
+shuffle_weighted(one, one_order))  --> no changes
+shuffle_weighted(two, two_order))  --> weighted-random result
+``
+
+[heading Iterator Requirements]
+
+`shuffle_weighted` works on Forawrd-compatible iterators (for item and weight sequences both).
+
+[heading Complexity]
+
+All of the variants of `shuffle_weighted` runs in ['O(N^2)] time.
+
+[heading Exception Safety]
+
+All of the variants of `shuffle_weighted` takes their parameters by iterators or reference, and do not depend upon any global state. Therefore, all the routines in this file provide the strong exception guarantee.
+
+[heading Notes]
+* Weights should be bigger than 0.
+
+* If ItemSequence and WeightSequence sizes are different, behavior is undefined.
+
+* `shuffle_weighted` works also on empty sequences.
+
+* Be careful: weights can be changed inside the function.
+[endsect]
+
+[/ File shuffle_weighted.qbk
+Copyright 2017 Alexander Zaitsev
+Distributed under the Boost Software License, Version 1.0.
+(See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt).
+]
