@@ -28,7 +28,7 @@ namespace boost { namespace algorithm {
 /// \param p     A predicate for testing the elements of the sequence
 ///
 template<typename InputIterator, typename Predicate> 
-bool one_of ( InputIterator first, InputIterator last, Predicate p )
+BOOST_CXX14_CONSTEXPR bool one_of ( InputIterator first, InputIterator last, Predicate p )
 {
     InputIterator i = std::find_if (first, last, p);
     if (i == last)
@@ -43,7 +43,7 @@ bool one_of ( InputIterator first, InputIterator last, Predicate p )
 /// \param p    A predicate for testing the elements of the range
 ///
 template<typename Range, typename Predicate> 
-bool one_of ( const Range &r, Predicate p ) 
+BOOST_CXX14_CONSTEXPR bool one_of ( const Range &r, Predicate p ) 
 {
     return boost::algorithm::one_of ( boost::begin (r), boost::end (r), p );
 }
