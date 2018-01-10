@@ -44,7 +44,7 @@ OutputIterator exclusive_scan(InputIterator first, InputIterator last,
                               OutputIterator result, T init)
 {
 	typedef typename std::iterator_traits<InputIterator>::value_type VT;
-    return exclusive_scan(first, last, result, init, std::plus<VT>());
+    return boost::algorithm::exclusive_scan(first, last, result, init, std::plus<VT>());
 }
 
 }} // namespace boost and algorithm

@@ -46,7 +46,7 @@ template<class InputIterator1, class InputIterator2, class T>
 T transform_reduce(InputIterator1 first1, InputIterator1 last1,
                    InputIterator2 first2, T init)
 {
-    return transform_reduce(first1, last1, first2, init,
+    return boost::algorithm::transform_reduce(first1, last1, first2, init,
                             std::plus<T>(), std::multiplies<T>());
 }
 
