@@ -72,7 +72,7 @@ namespace boost { namespace algorithm {
     typename boost::mpl::identity<T>::type const & lo, 
     typename boost::mpl::identity<T>::type const & hi )
   {
-    return (clamp) ( val, lo, hi, std::less<T>());
+    return boost::algorithm::clamp ( val, lo, hi, std::less<T>());
   } 
 
 /// \fn clamp_range ( InputIterator first, InputIterator last, OutputIterator out, 
@@ -93,7 +93,7 @@ namespace boost { namespace algorithm {
   {
   // this could also be written with bind and std::transform
     while ( first != last )
-        *out++ = clamp ( *first++, lo, hi );
+        *out++ = boost::algorithm::clamp ( *first++, lo, hi );
     return out;
   } 
 
@@ -113,7 +113,7 @@ namespace boost { namespace algorithm {
     typename std::iterator_traits<typename boost::range_iterator<const Range>::type>::value_type const & lo, 
     typename std::iterator_traits<typename boost::range_iterator<const Range>::type>::value_type const & hi )
   {
-    return clamp_range ( boost::begin ( r ), boost::end ( r ), out, lo, hi );
+    return boost::algorithm::clamp_range ( boost::begin ( r ), boost::end ( r ), out, lo, hi );
   } 
 
 
@@ -139,7 +139,7 @@ namespace boost { namespace algorithm {
   {
   // this could also be written with bind and std::transform
     while ( first != last )
-        *out++ = clamp ( *first++, lo, hi, p );
+        *out++ = boost::algorithm::clamp ( *first++, lo, hi, p );
     return out;
   } 
 
@@ -166,7 +166,7 @@ namespace boost { namespace algorithm {
     typename std::iterator_traits<typename boost::range_iterator<const Range>::type>::value_type const & hi,
     Pred p )
   {
-    return clamp_range ( boost::begin ( r ), boost::end ( r ), out, lo, hi, p );
+    return boost::algorithm::clamp_range ( boost::begin ( r ), boost::end ( r ), out, lo, hi, p );
   } 
 
 
