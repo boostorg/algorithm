@@ -16,13 +16,12 @@ http://www.boost.org/LICENSE_1_0.txt)
 
 The header file 'musser_nishanov.hpp' contains an implementation of the Musser-Nishanov algorithm for sequence matching. 
 
-This algorithm was designed to be a generic sequence matching algorithm suitable for searching not just text but also for example DNA.
+This algorithm was designed to be a generic sequence matching algorithm, extensible to any element type or character frequency by specialization of a traits class.
 The algorithm and original code was written in 1997 by David Musser and Gor Nishanov.
 Their paper is available from arXiv ([@https://arxiv.org/abs/0810.0264]) or from Dave Musser's homepage at Rensselaer Polytechnic Institute ([@http://www.cs.rpi.edu/~musser/gp/gensearch1.pdf]).
 
 It is based on Knuth-Morris-Pratt (KMP) with the addition of a hash-coded form of the skip loop from Boyer-Moore. It has the same worst-case bound of 2n on the number of comparisons as KMP. The average case performance appears to be slightly better than Boyer-Moore-Horspool (which is in turn slightly better than better than Boyer-Moore). 
 It also features a fallback algorithm for when the corpus does not provide random-access iterators.
-
 
 However, as is the case with the other accelerated search algorithms, it cannot be used with comparison predicates like `std::search`.
 
@@ -30,15 +29,15 @@ Nomenclature: I refer to the sequence being searched for as the "pattern", and t
 
 [heading Interface]
 
-For flexibility, the Boyer-Moore algorithm has two interfaces; an object-based interface and a procedural one. The object-based interface builds the tables in the constructor, and uses operator () to perform the search. The procedural interface builds the table and does the search all in one step. If you are going to be searching for the same pattern in multiple corpora, then you should use the object interface, and only build the tables once.
+For flexibility, the algorithm has two interfaces; an object-based interface and a procedural one. The object-based interface builds the tables in the constructor, and uses operator () to perform the search. The procedural interface builds the table and does the search all in one step. If you are going to be searching for the same pattern in multiple corpora, then you should use the object interface, and only build the tables once.
 
 Here is the object interface:
 ``
 template <typename patIter>
-class boyer_moore {
+class musser_nishanov {
 public:
-    boyer_moore ( patIter first, patIter last );
-    ~boyer_moore ();
+    musser_nishanov ( patIter first, patIter last );
+    ~musser_nishanov ();
     
     template <typename corpusIter>
     corpusIter operator () ( corpusIter corpus_first, corpusIter corpus_last );
@@ -49,18 +48,26 @@ and here is the corresponding procedural interface:
 
 ``
 template <typename patIter, typename corpusIter>
-corpusIter boyer_moore_search ( 
+corpusIter musser_nishanov_search (
         corpusIter corpus_first, corpusIter corpus_last, 
         patIter pat_first, patIter pat_last );
 ``
 
-Each of the functions is passed two pairs of iterators. The first two define the corpus and the second two define the pattern. Note that the two pairs need not be of the same type, but they do need to "point" at the same type. In other words, `patIter::value_type` and `curpusIter::value_type` need to be the same type.
+Each of the functions is passed two pairs of iterators. The first two define the corpus and the second two define the pattern. Note that the two pairs need not be of the same type, but they do need to "point" at the same type. In other words, `patIter::value_type` and `corpusIter::value_type` need to be the same type.
 
 The return value of the function is an iterator pointing to the start of the pattern in the corpus. If the pattern is not found, it returns the end of the corpus (`corpus_last`).
 
 [heading Performance]
 
-The execution time of the Boyer-Moore algorithm, while still linear in the size of the string being searched, can have a significantly lower constant factor than many other search algorithms: it doesn't need to check every character of the string to be searched, but rather skips over some of them. Generally the algorithm gets faster as the pattern being searched for becomes longer. Its efficiency derives from the fact that with each unsuccessful attempt to find a match between the search string and the text it is searching, it uses the information gained from that attempt to rule out as many positions of the text as possible where the string cannot match.
+The algorithm has the same 2['n] worst-case bound on the number of comparisons as
+KMP. Similar to Boyer-Moore, the actual number of comparisons in practice will typically be much fewer, due to the skip loop feature, which provides the most dramatic effect on performance.
+
+Execution time on UTF-8 string matching is comparable to Boyer-Moore-Horspool.
+A traits class is provided for matching DNA sequences that optimizes the skip loop such that it searches 10x faster than it otherwise would. This traits class must be specified manually, so it is unfair to compare this result to another search algorithm without similar specialization.
+
+Performance on types other than char has also been tested.
+When the element is an unsigned short, performance with the default search traits is equivalent to std::search, whereas the Boyer-Moore family of algorithms tend to be 5-6x slower.
+
 
 [heading Memory Use]
 
@@ -91,9 +98,8 @@ To use a different skip table, you should define your own skip table object and 
 
 [endsect]
 
-[/ File boyer_moore.qbk
-Copyright 2011 Marshall Clow
+[/ File musser_nishanov.qbk
+Copyright 2017 Jeremy Murphy
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt).
 ]
-
