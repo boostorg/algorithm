@@ -18,11 +18,19 @@
 #ifndef BOOST_ALGORITHM_APPLY_PERMUTATION_HPP
 #define BOOST_ALGORITHM_APPLY_PERMUTATION_HPP
 
-#include <algorithm>
-#include <type_traits>
+#include <boost/assert.hpp>
 
 #include <boost/range/begin.hpp>
 #include <boost/range/end.hpp>
+
+// This conditional may seem pedantic, but that's what the standard says for std::swap.
+#if __cplusplus < 201103L
+#include <algorithm>
+#else
+#include <utility>
+#endif
+
+#include <iterator>
 
 namespace boost { namespace algorithm
 {
@@ -39,17 +47,21 @@ namespace boost { namespace algorithm
 template<typename RandomAccessIterator1, typename RandomAccessIterator2>
 void
 apply_permutation(RandomAccessIterator1 item_begin, RandomAccessIterator1 item_end,
-                  RandomAccessIterator2 ind_begin, RandomAccessIterator2 ind_end)
+                  RandomAccessIterator2 ind_begin)
 {
-    using Diff = typename std::iterator_traits<RandomAccessIterator1>::difference_type;
+    BOOST_ASSERT(item_begin <= item_end);
+    BOOST_ASSERT(ind_begin + (item_end - item_begin) <= item_begin || item_end <= ind_begin);
+
+    typedef typename std::iterator_traits<RandomAccessIterator1>::difference_type Diff;
+    typedef typename std::iterator_traits<RandomAccessIterator2>::value_type Index;
     using std::swap;
     Diff size = std::distance(item_begin, item_end);
     for (Diff i = 0; i < size; i++)
     {
-        auto current = i;
+        Diff current = i;
         while (i != ind_begin[current])
         {
-            auto next = ind_begin[current];
+            Index next = ind_begin[current];
             swap(item_begin[current], item_begin[next]);
             ind_begin[current] = current;
             current = next;
@@ -72,10 +84,12 @@ void
 apply_reverse_permutation(
         RandomAccessIterator1 item_begin,
         RandomAccessIterator1 item_end,
-        RandomAccessIterator2 ind_begin,
-        RandomAccessIterator2 ind_end)
+        RandomAccessIterator2 ind_begin)
 {
-    using Diff = typename std::iterator_traits<RandomAccessIterator2>::difference_type;
+    BOOST_ASSERT(item_begin <= item_end);
+    BOOST_ASSERT(ind_begin + (item_end - item_begin) <= item_begin || item_end <= ind_begin);
+
+    typedef typename std::iterator_traits<RandomAccessIterator1>::difference_type Diff;
     using std::swap;
     Diff length = std::distance(item_begin, item_end);
     for (Diff i = 0; i < length; i++)
@@ -102,7 +116,7 @@ void
 apply_permutation(Range1& item_range, Range2& ind_range)
 {
     apply_permutation(boost::begin(item_range), boost::end(item_range),
-                      boost::begin(ind_range), boost::end(ind_range));
+                      boost::begin(ind_range));
 }
 
 /// \fn apply_reverse_permutation ( Range1 item_range, Range2 ind_range )
@@ -118,7 +132,7 @@ void
 apply_reverse_permutation(Range1& item_range, Range2& ind_range)
 {
     apply_reverse_permutation(boost::begin(item_range), boost::end(item_range),
-                              boost::begin(ind_range), boost::end(ind_range));
+                              boost::begin(ind_range));
 }
 
 }}
