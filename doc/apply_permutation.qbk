@@ -29,17 +29,17 @@ The routines come in 2 forms; the first one takes two iterators to define the it
 [heading interface]
 
 There are two versions of algorithms:
-1) takes three iterators.
+1) takes four iterators.
 2) takes two ranges.
 ``
 template<typename RandomAccessIterator1, typename RandomAccessIterator2>
 void apply_permutation(RandomAccessIterator1 item_begin, RandomAccessIterator1 item_end,
-                  RandomAccessIterator2 ind_begin);
+                  RandomAccessIterator2 ind_begin, RandomAccessIterator2 ind_end);
 template<typename Range1, typename Range2>
 void apply_permutation(Range1& item_range, Range2& ind_range);
 template<typename RandomAccessIterator1, typename RandomAccessIterator2>
 void apply_reverse_permutation(RandomAccessIterator1 item_begin, RandomAccessIterator1 item_end,
-                  RandomAccessIterator2 ind_begin);
+                  RandomAccessIterator2 ind_begin, RandomAccessIterator2 ind_end);
 template<typename Range1, typename Range2>
 void apply_reverse_permutation(Range1& item_range, Range2& ind_range);
 ``

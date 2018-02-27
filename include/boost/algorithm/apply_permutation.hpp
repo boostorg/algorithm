@@ -47,7 +47,7 @@ namespace boost { namespace algorithm
 template<typename RandomAccessIterator1, typename RandomAccessIterator2>
 void
 apply_permutation(RandomAccessIterator1 item_begin, RandomAccessIterator1 item_end,
-                  RandomAccessIterator2 ind_begin)
+                  RandomAccessIterator2 ind_begin, RandomAccessIterator2)
 {
     BOOST_ASSERT(item_begin <= item_end);
     BOOST_ASSERT(ind_begin + (item_end - item_begin) <= item_begin || item_end <= ind_begin);
@@ -84,7 +84,8 @@ void
 apply_reverse_permutation(
         RandomAccessIterator1 item_begin,
         RandomAccessIterator1 item_end,
-        RandomAccessIterator2 ind_begin)
+        RandomAccessIterator2 ind_begin,
+        RandomAccessIterator2)
 {
     BOOST_ASSERT(item_begin <= item_end);
     BOOST_ASSERT(ind_begin + (item_end - item_begin) <= item_begin || item_end <= ind_begin);
@@ -116,7 +117,7 @@ void
 apply_permutation(Range1& item_range, Range2& ind_range)
 {
     apply_permutation(boost::begin(item_range), boost::end(item_range),
-                      boost::begin(ind_range));
+                      boost::begin(ind_range), boost::end(ind_range));
 }
 
 /// \fn apply_reverse_permutation ( Range1 item_range, Range2 ind_range )
@@ -132,7 +133,7 @@ void
 apply_reverse_permutation(Range1& item_range, Range2& ind_range)
 {
     apply_reverse_permutation(boost::begin(item_range), boost::end(item_range),
-                              boost::begin(ind_range));
+                              boost::begin(ind_range), boost::end(ind_range));
 }
 
 }}
