@@ -40,8 +40,11 @@ namespace detail {
     //  Random-access iterators let is check the sizes in constant time
         if ( std::distance ( first1, last1 ) != std::distance ( first2, last2 ))
             return false;
-    // If we know that the sequences are the same size, the original version is fine
-        return std::equal ( first1, last1, first2, pred );
+    // If we know that the sequences are the same size, we can reduce comparison like the original version
+        for ( ; first1 != last1; ++first1, ++first2 )
+            if ( !pred(*first1, *first2) )
+                return false;
+        return true;
     }
 
     template <class InputIterator1, class InputIterator2, class BinaryPredicate>
