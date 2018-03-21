@@ -83,7 +83,7 @@ namespace boost {
         template<typename RangeT>
         inline detail::empty_formatF< 
             BOOST_STRING_TYPENAME range_value<RangeT>::type>
-        empty_formatter(const RangeT&)
+        empty_formatter(const RangeT& Input)
         {
             return detail::empty_formatF<
                 BOOST_STRING_TYPENAME range_value<RangeT>::type>();
