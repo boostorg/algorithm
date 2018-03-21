@@ -43,7 +43,6 @@ namespace boost {
             The result is given as an \c iterator_range delimiting the match.
 
             \param Search A substring to be searched for.
-            \param Comp An element comparison predicate
             \return An instance of the \c first_finder object
         */
         template<typename RangeT>
