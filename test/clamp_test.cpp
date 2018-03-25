@@ -14,8 +14,8 @@
 
 namespace ba = boost::algorithm;
 
-bool intGreater    ( int lhs, int rhs )       { return lhs > rhs; }
-bool doubleGreater ( double lhs, double rhs ) { return lhs > rhs; }
+BOOST_CONSTEXPR bool intGreater    ( int lhs, int rhs )       { return lhs > rhs; }
+BOOST_CONSTEXPR bool doubleGreater ( double lhs, double rhs ) { return lhs > rhs; }
 
 class custom {
 public:
