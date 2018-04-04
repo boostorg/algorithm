@@ -306,7 +306,7 @@ void test_constexpr()
         BOOST_CHECK(check_max_out);
     }
     {
-        short foo = 50;
+        BOOST_CXX14_CONSTEXPR short foo = 50;
         BOOST_CXX14_CONSTEXPR bool check_float   = ( 56    == ba::clamp ( foo, 56.9, 129 ));
         BOOST_CHECK(check_float);
         BOOST_CXX14_CONSTEXPR bool check_over    = ( 24910 == ba::clamp ( foo, 12345678, 123456999 ));

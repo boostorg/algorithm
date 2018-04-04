@@ -77,12 +77,13 @@ void test_all ()
     BOOST_CHECK ( ba::all_of_equal ( li.begin(), l_iter,            1 ));
     BOOST_CHECK ( ba::all_of       ( li.begin(), l_iter, is_<int> ( 1 )));
 
-    BOOST_CXX14_CONSTEXPR bool constexpr_res = (
-        !ba::all_of_equal ( some_numbers, 1 )
-        && !ba::all_of ( some_numbers, is_<int> ( 1 ))
-        && ba::all_of_equal ( some_numbers, some_numbers + 3,            1 )
-        && ba::all_of       ( some_numbers, some_numbers + 3, is_<int> ( 1 ))
-    );
+    BOOST_CXX14_CONSTEXPR bool constexpr_res =
+        !ba::all_of_equal ( some_numbers, 1 )                               &&
+        !ba::all_of       ( some_numbers, is_<int> ( 1 ))                   &&
+         ba::all_of_equal ( some_numbers, some_numbers + 3,            1 )  &&
+         ba::all_of       ( some_numbers, some_numbers + 3, is_<int> ( 1 )) &&
+        true;
+
     BOOST_CHECK ( constexpr_res );
 }
 

@@ -88,13 +88,14 @@ void test_none()
     BOOST_CHECK ( ba::none_of_equal ( li.begin(), l_iter,            18 ));
     BOOST_CHECK ( ba::none_of       ( li.begin(), l_iter, is_<int> ( 18 )));
     BOOST_CHECK (!ba::none_of       ( li.begin(), l_iter, is_<int> (  5 )));
-    
-    BOOST_CXX14_CONSTEXPR bool constexpr_res = (
-        !ba::none_of_equal ( some_numbers, 1 )
-        && !ba::none_of ( some_numbers, is_<int> ( 1 ))
-        && ba::none_of_equal ( some_numbers, some_numbers + 3,            100 )
-        && ba::none_of       ( some_numbers, some_numbers + 3, is_<int> ( 100 ))
-    );
+
+    BOOST_CXX14_CONSTEXPR bool constexpr_res =
+        !ba::none_of_equal ( some_numbers, 1 )                                 &&
+        !ba::none_of       ( some_numbers, is_<int> ( 1 ))                     &&
+         ba::none_of_equal ( some_numbers, some_numbers + 3,            100 )  &&
+         ba::none_of       ( some_numbers, some_numbers + 3, is_<int> ( 100 )) &&
+        true;
+
     BOOST_CHECK ( constexpr_res );
 }
 
