@@ -46,7 +46,8 @@ OutputIterator transform_inclusive_scan(InputIterator first, InputIterator last,
         typename std::iterator_traits<InputIterator>::value_type init = uOp(*first);
         *result++ = init;
         if (++first != last)
-            return transform_inclusive_scan(first, last, result, bOp, uOp, init);
+            return boost::algorithm::transform_inclusive_scan
+                                              (first, last, result, bOp, uOp, init);
         }
 
     return result;
