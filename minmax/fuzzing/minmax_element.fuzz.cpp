@@ -4,8 +4,10 @@
 //  LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 #include <iterator> // for std::distance
+#include <cassert>  // for assert
 
 #include <boost/algorithm/minmax_element.hpp>
+#include <boost/algorithm/cxx11/none_of.hpp>
 
 //	Fuzzing tests for:
 //
@@ -29,42 +31,50 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t sz) {
 //	Find the min and max
 	result_t result = boost::minmax_element(data, data + sz);
 
-//	The iterators have to be in the sequence
-	if (std::distance(data, result.first)  >= sz) return 1;
-	if (std::distance(data, result.second) >= sz) return 1;
+//	The iterators have to be in the sequence - and not at the end!
+	assert(std::distance(data, result.first)  < sz);
+	assert(std::distance(data, result.second) < sz);
 	
 //	the minimum element can't be bigger than the max element
 	uint8_t min_value = *result.first;
 	uint8_t max_value = *result.second;
 	
-	if (max_value < min_value) return 2;
+	assert(min_value <= max_value);
 
 //	None of the elements in the sequence can be less than the min, nor greater than the max
 	for (size_t i = 0; i < sz; ++i) {
-		if (data[i] < min_value) return 3;
-		if (max_value < data[i]) return 3;
+		assert(min_value <= data[i]);
+		assert(data[i] <= max_value);
 		}
+
+//	We returned the first min element, and the first max element
+	assert(boost::algorithm::none_of_equal(data, result.first,  min_value));
+	assert(boost::algorithm::none_of_equal(data, result.second, max_value));
 	}
 	
 	{
 //	Find the min and max
 	result_t result = boost::minmax_element(data, data + sz, greater);
 
-//	The iterators have to be in the sequence
-	if (std::distance(data, result.first)  >= sz) return 1;
-	if (std::distance(data, result.second) >= sz) return 1;
+//	The iterators have to be in the sequence - and not at the end!
+	assert(std::distance(data, result.first)  < sz);
+	assert(std::distance(data, result.second) < sz);
 
 //	the minimum element can't be bigger than the max element
 	uint8_t min_value = *result.first;
 	uint8_t max_value = *result.second;
 	
-	if (greater(max_value, min_value)) return 2;
+	assert (!greater(max_value, min_value));
 
 //	None of the elements in the sequence can be less than the min, nor greater than the max
 	for (size_t i = 0; i < sz; ++i) {
-		if (greater(data[i], min_value)) return 3;
-		if (greater(max_value, data[i])) return 3;
+		assert(!greater(data[i], min_value));
+		assert(!greater(max_value, data[i]));
 		}
+
+//	We returned the first min element, and the first max element
+	assert(boost::algorithm::none_of_equal(data, result.first,  min_value));
+	assert(boost::algorithm::none_of_equal(data, result.second, max_value));
 	}
 
   return 0;
