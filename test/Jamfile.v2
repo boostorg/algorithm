@@ -85,7 +85,9 @@ alias unit_test_framework
      [ run is_partitioned_until_test.cpp unit_test_framework    : : : : is_partitioned_until_test ]
    
 # Apply_permutation tests
-     [ run apply_permutation_test.cpp unit_test_framework    : : : : apply_permutation_test ]   
+     [ run apply_permutation_test.cpp unit_test_framework    : : : : apply_permutation_test ]
+# Find tests
+     [ run find_not_test.cpp unit_test_framework   : : : : find_not_test ]
    ;
 }
 
