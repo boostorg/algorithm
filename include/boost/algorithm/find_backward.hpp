@@ -16,7 +16,7 @@ namespace boost { namespace algorithm {
 template<typename BidiIter, typename T>
 BOOST_CXX14_CONSTEXPR BidiIter find_backward(BidiIter first, BidiIter last, T const & x)
 {
-    auto it = last;
+    BidiIter it = last;
     while (it != first) {
         if (*--it == x)
             return it;
@@ -27,7 +27,7 @@ BOOST_CXX14_CONSTEXPR BidiIter find_backward(BidiIter first, BidiIter last, T co
 template<typename BidiIter, typename T>
 BOOST_CXX14_CONSTEXPR BidiIter find_not_backward(BidiIter first, BidiIter last, T const & x)
 {
-    auto it = last;
+    BidiIter it = last;
     while (it != first) {
         if (*--it != x)
             return it;
@@ -38,7 +38,7 @@ BOOST_CXX14_CONSTEXPR BidiIter find_not_backward(BidiIter first, BidiIter last, 
 template<typename BidiIter, typename Pred>
 BOOST_CXX14_CONSTEXPR BidiIter find_if_backward(BidiIter first, BidiIter last, Pred p)
 {
-    auto it = last;
+    BidiIter it = last;
     while (it != first) {
         if (p(*--it))
             return it;
@@ -49,7 +49,7 @@ BOOST_CXX14_CONSTEXPR BidiIter find_if_backward(BidiIter first, BidiIter last, P
 template<typename BidiIter, typename Pred>
 BOOST_CXX14_CONSTEXPR BidiIter find_if_not_backward(BidiIter first, BidiIter last, Pred p)
 {
-    auto it = last;
+    BidiIter it = last;
     while (it != first) {
         if (!p(*--it))
             return it;
