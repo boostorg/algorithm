@@ -64,6 +64,7 @@ Thanks to all the people who have reviewed this library and made suggestions for
 
 [section:Misc Other Algorithms]
 [include clamp-hpp.qbk]
+[include find.qbk]
 [include gather.qbk]
 [include hex.qbk]
 [include is_palindrome.qbk]
