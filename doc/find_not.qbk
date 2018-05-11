@@ -1,6 +1,6 @@
-[/ File equal.qbk]
+[/ File find_not.qbk]
 
-[section:equal equal ]
+[section:find_not find_not ]
 
 [/license
 Copyright (c) 2018 T. Zachary Laine
@@ -39,10 +39,8 @@ our find condition.
 
 [heading interface]
 
-``
-template<typename InputIter, typename Sentinel, typename T>        
-InputIter find_not(InputIter first, Sentinel last, T const & x);
-``
+    template<typename InputIter, typename Sentinel, typename T>        
+    InputIter find_not(InputIter first, Sentinel last, T const & x);
 
 The function `find_not` returns the first value in the sequence `[first,
 last)` that is not equal to `x`.
@@ -51,8 +49,8 @@ last)` that is not equal to `x`.
 
 Given the container `c1` containing `{ 0, 1, 2 }`,  then
 
-    find_not ( c1.begin (),     c1.end (),    1 ) --> c1.begin()
-    find_not ( c1.begin (),     c1.end (),    0 ) --> std::next(c1.begin())
+    find_not ( c1.begin(),     c1.end(),    1 ) --> c1.begin()
+    find_not ( c1.begin(),     c1.end(),    0 ) --> std::next(c1.begin())
 
 [heading Iterator Requirements]
 

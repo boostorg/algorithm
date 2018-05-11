@@ -1,0 +1,99 @@
+[/ File find_backward.qbk]
+
+[section:find_backward find_backward ]
+
+[/license
+Copyright (c) 2018 T. Zachary Laine
+
+Distributed under the Boost Software License, Version 1.0.
+(See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+]
+
+The header file 'find_backward.hpp' contains variants of the stl algorithm
+`find`. These variants are like `find`, except that the evaluate the elements
+of the given sequence if reverse order.
+
+Consider how finding the last element that is equal to `x` in a range is
+typically done:
+
+    // Assume a valid range if elements delimited by [first, last).
+    while (last-- != first) {
+        if (*last == x) {
+            // Use last here...
+        }
+    }
+
+Raw loops are icky though.  PErhaps we should do a bit of extra work to allow
+the use of `std::find()`:
+
+    auto rfirst = std::make_reverse_iterator(last);
+    auto rlast = std::make_reverse_iterator(first);
+    auto it = std::find(rfirst, rlast);
+    // Use it here...
+
+That seems nicer, but it has two major drawbacks.  First, it requires an
+unpleasant amount of typing.  Second, it is considerably less efficient than
+forward-iterator `find` , since `std::reverse_iterator` calls its
+base-iterator's `operator--()` in most of its members before doing the work
+that the member requires.
+
+[heading interface]
+
+    template<typename BidiIter, typename T>
+    BidiIter find_backward(BidiIter first, BidiIter last, T const & x);
+
+The function `find_backward` returns an iterator to the last element of
+`[first, last)` that is equal to `x`.
+
+    template<typename BidiIter, typename T>
+    BidiIter find_not_backward(BidiIter first, BidiIter last, T const & x);
+
+The function `find_not_backward` returns an iterator to the last element of
+`[first, last)` that is not equal to `x`.
+
+    template<typename BidiIter, typename Pred>
+    BidiIter find_if_backward(BidiIter first, BidiIter last, Pred p);
+
+The function `find_if_backward` returns an iterator to the last element of
+`[first, last)` for which `pred` returns `true`.
+
+    template<typename BidiIter, typename Pred>
+    BidiIter find_if_not_backward(BidiIter first, BidiIter last, Pred p);
+
+The function `find_if_not_backward` returns an iterator to the last element of
+`[first, last)` for which `pred` returns `false`.
+
+[heading Examples]
+
+Given the container `c1` containing `{ 2, 1, 2 }`, then
+
+    find_backward        ( c1.begin(), c1.end(), 2                          ) --> --c1.end()
+    find_backward        ( c1.begin(), c1.end(), 3                          ) --> c1.end()
+    find_if_backward     ( c1.begin(), c1.end(), [](int i) {return i == 2;} ) --> --c1.end()
+    find_if_backward     ( c1.begin(), c1.end(), [](int i) {return i == 3;} ) --> c1.end()
+    find_not_backward    ( c1.begin(), c1.end(), 2                          ) --> std::prev(c1.end(), 2)
+    find_not_backward    ( c1.begin(), c1.end(), 1                          ) --> c1.end()
+    find_if_not_backward ( c1.begin(), c1.end(), [](int i) {return i == 2;} ) --> std::prev(c1.end(), 2)
+    find_if_not_backward ( c1.begin(), c1.end(), [](int i) {return i == 1;} ) --> c1.end()
+
+[heading Iterator Requirements]
+
+All variants work on bidirectional iterators.
+
+[heading Complexity]
+
+Linear.
+
+[heading Exception Safety]
+
+All of the variants take their parameters by value and do not depend upon any
+global state. Therefore, all the routines in this file provide the strong
+exception guarantee.
+
+[endsect]
+
+[/ File equal.qbk
+Copyright 2018 T. Zachary Laine
+Distributed under the Boost Software License, Version 1.0.
+(See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt).
+]
