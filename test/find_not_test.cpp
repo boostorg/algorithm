@@ -43,11 +43,20 @@ BOOST_CXX14_CONSTEXPR bool check_constexpr()
     const int* start = ba::find_not(from, to, 1); // stops on first
     res = (res && start == from);
 
+    start = ba::find_not(in_data, 1); // stops on first
+    res = (res && start == from);
+
     int in_data_2[] = {6, 6, 6, 6, 6};
     const int* end = ba::find_not(in_data_2, in_data_2 + 5, 6); // stops on the end
     res = (res && end == in_data_2 + 5);
 
+    end = ba::find_not(in_data_2, 6); // stops on the end
+    res = (res && end == in_data_2 + 5);
+
     const int* three = ba::find_not(from, to, 2); // stops on third element
+    res = (res && three == in_data + 2);
+
+    three = ba::find_not(in_data, 2); // stops on third element
     res = (res && three == in_data + 2);
 
     return res;
@@ -67,12 +76,20 @@ void test_sequence()
         BOOST_CHECK_EQUAL(
             dist(ba::find_not(v1.begin(), v1.end(), v1.front())), 1);
 
+        BOOST_CHECK_EQUAL(dist(ba::find_not(v1, 0)), 0);
+        BOOST_CHECK_EQUAL(dist(ba::find_not(v1, v1.back())), 0);
+        BOOST_CHECK_EQUAL(dist(ba::find_not(v1, v1.front())), 1);
+
         v1 = std::vector<int>(10, 2);
         BOOST_CHECK_EQUAL(dist(ba::find_not(v1.begin(), v1.end(), 0)), 0);
         BOOST_CHECK_EQUAL(
             dist(ba::find_not(v1.begin(), v1.end(), v1.back())), v1.size());
         BOOST_CHECK_EQUAL(
             dist(ba::find_not(v1.begin(), v1.end(), v1.front())), v1.size());
+
+        BOOST_CHECK_EQUAL(dist(ba::find_not(v1, 0)), 0);
+        BOOST_CHECK_EQUAL(dist(ba::find_not(v1, v1.back())), v1.size());
+        BOOST_CHECK_EQUAL(dist(ba::find_not(v1, v1.front())), v1.size());
     }
 
     //  With bidirectional iterators.
@@ -88,6 +105,10 @@ void test_sequence()
         BOOST_CHECK_EQUAL(
             dist(ba::find_not(l1.begin(), l1.end(), l1.front())), 1);
 
+        BOOST_CHECK_EQUAL(dist(ba::find_not(l1, 0)), 0);
+        BOOST_CHECK_EQUAL(dist(ba::find_not(l1, l1.back())), 0);
+        BOOST_CHECK_EQUAL(dist(ba::find_not(l1, l1.front())), 1);
+
         l1.clear();
         for (int i = 0; i < 10; ++i)
             l1.push_back(2);
@@ -96,6 +117,10 @@ void test_sequence()
             dist(ba::find_not(l1.begin(), l1.end(), l1.back())), l1.size());
         BOOST_CHECK_EQUAL(
             dist(ba::find_not(l1.begin(), l1.end(), l1.front())), l1.size());
+
+        BOOST_CHECK_EQUAL(dist(ba::find_not(l1, 0)), 0);
+        BOOST_CHECK_EQUAL(dist(ba::find_not(l1, l1.back())), l1.size());
+        BOOST_CHECK_EQUAL(dist(ba::find_not(l1, l1.front())), l1.size());
     }
 
     BOOST_CXX14_CONSTEXPR bool ce_result = check_constexpr();

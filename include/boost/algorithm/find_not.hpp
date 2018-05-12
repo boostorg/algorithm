@@ -8,19 +8,30 @@
 #define BOOST_ALGORITHM_FIND_NOT_HPP
 
 #include <boost/config.hpp>
+#include <boost/range/begin.hpp>
+#include <boost/range/end.hpp>
+
 #include <utility>
 
 
 namespace boost { namespace algorithm {
 
 template<typename InputIter, typename Sentinel, typename T>        
-BOOST_CXX14_CONSTEXPR InputIter find_not(InputIter first, Sentinel last, T const & x)
+BOOST_CXX14_CONSTEXPR
+InputIter find_not(InputIter first, Sentinel last, T const & x)
 {
     for (; first != last; ++first) {
         if (*first != x)
             break;
     }
     return first;
+}
+
+template<typename Range, typename T>
+BOOST_CXX14_CONSTEXPR
+typename boost::range_iterator<Range>::type find_not(Range & r, T const & x)
+{
+    return ::boost::algorithm::find_not(boost::begin(r), boost::end(r), x);
 }
 
 }} // namespace boost and algorithm

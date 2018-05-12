@@ -42,6 +42,9 @@ our find condition.
     template<typename InputIter, typename Sentinel, typename T>        
     InputIter find_not(InputIter first, Sentinel last, T const & x);
 
+    template<typename Range, typename T>
+    typename boost::range_iterator<Range>::type find_not(Range & r, T const & x);
+
 The function `find_not` returns the first value in the sequence `[first,
 last)` that is not equal to `x`.
 
