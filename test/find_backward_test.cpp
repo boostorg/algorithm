@@ -43,10 +43,19 @@ BOOST_CXX14_CONSTEXPR bool check_constexpr_backward()
     const int* start = ba::find_backward(from, to, 1); // stops on first
     res = (res && start == from);
 
+    start = ba::find_backward(in_data, 1); // stops on first
+    res = (res && start == from);
+
     const int* end = ba::find_backward(from, to, 6); // stops on the end
     res = (res && end == to);
 
+    end = ba::find_backward(in_data, 6); // stops on the end
+    res = (res && end == to);
+
     const int* three = ba::find_backward(from, to, 3); // stops on third element
+    res = (res && three == in_data + 2);
+
+    three = ba::find_backward(in_data, 3); // stops on third element
     res = (res && three == in_data + 2);
 
     return res;
@@ -69,6 +78,12 @@ void test_find_backward()
             v1.size() - 1);
         BOOST_CHECK_EQUAL(
             dist(ba::find_backward(v1.begin(), v1.end(), v1.front())), 0);
+
+        BOOST_CHECK_EQUAL(dist(ba::find_backward(v1, 0)), v1.size());
+        BOOST_CHECK_EQUAL(dist(ba::find_backward(v1, 100)), v1.size());
+        BOOST_CHECK_EQUAL(
+            dist(ba::find_backward(v1, v1.back())), v1.size() - 1);
+        BOOST_CHECK_EQUAL(dist(ba::find_backward(v1, v1.front())), 0);
     }
 
     //  With bidirectional iterators.
@@ -87,6 +102,12 @@ void test_find_backward()
             l1.size() - 1);
         BOOST_CHECK_EQUAL(
             dist(ba::find_backward(l1.begin(), l1.end(), l1.front())), 0);
+
+        BOOST_CHECK_EQUAL(dist(ba::find_backward(l1, 0)), l1.size());
+        BOOST_CHECK_EQUAL(dist(ba::find_backward(l1, 100)), l1.size());
+        BOOST_CHECK_EQUAL(
+            dist(ba::find_backward(l1, l1.back())), l1.size() - 1);
+        BOOST_CHECK_EQUAL(dist(ba::find_backward(l1, l1.front())), 0);
     }
 
     BOOST_CXX14_CONSTEXPR bool ce_result = check_constexpr_backward();
@@ -111,10 +132,19 @@ BOOST_CXX14_CONSTEXPR bool check_constexpr_if_backward()
     const int* start = ba::find_if_backward(from, to, equals(1)); // stops on first
     res = (res && start == from);
 
+    start = ba::find_if_backward(in_data, equals(1)); // stops on first
+    res = (res && start == from);
+
     const int* end = ba::find_if_backward(from, to, equals(6)); // stops on the end
     res = (res && end == to);
 
+    end = ba::find_if_backward(in_data, equals(6)); // stops on the end
+    res = (res && end == to);
+
     const int* three = ba::find_if_backward(from, to, equals(3)); // stops on third element
+    res = (res && three == in_data + 2);
+
+    three = ba::find_if_backward(in_data, equals(3)); // stops on third element
     res = (res && three == in_data + 2);
 
     return res;
@@ -141,6 +171,14 @@ void test_find_if_backward()
             dist(
                 ba::find_if_backward(v1.begin(), v1.end(), equals(v1.front()))),
             0);
+
+        BOOST_CHECK_EQUAL(dist(ba::find_if_backward(v1, equals(0))), v1.size());
+        BOOST_CHECK_EQUAL(
+            dist(ba::find_if_backward(v1, equals(100))), v1.size());
+        BOOST_CHECK_EQUAL(
+            dist(ba::find_if_backward(v1, equals(v1.back()))), v1.size() - 1);
+        BOOST_CHECK_EQUAL(
+            dist(ba::find_if_backward(v1, equals(v1.front()))), 0);
     }
 
     //  With bidirectional iterators.
@@ -163,6 +201,14 @@ void test_find_if_backward()
             dist(
                 ba::find_if_backward(l1.begin(), l1.end(), equals(l1.front()))),
             0);
+
+        BOOST_CHECK_EQUAL(dist(ba::find_if_backward(l1, equals(0))), l1.size());
+        BOOST_CHECK_EQUAL(
+            dist(ba::find_if_backward(l1, equals(100))), l1.size());
+        BOOST_CHECK_EQUAL(
+            dist(ba::find_if_backward(l1, equals(l1.back()))), l1.size() - 1);
+        BOOST_CHECK_EQUAL(
+            dist(ba::find_if_backward(l1, equals(l1.front()))), 0);
     }
 
     BOOST_CXX14_CONSTEXPR bool ce_result = check_constexpr_if_backward();
@@ -187,10 +233,19 @@ BOOST_CXX14_CONSTEXPR bool check_constexpr_if_not_backward()
     const int* start = ba::find_if_not_backward(from, to, not_equals(1)); // stops on first
     res = (res && start == from);
 
+    start = ba::find_if_not_backward(in_data, not_equals(1)); // stops on first
+    res = (res && start == from);
+
     const int* end = ba::find_if_not_backward(from, to, not_equals(6)); // stops on the end
     res = (res && end == to);
 
+    end = ba::find_if_not_backward(in_data, not_equals(6)); // stops on the end
+    res = (res && end == to);
+
     const int* three = ba::find_if_not_backward(from, to, not_equals(3)); // stops on third element
+    res = (res && three == in_data + 2);
+
+    three = ba::find_if_not_backward(in_data, not_equals(3)); // stops on third element
     res = (res && three == in_data + 2);
 
     return res;
@@ -219,6 +274,16 @@ void test_find_if_not_backward()
             dist(ba::find_if_not_backward(
                 v1.begin(), v1.end(), not_equals(v1.front()))),
             0);
+
+        BOOST_CHECK_EQUAL(
+            dist(ba::find_if_not_backward(v1, not_equals(0))), v1.size());
+        BOOST_CHECK_EQUAL(
+            dist(ba::find_if_not_backward(v1, not_equals(100))), v1.size());
+        BOOST_CHECK_EQUAL(
+            dist(ba::find_if_not_backward(v1, not_equals(v1.back()))),
+            v1.size() - 1);
+        BOOST_CHECK_EQUAL(
+            dist(ba::find_if_not_backward(v1, not_equals(v1.front()))), 0);
     }
 
     //  With bidirectional iterators.
@@ -243,6 +308,16 @@ void test_find_if_not_backward()
             dist(ba::find_if_not_backward(
                 l1.begin(), l1.end(), not_equals(l1.front()))),
             0);
+
+        BOOST_CHECK_EQUAL(
+            dist(ba::find_if_not_backward(l1, not_equals(0))), l1.size());
+        BOOST_CHECK_EQUAL(
+            dist(ba::find_if_not_backward(l1, not_equals(100))), l1.size());
+        BOOST_CHECK_EQUAL(
+            dist(ba::find_if_not_backward(l1, not_equals(l1.back()))),
+            l1.size() - 1);
+        BOOST_CHECK_EQUAL(
+            dist(ba::find_if_not_backward(l1, not_equals(l1.front()))), 0);
     }
 
     BOOST_CXX14_CONSTEXPR bool ce_result = check_constexpr_if_not_backward();
@@ -260,8 +335,14 @@ BOOST_CXX14_CONSTEXPR bool check_constexpr_not_backward()
     const int* start = ba::find_not_backward(from, to, 5); // stops on first
     res = (res && start == from);
 
+    start = ba::find_not_backward(in_data, 5); // stops on first
+    res = (res && start == from);
+
     const int in_data_2[] = {6, 6, 6, 6, 6};
     const int* end = ba::find_not_backward(in_data_2, in_data_2 + 5, 6); // stops on the end
+    res = (res && end == in_data_2 + 5);
+
+    end = ba::find_not_backward(in_data_2, 6); // stops on the end
     res = (res && end == in_data_2 + 5);
 
     return res;
@@ -286,9 +367,15 @@ void test_find_not_backward()
             dist(ba::find_not_backward(v1.begin(), v1.end(), 2)),
             v1.size() - 1);
 
+        BOOST_CHECK_EQUAL(dist(ba::find_not_backward(v1, 1)), 4);
+        BOOST_CHECK_EQUAL(dist(ba::find_not_backward(v1, 0)), v1.size() - 1);
+        BOOST_CHECK_EQUAL(dist(ba::find_not_backward(v1, 2)), v1.size() - 1);
+
         v1.resize(5);
         BOOST_CHECK_EQUAL(
             dist(ba::find_not_backward(v1.begin(), v1.end(), 0)), v1.size());
+
+        BOOST_CHECK_EQUAL(dist(ba::find_not_backward(v1, 0)), v1.size());
     }
 
     //  With bidirectional iterators.
@@ -309,9 +396,15 @@ void test_find_not_backward()
             dist(ba::find_not_backward(l1.begin(), l1.end(), 2)),
             l1.size() - 1);
 
+        BOOST_CHECK_EQUAL(dist(ba::find_not_backward(l1, 1)), 4);
+        BOOST_CHECK_EQUAL(dist(ba::find_not_backward(l1, 0)), l1.size() - 1);
+        BOOST_CHECK_EQUAL(dist(ba::find_not_backward(l1, 2)), l1.size() - 1);
+
         l1.resize(5);
         BOOST_CHECK_EQUAL(
             dist(ba::find_not_backward(l1.begin(), l1.end(), 0)), l1.size());
+
+        BOOST_CHECK_EQUAL(dist(ba::find_not_backward(l1, 0)), l1.size());
     }
 
     BOOST_CXX14_CONSTEXPR bool ce_result = check_constexpr_not_backward();

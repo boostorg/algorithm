@@ -8,13 +8,17 @@
 #define BOOST_ALGORITHM_FIND_BACKWARD_HPP
 
 #include <boost/config.hpp>
+#include <boost/range/begin.hpp>
+#include <boost/range/end.hpp>
+
 #include <utility>
 
 
 namespace boost { namespace algorithm {
 
 template<typename BidiIter, typename T>
-BOOST_CXX14_CONSTEXPR BidiIter find_backward(BidiIter first, BidiIter last, T const & x)
+BOOST_CXX14_CONSTEXPR
+BidiIter find_backward(BidiIter first, BidiIter last, T const & x)
 {
     BidiIter it = last;
     while (it != first) {
@@ -24,8 +28,16 @@ BOOST_CXX14_CONSTEXPR BidiIter find_backward(BidiIter first, BidiIter last, T co
     return last;
 }
 
+template<typename Range, typename T>
+BOOST_CXX14_CONSTEXPR
+typename boost::range_iterator<Range>::type find_backward(Range & range, T const & x)
+{
+    return ::boost::algorithm::find_backward(boost::begin(range), boost::end(range), x);
+}
+
 template<typename BidiIter, typename T>
-BOOST_CXX14_CONSTEXPR BidiIter find_not_backward(BidiIter first, BidiIter last, T const & x)
+BOOST_CXX14_CONSTEXPR
+BidiIter find_not_backward(BidiIter first, BidiIter last, T const & x)
 {
     BidiIter it = last;
     while (it != first) {
@@ -35,8 +47,16 @@ BOOST_CXX14_CONSTEXPR BidiIter find_not_backward(BidiIter first, BidiIter last, 
     return last;
 }
 
+template<typename Range, typename T>
+BOOST_CXX14_CONSTEXPR
+typename boost::range_iterator<Range>::type find_not_backward(Range & range, T const & x)
+{
+    return ::boost::algorithm::find_not_backward(boost::begin(range), boost::end(range), x);
+}
+
 template<typename BidiIter, typename Pred>
-BOOST_CXX14_CONSTEXPR BidiIter find_if_backward(BidiIter first, BidiIter last, Pred p)
+BOOST_CXX14_CONSTEXPR
+BidiIter find_if_backward(BidiIter first, BidiIter last, Pred p)
 {
     BidiIter it = last;
     while (it != first) {
@@ -46,8 +66,16 @@ BOOST_CXX14_CONSTEXPR BidiIter find_if_backward(BidiIter first, BidiIter last, P
     return last;
 }
 
+template<typename Range, typename Pred>
+BOOST_CXX14_CONSTEXPR
+typename boost::range_iterator<Range>::type find_if_backward(Range & range, Pred p)
+{
+    return ::boost::algorithm::find_if_backward(boost::begin(range), boost::end(range), p);
+}
+
 template<typename BidiIter, typename Pred>
-BOOST_CXX14_CONSTEXPR BidiIter find_if_not_backward(BidiIter first, BidiIter last, Pred p)
+BOOST_CXX14_CONSTEXPR
+BidiIter find_if_not_backward(BidiIter first, BidiIter last, Pred p)
 {
     BidiIter it = last;
     while (it != first) {
@@ -55,6 +83,13 @@ BOOST_CXX14_CONSTEXPR BidiIter find_if_not_backward(BidiIter first, BidiIter las
             return it;
     }
     return last;
+}
+
+template<typename Range, typename Pred>
+BOOST_CXX14_CONSTEXPR
+typename boost::range_iterator<Range>::type find_if_not_backward(Range & range, Pred p)
+{
+    return ::boost::algorithm::find_if_not_backward(boost::begin(range), boost::end(range), p);
 }
 
 }} // namespace boost and algorithm

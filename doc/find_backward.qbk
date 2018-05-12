@@ -42,26 +42,38 @@ that the member requires.
     template<typename BidiIter, typename T>
     BidiIter find_backward(BidiIter first, BidiIter last, T const & x);
 
-The function `find_backward` returns an iterator to the last element of
-`[first, last)` that is equal to `x`.
+    template<typename Range, typename T>
+    boost::range_iterator<Range> find_backward(Range & range, T const & x);
+
+The function `find_backward` returns an iterator to the last element that is
+equal to `x` in `[first, last)` or `r`, respectively.
 
     template<typename BidiIter, typename T>
     BidiIter find_not_backward(BidiIter first, BidiIter last, T const & x);
 
-The function `find_not_backward` returns an iterator to the last element of
-`[first, last)` that is not equal to `x`.
+    template<typename Range, typename T>
+    boost::range_iterator<Range> find_not_backward(Range & range, T const & x);
+
+The function `find_not_backward` returns an iterator to the last element that
+is not equal to `x` in `[first, last)` or `r`, respectively.
 
     template<typename BidiIter, typename Pred>
     BidiIter find_if_backward(BidiIter first, BidiIter last, Pred p);
 
-The function `find_if_backward` returns an iterator to the last element of
-`[first, last)` for which `pred` returns `true`.
+    template<typename Range, typename Pred>
+    boost::range_iterator<Range> find_if_backward(Range & range, Pred p);
+
+The function `find_if_backward` returns an iterator to the last element for
+which `pred` returns `true` in `[first, last)` or `r`, respectively.
 
     template<typename BidiIter, typename Pred>
     BidiIter find_if_not_backward(BidiIter first, BidiIter last, Pred p);
 
-The function `find_if_not_backward` returns an iterator to the last element of
-`[first, last)` for which `pred` returns `false`.
+    template<typename Range, typename Pred>
+    boost::range_iterator<Range> find_if_not_backward(Range & range, Pred p);
+
+The function `find_if_not_backward` returns an iterator to the last element
+for which `pred` returns `false` in `[first, last)` or `r`, respectively.
 
 [heading Examples]
 
@@ -89,6 +101,10 @@ Linear.
 All of the variants take their parameters by value and do not depend upon any
 global state. Therefore, all the routines in this file provide the strong
 exception guarantee.
+
+[heading Notes]
+
+All variants are `constexpr` in C++14 or later.
 
 [endsect]
 
