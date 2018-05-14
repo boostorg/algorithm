@@ -56,6 +56,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t sz) {
 	uint8_t max_value = *resultff.second;
 	assert(min_value <= max_value);
 
+//	Each variant should have found the same min/max values
 	assert(*resultff.first  == min_value);
 	assert(*resultfl.first  == min_value);
 	assert(*resultlf.first  == min_value);
@@ -107,6 +108,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t sz) {
 	
 	assert (!greater(max_value, min_value));
 
+//	Each variant should have found the same min/max values
 	assert(*resultff.first  == min_value);
 	assert(*resultfl.first  == min_value);
 	assert(*resultlf.first  == min_value);
