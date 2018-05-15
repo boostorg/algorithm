@@ -66,7 +66,7 @@ void test_sequence()
 {
     {
         std::vector<int> v1;
-        dist_t<std::vector<int> > const dist(v1);
+        const dist_t<std::vector<int> > dist(v1);
 
         for (int i = 5; i < 15; ++i)
             v1.push_back(i);
@@ -95,7 +95,7 @@ void test_sequence()
     //  With bidirectional iterators.
     {
         std::list<int> l1;
-        dist_t<std::list<int> > const dist(l1);
+        const dist_t<std::list<int> > dist(l1);
 
         for (int i = 5; i < 15; ++i)
             l1.push_back(i);

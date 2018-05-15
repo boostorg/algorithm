@@ -65,7 +65,7 @@ void test_find_backward()
 {
     {
         std::vector<int> v1;
-        dist_t<std::vector<int> > const dist(v1);
+        const dist_t<std::vector<int> > dist(v1);
 
         for (int i = 5; i < 15; ++i)
             v1.push_back(i);
@@ -89,7 +89,7 @@ void test_find_backward()
     //  With bidirectional iterators.
     {
         std::list<int> l1;
-        dist_t<std::list<int> > const dist(l1);
+        const dist_t<std::list<int> > dist(l1);
 
         for (int i = 5; i < 15; ++i)
             l1.push_back(i);
@@ -154,7 +154,7 @@ void test_find_if_backward()
 {
     {
         std::vector<int> v1;
-        dist_t<std::vector<int> > const dist(v1);
+        const dist_t<std::vector<int> > dist(v1);
 
         for (int i = 5; i < 15; ++i)
             v1.push_back(i);
@@ -184,7 +184,7 @@ void test_find_if_backward()
     //  With bidirectional iterators.
     {
         std::list<int> l1;
-        dist_t<std::list<int> > const dist(l1);
+        const dist_t<std::list<int> > dist(l1);
 
         for (int i = 5; i < 15; ++i)
             l1.push_back(i);
@@ -255,7 +255,7 @@ void test_find_if_not_backward()
 {
     {
         std::vector<int> v1;
-        dist_t<std::vector<int> > const dist(v1);
+        const dist_t<std::vector<int> > dist(v1);
 
         for (int i = 5; i < 15; ++i)
             v1.push_back(i);
@@ -289,7 +289,7 @@ void test_find_if_not_backward()
     //  With bidirectional iterators.
     {
         std::list<int> l1;
-        dist_t<std::list<int> > const dist(l1);
+        const dist_t<std::list<int> > dist(l1);
 
         for (int i = 5; i < 15; ++i)
             l1.push_back(i);
@@ -352,7 +352,7 @@ void test_find_not_backward()
 {
     {
         std::vector<int> v1;
-        dist_t<std::vector<int> > const dist(v1);
+        const dist_t<std::vector<int> > dist(v1);
 
         for (int i = 0; i < 5; ++i)
             v1.push_back(0);
@@ -381,7 +381,7 @@ void test_find_not_backward()
     //  With bidirectional iterators.
     {
         std::list<int> l1;
-        dist_t<std::list<int> > const dist(l1);
+        const dist_t<std::list<int> > dist(l1);
 
         for (int i = 0; i < 5; ++i)
             l1.push_back(0);

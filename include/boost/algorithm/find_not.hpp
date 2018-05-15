@@ -18,7 +18,7 @@ namespace boost { namespace algorithm {
 
 template<typename InputIter, typename Sentinel, typename T>        
 BOOST_CXX14_CONSTEXPR
-InputIter find_not(InputIter first, Sentinel last, T const & x)
+InputIter find_not(InputIter first, Sentinel last, const T & x)
 {
     for (; first != last; ++first) {
         if (*first != x)
@@ -29,7 +29,7 @@ InputIter find_not(InputIter first, Sentinel last, T const & x)
 
 template<typename Range, typename T>
 BOOST_CXX14_CONSTEXPR
-typename boost::range_iterator<Range>::type find_not(Range & r, T const & x)
+typename boost::range_iterator<Range>::type find_not(Range & r, const T & x)
 {
     return ::boost::algorithm::find_not(boost::begin(r), boost::end(r), x);
 }
