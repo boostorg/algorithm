@@ -85,7 +85,7 @@ void iterator_test()
     deep_compare( tokens, vtokens );
 
 #if !defined(BOOST_NO_CXX11_RVALUE_REFERENCES)
-    // If using a compiler that supports forwarding references, we should be able to use lvalues, too
+    // If using a compiler that supports forwarding references, we should be able to use rvalues, too
     find_all(
         tokens,
         string("xx-abc--xx-abb"),
@@ -169,7 +169,7 @@ void iterator_test()
     BOOST_CHECK( tokens[0]==string("") );
 
 #if !defined(BOOST_NO_CXX11_RVALUE_REFERENCES)
-    // If using a compiler that supports forwarding references, we should be able to use lvalues, too
+    // If using a compiler that supports forwarding references, we should be able to use rvalues, too
     split(
         tokens,
         string("Xx-abc--xX-abb-xx"),
