@@ -28,7 +28,7 @@ the use of `std::find()`:
 
     auto rfirst = std::make_reverse_iterator(last);
     auto rlast = std::make_reverse_iterator(first);
-    auto it = std::find(rfirst, rlast);
+    auto it = std::find(rfirst, rlast, x);
     // Use it here...
 
 That seems nicer in that there is no raw loop, but it has two major drawbacks.
