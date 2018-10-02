@@ -15,19 +15,19 @@ equal to the given value.
 
 Consider this use of `find()`:
 
-    auto std::vector<int> vec = { 1, 1, 2 };
+    std::vector<int> vec = { 1, 1, 2 };
     auto it = std::find(vec.begin(), vec.end(), 1);
 
 This gives us the first occurance of `1` in `vec`.  What if we want to find
 the first occurrance of any number besides `1` in `vec`?  We have to write an
 unfortunate amount of code:
 
-    auto std::vector<int> vec = { 1, 1, 2 };
+    std::vector<int> vec = { 1, 1, 2 };
     auto it = std::find_if(vec.begin(), vec.end(), [](int i) { return i != 1; });
 
 With `find_not()` the code gets much more terse:
 
-    auto std::vector<int> vec = { 1, 1, 2 };
+    std::vector<int> vec = { 1, 1, 2 };
     auto it = find_not(vec.begin(), vec.end(), 1);
 
 The existing `find` variants are: `find()`, `find_if()`, and `find_if_not()`.
