@@ -9,7 +9,7 @@ Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 ]
 
-The header file 'apply_permutation.hpp' contains two algorithms, apply_permutation and apply_reverse_permutation. Also there are range-based versions. 
+The header file [^[link header.boost.algorithm.apply_permutation_hpp apply_permutation.hpp]] contains two algorithms, `apply_permutation` and `apply_reverse_permutation`. There are also range-based versions.
 The algorithms transform the item sequence according to index sequence order.
 
 The routine `apply_permutation` takes a item sequence and a order sequence. It reshuffles item sequence according to order sequence. Every value in order sequence means where the item comes from. Order sequence needs to be exactly a permutation of the sequence [0, 1, ... , N], where N is the biggest index in the item sequence (zero-indexed).
