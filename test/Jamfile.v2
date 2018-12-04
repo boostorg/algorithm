@@ -16,7 +16,7 @@ alias unit_test_framework
 
 
 {
-  test-suite algorithm:
+  test-suite algorithm
 # Search tests
    : [ run empty_search_test.cpp unit_test_framework      : : : : empty_search_test ]
      [ run search_test1.cpp unit_test_framework           : : : : search_test1 ]
