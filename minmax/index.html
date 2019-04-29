@@ -95,7 +95,7 @@ namespace boost {
   tuple&lt;T const&amp;, T const&amp;>
   minmax(const T&amp; a, const T&amp; b);
 
-  template &lt;class T, class <a href="http://www.sgi.com/tech/stl/BinaryPredicate.html">BinaryPredicate</a>>
+  template &lt;class T, class <a href="https://www.boost.org/sgi/stl/BinaryPredicate.html">BinaryPredicate</a>>
   tuple&lt;T const&amp;, T const&amp;>
   minmax(const T&amp; a, const T&amp; b, BinaryPredicate comp);
 
@@ -109,11 +109,11 @@ Synopsis of <tt>&lt;boost/algorithm/minmax_element.hpp></tt></h3>
 
 namespace boost {
 
-  template &lt;class <a href="http://www.sgi.com/tech/stl/ForwardIterator.html">ForwardIterator</a>>
+  template &lt;class <a href="https://www.boost.org/sgi/stl/ForwardIterator.html">ForwardIterator</a>>
   std::pair&lt;ForwardIterator,ForwardIterator>
   minmax_element(ForwardIterator first, ForwardIterator last);
 
-  template &lt;class <a href="http://www.sgi.com/tech/stl/ForwardIterator.html">ForwardIterator</a>, class <a href="http://www.sgi.com/tech/stl/BinaryPredicate.html">BinaryPredicate</a>>
+  template &lt;class <a href="https://www.boost.org/sgi/stl/ForwardIterator.html">ForwardIterator</a>, class <a href="https://www.boost.org/sgi/stl/BinaryPredicate.html">BinaryPredicate</a>>
   std::pair&lt;ForwardIterator,ForwardIterator>
   minmax_element(ForwardIterator first, ForwardIterator last,
                  BinaryPredicate comp);
@@ -190,26 +190,26 @@ in <a href="../../../boost/algorithm/minmax_element.hpp">minmax_element.hpp</a>.
 <a name="reqs">
 <h3>
 Requirements on types</h3>
-For minmax, <tt>T</tt> must be a model of <a href="http://www.sgi.com/tech/stl/LessThanComparable.html">LessThan
+For minmax, <tt>T</tt> must be a model of <a href="https://www.boost.org/sgi/stl/LessThanComparable.html">LessThan
 Comparable</a>.
 <p>For all the other function templates, versions with two template parameters:
 <ul>
 <li>
-<tt>ForwardIterator</tt> is a model of <a href="http://www.sgi.com/tech/stl/ForwardIterator.html">Forward
+<tt>ForwardIterator</tt> is a model of <a href="https://www.boost.org/sgi/stl/ForwardIterator.html">Forward
 Iterator</a>.</li>
 
 <li>
-<tt>ForwardIterator</tt>'s value type is <a href="http://www.sgi.com/tech/stl/LessThanComparable.html">LessThan
+<tt>ForwardIterator</tt>'s value type is <a href="https://www.boost.org/sgi/stl/LessThanComparable.html">LessThan
 Comparable</a>.</li>
 </ul>
 For the versions with three template parameters:
 <ul>
 <li>
-<tt>ForwardIterator</tt> is a model of <a href="http://www.sgi.com/tech/stl/ForwardIterator.html">Forward
+<tt>ForwardIterator</tt> is a model of <a href="https://www.boost.org/sgi/stl/ForwardIterator.html">Forward
 Iterator</a>.</li>
 
 <li>
-<tt>BinaryPredicate</tt> is a model of <a href="http://www.sgi.com/tech/stl/BinaryPredicate.html">Binary
+<tt>BinaryPredicate</tt> is a model of <a href="https://www.boost.org/sgi/stl/BinaryPredicate.html">Binary
 Predicate</a>.</li>
 
 <li>
@@ -285,8 +285,8 @@ the library under
   assert( result1.get<0>() == 0 );
   assert( result1.get<1>() == 1 );
 
-  <a href="http://www.sgi.com/tech/stl/List.html">list</a>&lt;int> L;
-  <a href="http://www.sgi.com/tech/stl/generate_n.html">generate_n</a>(<a href="http://www.sgi.com/tech/stl/front_insert_iterator.html">front_inserter</a>(L), 1000, rand);
+  <a href="https://www.boost.org/sgi/stl/List.html">list</a>&lt;int> L;
+  <a href="https://www.boost.org/sgi/stl/generate_n.html">generate_n</a>(<a href="https://www.boost.org/sgi/stl/front_insert_iterator.html">front_inserter</a>(L), 1000, rand);
 
   typedef list&lt;int>::const_iterator iterator;
   pair&lt; iterator, iterator > result2 = boost::minmax_element(L.begin(), L.end());
@@ -512,13 +512,13 @@ release, Eric Niebler noted the bad behavior of <tt>std::pair</tt> for
 All my thanks for the excellent advice and reviews from all.
 <h3>
 See also</h3>
-<tt><a href="http://www.sgi.com/tech/stl/min.html">min</a></tt>, <tt><a href="http://www.sgi.com/tech/stl/max.html">max</a></tt>,
-<tt><a href="http://www.sgi.com/tech/stl/min_element.html">min_element</a></tt>,
-<tt><a href="http://www.sgi.com/tech/stl/max_element.html">max_element</a></tt>,
-<tt><a href="http://www.sgi.com/tech/stl/LessThanComparable.html">LessThan
+<tt><a href="https://www.boost.org/sgi/stl/min.html">min</a></tt>, <tt><a href="https://www.boost.org/sgi/stl/max.html">max</a></tt>,
+<tt><a href="https://www.boost.org/sgi/stl/min_element.html">min_element</a></tt>,
+<tt><a href="https://www.boost.org/sgi/stl/max_element.html">max_element</a></tt>,
+<tt><a href="https://www.boost.org/sgi/stl/LessThanComparable.html">LessThan
 Comparable</a></tt>,
-<tt><a href="http://www.sgi.com/tech/stl/sort.html">sort</a></tt>,
-<tt><a href="http://www.sgi.com/tech/stl/nth_element.html">nth_element</a></tt>
+<tt><a href="https://www.boost.org/sgi/stl/sort.html">sort</a></tt>,
+<tt><a href="https://www.boost.org/sgi/stl/nth_element.html">nth_element</a></tt>
 .
 <hr SIZE="6">
 <br>Last modified 2012-12-10
