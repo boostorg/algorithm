@@ -7,6 +7,8 @@
 
 //  See http://www.boost.org for updates, documentation, and revision history.
 
+#include <boost/algorithm/string/config.hpp>
+
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/classification.hpp>
 // equals predicate is used for result comparison
@@ -82,6 +84,28 @@ void iterator_test()
         string("xx") );
     deep_compare( tokens, vtokens );
 
+#if !defined(BOOST_NO_CXX11_RVALUE_REFERENCES)
+    // If using a compiler that supports forwarding references, we should be able to use rvalues, too
+    find_all(
+        tokens,
+        string("xx-abc--xx-abb"),
+        "xx" );
+
+    BOOST_REQUIRE( tokens.size()==2 );
+    BOOST_CHECK( tokens[0]==string("xx") );
+    BOOST_CHECK( tokens[1]==string("xx") );
+
+    ifind_all(
+        tokens,
+        string("Xx-abc--xX-abb-xx"),
+        "xx" );
+
+    BOOST_REQUIRE( tokens.size()==3 );
+    BOOST_CHECK( tokens[0]==string("Xx") );
+    BOOST_CHECK( tokens[1]==string("xX") );
+    BOOST_CHECK( tokens[2]==string("xx") );
+#endif
+
     // split tests
     split(
         tokens,
@@ -143,6 +167,21 @@ void iterator_test()
 
     BOOST_REQUIRE( tokens.size()==1 );
     BOOST_CHECK( tokens[0]==string("") );
+
+#if !defined(BOOST_NO_CXX11_RVALUE_REFERENCES)
+    // If using a compiler that supports forwarding references, we should be able to use rvalues, too
+    split(
+        tokens,
+        string("Xx-abc--xX-abb-xx"),
+        is_any_of("xX"),
+        token_compress_on );
+
+    BOOST_REQUIRE( tokens.size()==4 );
+    BOOST_CHECK( tokens[0]==string("") );
+    BOOST_CHECK( tokens[1]==string("-abc--") );
+    BOOST_CHECK( tokens[2]==string("-abb-") );
+    BOOST_CHECK( tokens[3]==string("") );
+#endif
 
 
     find_iterator<string::iterator> fiter=make_find_iterator(str1, first_finder("xx"));
