@@ -32,8 +32,8 @@ struct isOddComp
 
 int main ( int /*argc*/, char * /*argv*/ [] )
 {
-    std::vector<int> good({1, 2, 4});
-    std::vector<int> bad({1, 2, 3});
+    std::vector<int> good{1, 2, 4};
+    std::vector<int> bad{1, 2, 3};
 
     //Use custom function
     auto it1 = ba::is_partitioned_until(good.begin(), good.end(), isOdd);

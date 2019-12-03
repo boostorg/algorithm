@@ -27,7 +27,7 @@ int main ( int /*argc*/, char * /*argv*/ [] ) {
 //  algorithms. They all have the same (dual) interface.
 
 //  There is a procedural interface, based on std::search:
-    if ( ba::boyer_moore_search ( haystack.begin (), haystack.end (), needle1.begin (), needle1.end ()) != haystack.end ())
+    if ( ba::boyer_moore_search ( haystack.begin (), haystack.end (), needle1.begin (), needle1.end ()) != std::make_pair(haystack.end(), haystack.end()))
         std::cout << "Found '" << needle1 << "'  in '" << haystack << "' (boyer-moore 1)" << std::endl;
     else
         std::cout << "Did NOT find '" << needle1 << "'  in '" << haystack << "' (boyer-moore 1)" << std::endl;
@@ -36,19 +36,19 @@ int main ( int /*argc*/, char * /*argv*/ [] ) {
 //  you can create a search object and use that over and over again - amortizing the setup
 //  costs across several searches
     ba::boyer_moore<std::string::const_iterator> search1 ( needle1.begin (), needle1.end ());
-    if ( search1 ( haystack.begin (), haystack.end ()) != haystack.end ())
+    if ( search1 ( haystack.begin (), haystack.end ()) != std::make_pair(haystack.end(), haystack.end()))
         std::cout << "Found '" << needle1 << "'  in '" << haystack << "' (boyer-moore 2)" << std::endl;
     else
         std::cout << "Did NOT find '" << needle1 << "'  in '" << haystack << "' (boyer-moore 2)" << std::endl;
 
 //  There is also an implementation of boyer-moore-horspool searching
-    if ( ba::boyer_moore_horspool_search ( haystack.begin (), haystack.end (), needle1.begin (), needle1.end ()) != haystack.end ())
+    if ( ba::boyer_moore_horspool_search ( haystack.begin (), haystack.end (), needle1.begin (), needle1.end ()) != std::make_pair(haystack.end(), haystack.end()))
         std::cout << "Found '" << needle1 << "'  in '" << haystack << "' (boyer-moore-horspool)" << std::endl;
     else
         std::cout << "Did NOT find '" << needle1 << "'  in '" << haystack << "' (boyer-moore-horspool)" << std::endl;
 
 //  And also the knuth-pratt-morris search algorithm
-    if ( ba::knuth_morris_pratt_search ( haystack.begin (), haystack.end (), needle1.begin (), needle1.end ()) != haystack.end ())
+    if ( ba::knuth_morris_pratt_search ( haystack.begin (), haystack.end (), needle1.begin (), needle1.end ()) != std::make_pair(haystack.end(), haystack.end()))
         std::cout << "Found '" << needle1 << "'  in '" << haystack << "' (knuth_morris_pratt)" << std::endl;
     else
         std::cout << "Did NOT find '" << needle1 << "'  in '" << haystack << "' (knuth_morris_pratt)" << std::endl;
