@@ -22,6 +22,7 @@ doxygen autodoc
                ../../../boost/algorithm/searching/*.hpp
                ../../../boost/algorithm/cxx11/*.hpp
                ../../../boost/algorithm/cxx14/*.hpp
+               ../../../boost/algorithm/cxx17/*.hpp
         ]
     :
        <doxygen:param>"PREDEFINED=\"BOOST_ALGORITHM_DOXYGEN=1\""
@@ -40,8 +41,8 @@ boostbook standalone
     <xsl:param>"boost.doxygen.reftitle=Boost.Algorithms C++ Reference"
     <xsl:param>chapter.autolabel=0
     <xsl:param>chunk.section.depth=8
-    <xsl:param>toc.section.depth=2
-    <xsl:param>toc.max.depth=2
+    <xsl:param>toc.section.depth=3
+    <xsl:param>toc.max.depth=3
     <xsl:param>generate.section.toc.level=1
   ;
 
