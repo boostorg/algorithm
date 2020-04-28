@@ -20,11 +20,12 @@
 #ifndef BOOST_ALGORITHM_GATHER_HPP
 #define BOOST_ALGORITHM_GATHER_HPP
 
+#include <utility>                  // for std::pair
 #include <algorithm>                // for std::stable_partition
 #include <functional>
 
 #include <boost/config.hpp>
-#include <boost/bind.hpp>           // for boost::bind
+#include <boost/bind/bind.hpp>      // for boost::bind
 #include <boost/range/begin.hpp>    // for boost::begin(range)
 #include <boost/range/end.hpp>      // for boost::end(range)
 
@@ -89,8 +90,8 @@ std::pair<BidirectionalIterator, BidirectionalIterator> gather
 //  The first call partitions everything up to (but not including) the pivot element,
 //  while the second call partitions the rest of the sequence.
     return std::make_pair (
-        std::stable_partition ( first, pivot, !boost::bind<bool> ( pred, _1 )),
-        std::stable_partition ( pivot, last,   boost::bind<bool> ( pred, _1 )));
+        std::stable_partition ( first, pivot, !boost::bind<bool> ( pred, boost::placeholders::_1 )),
+        std::stable_partition ( pivot, last,   boost::bind<bool> ( pred, boost::placeholders::_1 )));
 }
 
 /**************************************************************************************************/
