@@ -13,7 +13,7 @@
 
 #include <boost/algorithm/string/config.hpp>
 #include <boost/algorithm/string/constants.hpp>
-#include <boost/detail/iterator.hpp>
+#include <iterator>
 
 #include <boost/range/iterator_range_core.hpp>
 #include <boost/range/begin.hpp>
@@ -127,8 +127,8 @@ namespace boost {
                     if( boost::empty(m_Search) )
                         return result_type( End, End );
 
-                    typedef BOOST_STRING_TYPENAME boost::detail::
-                        iterator_traits<ForwardIteratorT>::iterator_category category;
+                    typedef BOOST_STRING_TYPENAME
+                        std::iterator_traits<ForwardIteratorT>::iterator_category category;
 
                     return findit( Begin, End, category() );
                 }
@@ -375,8 +375,8 @@ namespace boost {
                 ForwardIteratorT End,
                 unsigned int N )
             {
-                typedef BOOST_STRING_TYPENAME boost::detail::
-                    iterator_traits<ForwardIteratorT>::iterator_category category;
+                typedef BOOST_STRING_TYPENAME
+                    std::iterator_traits<ForwardIteratorT>::iterator_category category;
 
                 return ::boost::algorithm::detail::find_head_impl( Begin, End, N, category() );
             }
@@ -448,8 +448,8 @@ namespace boost {
                 ForwardIteratorT End,
                 unsigned int N )
             {
-                typedef BOOST_STRING_TYPENAME boost::detail::
-                    iterator_traits<ForwardIteratorT>::iterator_category category;
+                typedef BOOST_STRING_TYPENAME
+                    std::iterator_traits<ForwardIteratorT>::iterator_category category;
 
                 return ::boost::algorithm::detail::find_tail_impl( Begin, End, N, category() );
             }
