@@ -12,8 +12,6 @@
 #include <functional>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/classification.hpp>
-#include <boost/bind.hpp>
-
 
 using namespace std;
 using namespace boost;
