@@ -13,6 +13,7 @@
 
 #include <boost/algorithm/string/config.hpp>
 #include <algorithm>
+#include <cstring>
 #include <functional>
 #include <locale>
 
