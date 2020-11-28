@@ -25,10 +25,10 @@
 namespace boost { namespace algorithm {
 
 template <typename T>
-T identity_operation ( std::multiplies<T> ) { return T(1); }
+BOOST_CXX14_CONSTEXPR T identity_operation ( std::multiplies<T> ) { return T(1); }
 
 template <typename T>
-T identity_operation ( std::plus<T> ) { return T(0); }
+BOOST_CXX14_CONSTEXPR T identity_operation ( std::plus<T> ) { return T(0); }
 
 
 /// \fn power ( T x, Integer n )
