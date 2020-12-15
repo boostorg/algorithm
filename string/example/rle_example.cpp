@@ -16,7 +16,7 @@
 #include <string>
 #include <iostream>
 #include <limits>
-#include <boost/detail/iterator.hpp>
+#include <iterator>
 #include <boost/algorithm/string/find_format.hpp>
 #include <boost/algorithm/string/finder.hpp>
 
@@ -46,7 +46,7 @@ struct find_compressF
         ForwardIteratorT End ) const
     {
         typedef ForwardIteratorT input_iterator_type;
-        typedef typename boost::detail::iterator_traits<input_iterator_type>::value_type value_type;
+        typedef typename std::iterator_traits<input_iterator_type>::value_type value_type;
         typedef iterator_range<input_iterator_type> result_type;
 
         // begin of the matching segment
@@ -144,7 +144,7 @@ struct find_decompressF
         ForwardIteratorT End ) const
     {
         typedef ForwardIteratorT input_iterator_type;
-        typedef typename boost::detail::iterator_traits<input_iterator_type>::value_type value_type;
+        typedef typename std::iterator_traits<input_iterator_type>::value_type value_type;
         typedef iterator_range<input_iterator_type> result_type;
 
         for(input_iterator_type It=Begin; It!=End; It++)
@@ -153,12 +153,12 @@ struct find_decompressF
             {
                 // Repeat mark found, extract body
                 input_iterator_type It2=It++; 
-                
+
                 if ( It==End ) break;
                     It++; 
                 if ( It==End ) break;
                     It++;
-                
+
                 return result_type( It2, It );
             }
         }

@@ -92,10 +92,10 @@ void test_one ()
     BOOST_CHECK (!ba::one_of_equal ( li.begin(), l_iter,            3 ));
     BOOST_CHECK (!ba::one_of       ( li.begin(), l_iter, is_<int> ( 3 )));
     
-    BOOST_CXX14_CONSTEXPR bool constexpr_res = (
-        !ba::one_of   ( some_numbers, is_<int> ( 6 ))
-        && ba::one_of ( some_numbers + 1, some_numbers + 3, is_<int> ( 1 ))
-    );
+    BOOST_CXX14_CONSTEXPR bool constexpr_res =
+       !ba::one_of ( some_numbers, is_<int> ( 6 ))                       &&
+        ba::one_of ( some_numbers + 1, some_numbers + 3, is_<int> ( 1 )) &&
+       true;
 
     BOOST_CHECK ( constexpr_res );
 }

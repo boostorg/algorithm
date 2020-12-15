@@ -2,7 +2,7 @@
    Copyright (c) Marshall Clow 2008-2012.
 
    Distributed under the Boost Software License, Version 1.0. (See accompanying
-   file LICENSE10.txt or copy at http://www.boost.org/LICENSE10.txt)
+   file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 */
 
 /// \file  mismatch.hpp
@@ -13,6 +13,7 @@
 #define BOOST_ALGORITHM_MISMATCH_HPP
 
 #include <utility>      // for std::pair
+
 #include <boost/config.hpp>
 
 namespace boost { namespace algorithm {

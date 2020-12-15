@@ -12,15 +12,9 @@
 #ifndef BOOST_ALGORITHM_EQUAL_HPP
 #define BOOST_ALGORITHM_EQUAL_HPP
 
-#include <algorithm>    // for std::equal
 #include <iterator>
 
-#ifdef __cpp_lib_array_constexpr // or cpp17 compiler
-// if compiled according to C++17 standard or std functions are constexpr
-#define BOOST_CONSTEXPR_IF_STD_CONSTEXPR constexpr
-#else
-#define BOOST_CONSTEXPR_IF_STD_CONSTEXPR
-#endif
+#include <boost/config.hpp>
 
 namespace boost { namespace algorithm {
 
@@ -32,7 +26,7 @@ namespace detail {
         };
     
     template <class RandomAccessIterator1, class RandomAccessIterator2, class BinaryPredicate>
-    BOOST_CONSTEXPR_IF_STD_CONSTEXPR 
+    BOOST_CXX14_CONSTEXPR
     bool equal ( RandomAccessIterator1 first1, RandomAccessIterator1 last1, 
                  RandomAccessIterator2 first2, RandomAccessIterator2 last2, BinaryPredicate pred,
                  std::random_access_iterator_tag, std::random_access_iterator_tag )
@@ -40,12 +34,16 @@ namespace detail {
     //  Random-access iterators let is check the sizes in constant time
         if ( std::distance ( first1, last1 ) != std::distance ( first2, last2 ))
             return false;
-    // If we know that the sequences are the same size, the original version is fine
-        return std::equal ( first1, last1, first2, pred );
+
+    //  std::equal
+        for (; first1 != last1; ++first1, ++first2)
+            if (!pred(*first1, *first2))
+                return false;
+        return true;
     }
 
     template <class InputIterator1, class InputIterator2, class BinaryPredicate>
-    BOOST_CXX14_CONSTEXPR 
+    BOOST_CXX14_CONSTEXPR
     bool equal ( InputIterator1 first1, InputIterator1 last1, 
                  InputIterator2 first2, InputIterator2 last2, BinaryPredicate pred,
                  std::input_iterator_tag, std::input_iterator_tag )

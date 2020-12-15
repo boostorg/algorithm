@@ -97,13 +97,13 @@ void test_any ()
     BOOST_CHECK (!ba::any_of_equal ( li.begin(), l_iter,            18 ));
     BOOST_CHECK (!ba::any_of       ( li.begin(), l_iter, is_<int> ( 18 )));
     
-    
-    BOOST_CXX14_CONSTEXPR bool constexpr_res = (
-        ba::any_of_equal ( some_numbers, 1 )
-        && ba::any_of ( some_numbers, is_<int> ( 1 ))
-        && !ba::any_of_equal ( some_numbers, some_numbers + 3,            777 )
-        && !ba::any_of       ( some_numbers, some_numbers + 3, is_<int> ( 777 ))
-    );
+    BOOST_CXX14_CONSTEXPR bool constexpr_res =
+         ba::any_of_equal ( some_numbers, 1 )                                 &&
+         ba::any_of       ( some_numbers, is_<int> ( 1 ))                     &&
+        !ba::any_of_equal ( some_numbers, some_numbers + 3,            777 )  &&
+        !ba::any_of       ( some_numbers, some_numbers + 3, is_<int> ( 777 )) &&
+        true;
+
     BOOST_CHECK ( constexpr_res );
 }
 
