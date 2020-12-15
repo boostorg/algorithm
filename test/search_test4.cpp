@@ -54,7 +54,9 @@ typedef std::vector<std::string> vec;
 namespace {
 
     vec ReadFromFile ( const char *name ) {
-        std::ifstream in ( name, std::ios_base::binary | std::ios_base::in );
+        std::ifstream in;
+        in.exceptions(std::ifstream::badbit | std::ifstream::failbit);
+        in.open( name, std::ios_base::binary | std::ios_base::in );
         std::string temp;
         vec retVal;
         while ( std::getline ( in, temp ))
