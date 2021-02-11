@@ -44,6 +44,7 @@ Thanks to all the people who have reviewed this library and made suggestions for
 [include boyer_moore.qbk]
 [include boyer_moore_horspool.qbk]
 [include knuth_morris_pratt.qbk]
+[include musser_nishanov.qbk]
 [endsect]
 
 
