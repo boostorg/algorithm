@@ -15,7 +15,6 @@
 #define BOOST_ALGORITHM_IS_CLAMPED_HPP
 
 #include <functional>       //  For std::less
-#include <iterator>         //  For std::iterator_traits
 #include <cassert>
 
 #include <boost/mpl/identity.hpp>      // for identity
