@@ -48,10 +48,10 @@ namespace boost { namespace algorithm {
 /// \fn is_clamped ( T const& val,
 ///               typename boost::mpl::identity<T>::type const & lo,
 ///               typename boost::mpl::identity<T>::type const & hi)
-/// \returns true if value "val" is in the range [ lo, hi ]
+/// \returns true if value val is in the range [ lo, hi ]
 ///     using operator < for comparison.
 ///     If the value is less than lo, return false.
-///     If the value is greater than "hi", return false.
+///     If the value is greater than hi, return false.
 ///     Otherwise, returns true.
 ///
 /// \param val   The value to be checked
