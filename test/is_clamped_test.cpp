@@ -3,11 +3,11 @@
 //  Boost Software License, Version 1.0. (See accompanying file
 //  LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
-#include <boost/algorithm/clamp.hpp>
 #include <boost/algorithm/is_clamped.hpp>
+#include <boost/algorithm/clamp.hpp>
 #include <cmath>
 #include <cstdint>
-#ifdef __cpp_impl_three_way_comparison
+#ifdef __cpp_impl_three_way_comparison &&__has_include(<compare>)
 #include <compare>
 #endif
 #include <limits>
@@ -167,7 +167,7 @@ void test_constexpr() {
 }
 
 
-#ifdef __cpp_impl_three_way_comparison
+#ifdef __cpp_impl_three_way_comparison &&__has_include(<compare>)
 struct custom_with_spaceship {
   int v;
   auto operator<=>(const custom_with_spaceship&) const = default;
@@ -175,7 +175,7 @@ struct custom_with_spaceship {
 #endif
 
 void test_spaceship() {
-  #ifdef __cpp_impl_three_way_comparison
+  #ifdef __cpp_impl_three_way_comparison &&__has_include(<compare>)
   //  Inside the range, equal to the endpoints, and outside the endpoints.
   const custom_with_spaceship c0(0);
   const custom_with_spaceship c1(1);
