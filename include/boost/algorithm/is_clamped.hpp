@@ -17,7 +17,7 @@
 #include <functional>       //  For std::less
 #include <cassert>
 
-#include <boost/mpl/identity.hpp>      // for identity
+#include <boost/type_traits/type_identity.hpp> // for boost::type_identity
 
 namespace boost { namespace algorithm {
 
@@ -38,8 +38,8 @@ namespace boost { namespace algorithm {
 ///
   template <typename T, typename Pred>
   BOOST_CXX14_CONSTEXPR bool is_clamped(
-      T const& val, typename boost::mpl::identity<T>::type const& lo,
-      typename boost::mpl::identity<T>::type const& hi, Pred p) {
+      T const& val, typename boost::type_identity<T>::type const& lo,
+      typename boost::type_identity<T>::type const& hi, Pred p) {
     //    assert ( !p ( hi, lo ));    // Can't assert p ( lo, hi ) b/c they
     //    might be equal
     return p(val, lo) ? false : p(hi, val) ? false : true;
@@ -48,7 +48,7 @@ namespace boost { namespace algorithm {
 /// \fn is_clamped ( T const& val,
 ///               typename boost::mpl::identity<T>::type const & lo,
 ///               typename boost::mpl::identity<T>::type const & hi)
-/// \returns true if value val is in the range [ lo, hi ]
+/// \returns true if value "val" is in the range [ lo, hi ]
 ///     using operator < for comparison.
 ///     If the value is less than lo, return false.
 ///     If the value is greater than hi, return false.
@@ -60,9 +60,9 @@ namespace boost { namespace algorithm {
 ///
   
   template<typename T> 
-  BOOST_CXX14_CONSTEXPR bool is_clamped ( const T& val, 
-    typename boost::mpl::identity<T>::type const & lo, 
-    typename boost::mpl::identity<T>::type const & hi )
+  BOOST_CXX14_CONSTEXPR bool is_clamped ( const T& val,
+    typename boost::type_identity<T>::type const & lo,
+    typename boost::type_identity<T>::type const & hi )
   {
     return boost::algorithm::is_clamped ( val, lo, hi, std::less<T>());
   } 
