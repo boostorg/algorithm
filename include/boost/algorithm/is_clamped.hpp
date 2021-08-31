@@ -14,7 +14,7 @@
 #ifndef BOOST_ALGORITHM_IS_CLAMPED_HPP
 #define BOOST_ALGORITHM_IS_CLAMPED_HPP
 
-#include <functional>       //  For std::less
+#include <functional>       //  for std::less
 #include <cassert>
 
 #include <boost/type_traits/type_identity.hpp> // for boost::type_identity
@@ -22,8 +22,8 @@
 namespace boost { namespace algorithm {
 
 /// \fn is_clamped ( T const& val,
-///               typename boost::mpl::identity<T>::type const & lo,
-///               typename boost::mpl::identity<T>::type const & hi, Pred p )
+///               typename boost::type_identity<T>::type const & lo,
+///               typename boost::type_identity<T>::type const & hi, Pred p )
 /// \returns true if value "val" is in the range [ lo, hi ]
 ///     using the comparison predicate p.
 ///     If p ( val, lo ) return false.
@@ -46,8 +46,8 @@ namespace boost { namespace algorithm {
   }
   
 /// \fn is_clamped ( T const& val,
-///               typename boost::mpl::identity<T>::type const & lo,
-///               typename boost::mpl::identity<T>::type const & hi)
+///               typename boost::type_identity<T>::type const & lo,
+///               typename boost::type_identity<T>::type const & hi)
 /// \returns true if value "val" is in the range [ lo, hi ]
 ///     using operator < for comparison.
 ///     If the value is less than lo, return false.
