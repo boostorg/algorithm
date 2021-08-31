@@ -7,8 +7,13 @@
 #include <boost/algorithm/clamp.hpp>
 #include <cmath>
 #include <cstdint>
-#ifdef __cpp_impl_three_way_comparison &&__has_include(<compare>)
+#ifdef __cpp_impl_three_way_comparison
+#if __has_include(<compare>)
+#define BOOST_IS_CLAMPED_TEST_SPACESHIP
+#endif
+#ifdef BOOST_IS_CLAMPED_TEST_SPACESHIP
 #include <compare>
+#endif
 #endif
 #include <limits>
 #include <string>
@@ -84,11 +89,11 @@ void test_ints() {
   BOOST_CHECK_EQUAL ( false, ba::is_clamped ( 0U, 1, 6. ));
   BOOST_CHECK_EQUAL ( false, ba::is_clamped ( 8U, 1, 6. ));
 
-  short foo = 50;
   // float->short conversion does not round
-  BOOST_CHECK_EQUAL ( true,  ba::is_clamped ( foo, 50.999, 100 ));
-  BOOST_CHECK_EQUAL ( false, ba::is_clamped ( foo, 51.001, 100 ));
+  BOOST_CHECK_EQUAL ( true,  ba::is_clamped ( 50, 50.999, 100 ));
+  BOOST_CHECK_EQUAL ( false, ba::is_clamped ( 50, 51.001, 100 ));
 }
+
 void test_floats() {
   //  If floats are IEEE754 certain floats have exact representations.
   if (std::numeric_limits<float>::is_iec559) {
@@ -141,6 +146,21 @@ void test_custom() {
   BOOST_CHECK_EQUAL ( false, ba::is_clamped ( c7, c1, c6, customLess ));
 }
 
+void test_point_interval() {
+    BOOST_CHECK_EQUAL(true, ba::is_clamped(1, 1, 1));
+    BOOST_CHECK_EQUAL(false, ba::is_clamped(0, 1, 1));
+    BOOST_CHECK_EQUAL(false, ba::is_clamped(2, 1, 1));
+}
+
+void test_first_argument_determines_types() {
+    // all arguments are int
+    BOOST_CHECK_EQUAL(true, ba::is_clamped(5, 5.9, 6.1));
+    BOOST_CHECK_EQUAL(true, ba::is_clamped(6, 5.9, 6.1));
+    // all arguments are double
+    BOOST_CHECK_EQUAL(false, ba::is_clamped(5.0, 5.9, 6.1));
+    BOOST_CHECK_EQUAL(false, ba::is_clamped(6.2, 5.9, 6.1));
+}
+
 void test_constexpr() {
   #if __cplusplus >= 201402L
   {
@@ -167,7 +187,7 @@ void test_constexpr() {
 }
 
 
-#ifdef __cpp_impl_three_way_comparison &&__has_include(<compare>)
+#ifdef BOOST_IS_CLAMPED_TEST_SPACESHIP
 struct custom_with_spaceship {
   int v;
   auto operator<=>(const custom_with_spaceship&) const = default;
@@ -175,7 +195,7 @@ struct custom_with_spaceship {
 #endif
 
 void test_spaceship() {
-  #ifdef __cpp_impl_three_way_comparison &&__has_include(<compare>)
+  #ifdef BOOST_IS_CLAMPED_TEST_SPACESHIP
   //  Inside the range, equal to the endpoints, and outside the endpoints.
   const custom_with_spaceship c0(0);
   const custom_with_spaceship c1(1);
@@ -202,6 +222,8 @@ BOOST_AUTO_TEST_CASE(test_main) {
   test_floats();
   test_std_string();
   test_custom();
+  test_point_interval();
+  test_first_argument_determines_types();
   test_constexpr();
   test_spaceship();
 }
