@@ -8,7 +8,7 @@
 
 /// \file is_clamped.hpp
 /// \brief IsClamped algorithm
-/// \author TODO
+/// \authors Ivan Matek, Marshall Clow
 ///
 
 #ifndef BOOST_ALGORITHM_IS_CLAMPED_HPP
