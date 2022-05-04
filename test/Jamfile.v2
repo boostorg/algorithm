@@ -64,6 +64,9 @@ alias unit_test_framework
      [ run transform_exclusive_scan_test.cpp unit_test_framework   : : : : transform_exclusive_scan_test ]
 # Maybe GCD and LCM as well
 
+# Cxx23 tests
+     [ run find_last_test.cpp unit_test_framework   : : : : find_last_test ]
+
 # Hex tests
      [ run hex_test1.cpp unit_test_framework         : : : : hex_test1 ]
      [ run hex_test2.cpp unit_test_framework         : : : : hex_test2 ]
