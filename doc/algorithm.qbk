@@ -110,6 +110,15 @@ Apply a functor to the elements of a sequence
 
 [endsect:CXX17]
 
+[section:CXX23 C++23 Algorithms]
+
+[section:CXX23_inner_algorithms]
+
+[include find_last.qbk]
+
+[endsect:CXX23_inner_algorithms]
+
+[endsect:CXX23]
 
 [section:Misc Other Algorithms]
 
