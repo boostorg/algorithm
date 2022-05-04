@@ -1,0 +1,96 @@
+[/ File find_last.qbk]
+
+[section:find_last find_last ]
+
+[/license
+Copyright (c) 2022 T. Zachary Laine
+
+Distributed under the Boost Software License, Version 1.0.
+(See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+]
+
+The header file 'find_last.hpp' contains variants of the stl algorithm
+`find`. These variants are like `find`, except that they find the last
+instance of an element instead of the first.
+
+The functions in this header are as close to the ones in C++23's `std::ranges`
+namespace as possible.  In C++20 builds, they are constrained exactly as the
+standard does it.  They each return a `boost::algorithm::subrange`, which is a
+mostly-API-compatible version of `std::ranges::subrange`.  It's differences
+from the C++20 `subrange` are that it does not support sized ranges, and that
+it cannot be implicitly converted to a pair-like type.
+
+[heading interface]
+
+    template<typename ForwardIterator, typename Sentinel, typename T, typename Proj = identity>
+    BOOST_CXX14_CONSTEXPR subrange<ForwardIterator>
+    find_last(ForwardIterator first, Sentinel last, const T & value, Proj proj = {})
+
+    template<typename R, typename T, typename Proj = identity>
+    BOOST_CXX14_CONSTEXPR subrange<iterator_t<R>>
+    find_last(R && r, const T & value, Proj proj = {})
+
+These overloads of `find_last` return a subrange `[it, end)`, where `it` is
+the position of the last element that is equal to `x` in the given range, and
+`end` is the end of the given range.
+
+    template<typename ForwardIterator, typename Sentinel, typename Pred, typename Proj = identity>
+    BOOST_CXX14_CONSTEXPR subrange<ForwardIterator>
+    find_last_if(ForwardIterator first, Sentinel last, Pred pred, Proj proj = {})
+
+    template<typename R, typename Pred, typename Proj = identity>
+    BOOST_CXX14_CONSTEXPR subrange<iterator_t<R>>
+    find_last_if(R && r, Pred pred, Proj proj = {})
+
+These overloads of `find_if_last` return a subrange `[it, end)`, where `it` is
+the position of the last element for which `pred` returns `true` in the given
+range, and `end` is the end of the given range.
+
+    template<typename ForwardIterator, typename Sentinel, typename Pred, typename Proj = identity>
+    BOOST_CXX14_CONSTEXPR subrange<ForwardIterator>
+    find_last_if_not(ForwardIterator first, Sentinel last, Pred pred, Proj proj = {})
+
+    template<typename R, typename Pred, typename Proj = identity>
+    BOOST_CXX14_CONSTEXPR subrange<iterator_t<R>>
+    find_last_if_not(R && r, Pred pred, Proj proj = {})
+
+These overloads of `find_if_last` return a subrange `[it, end)`, where `it` is
+the position of the last element for which `pred` returns `false` in the given
+range, and `end` is the end of the given range.
+
+[heading Examples]
+
+Given the container `c1` containing `{ 2, 1, 2 }`, then
+
+    find_last        ( c1.begin(), c1.end(), 2                          ) --> --c1.end()
+    find_last        ( c1.begin(), c1.end(), 3                          ) --> c1.end()
+    find_last_if     ( c1.begin(), c1.end(), [](int i) {return i == 2;} ) --> --c1.end()
+    find_last_if     ( c1.begin(), c1.end(), [](int i) {return i == 3;} ) --> c1.end()
+    find_last_if_not ( c1.begin(), c1.end(), [](int i) {return i == 2;} ) --> std::prev(c1.end(), 2)
+    find_last_if_not ( c1.begin(), c1.end(), [](int i) {return i == 1;} ) --> c1.end()
+
+[heading Iterator Requirements]
+
+All variants work on forward iterators.
+
+[heading Complexity]
+
+Linear.
+
+[heading Exception Safety]
+
+All of the variants take their parameters by value and do not depend upon any
+global state. Therefore, all the routines in this file provide the strong
+exception guarantee.
+
+[heading Notes]
+
+All variants are `constexpr` in C++14 or later.
+
+[endsect]
+
+[/ File find_last.qbk
+Copyright 2022 T. Zachary Laine
+Distributed under the Boost Software License, Version 1.0.
+(See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt).
+]
