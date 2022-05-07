@@ -91,6 +91,7 @@ alias unit_test_framework
      [ run find_not_test.cpp unit_test_framework   : : : : find_not_test ]
      [ run find_backward_test.cpp unit_test_framework   : : : : find_backward_test ]
      [ run find_last_test.cpp unit_test_framework   : : : : find_last_test ]
+     [ run contains_test.cpp unit_test_framework   : : : : contains_test ]
    ;
 }
 

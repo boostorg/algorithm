@@ -1,0 +1,68 @@
+[/ File contains.qbk]
+
+[section:contains contains ]
+
+[/license
+Copyright (c) 2022 T. Zachary Laine
+
+Distributed under the Boost Software License, Version 1.0.
+(See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+]
+
+The header file 'contains.hpp' contains an implementation of the C++23 stl
+algorithms `contains` and `contains_subrange`.
+
+The functions in this header are as close to the ones in C++23's `std::ranges`
+namespace as possible.  In C++20 builds, they are constrained exactly as the
+standard does it.  They each return a `bool`.
+
+[heading interface]
+
+    template<typename I, typename S, typename T, typename Proj = identity>
+    BOOST_CXX14_CONSTEXPR bool
+    contains(I first, S last, const T & value, Proj proj = {});
+
+    template<typename R, typename T, typename Proj = identity>
+    BOOST_CXX14_CONSTEXPR bool
+    contains(R && r, const T & value, Proj proj = {});
+
+These overloads return `std::ranges::find(first, last, value, proj) != last`.
+
+    template<typename I1, typename S1, typename I2, typename S2,
+             typename Pred = std::equal_to<>, typename Proj1 = identity, typename Proj2 = identity>
+    BOOST_CXX14_CONSTEXPR bool contains_subrange(
+        I1 first1, S1 last1, I2 first2, S2 last2,
+        Pred pred = {}, Proj1 proj1 = {}, Proj2 proj2 = {});
+
+    template<typename R1, typename R2, typename Pred = std::equal_to<>,
+             typename Proj1 = identity, typename Proj2 = identity>
+    BOOST_CXX14_CONSTEXPR bool contains_subrange(
+        R1 && r1, R2 && r2, Pred pred = {}, Proj1 proj1 = {}, Proj2 proj2 = {});
+
+These overloads return `first2 == last2 || !std::ranges::search(first1, last1, first2, last2, pred, proj1, proj2).empty()`.
+
+[heading Iterator Requirements]
+
+All variants work on forward iterators.
+
+[heading Complexity]
+
+Linear.
+
+[heading Exception Safety]
+
+All of the variants take their parameters by value and do not depend upon any
+global state. Therefore, all the routines in this file provide the strong
+exception guarantee.
+
+[heading Notes]
+
+All variants are `constexpr` in C++14 or later.
+
+[endsect]
+
+[/ File contains.qbk
+Copyright 2022 T. Zachary Laine
+Distributed under the Boost Software License, Version 1.0.
+(See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt).
+]
