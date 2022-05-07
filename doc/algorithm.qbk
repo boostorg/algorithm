@@ -114,6 +114,7 @@ Apply a functor to the elements of a sequence
 
 [section:CXX23_inner_algorithms]
 
+[include contains.qbk]
 [include find_last.qbk]
 
 [endsect:CXX23_inner_algorithms]
