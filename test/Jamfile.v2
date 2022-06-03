@@ -90,6 +90,8 @@ alias unit_test_framework
 # Find tests
      [ run find_not_test.cpp unit_test_framework        : : : : find_not_test ]
      [ run find_backward_test.cpp unit_test_framework   : : : : find_backward_test ]
+# Iterate tests
+     [ run iterate_test.cpp unit_test_framework : : : : iterate_test ]
    ;
 }
 
