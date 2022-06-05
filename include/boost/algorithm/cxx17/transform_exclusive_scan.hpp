@@ -39,6 +39,7 @@ namespace boost { namespace algorithm {
 /// \note This function is part of the C++17 standard library
 template<class InputIterator, class OutputIterator, class T,
          class BinaryOperation, class UnaryOperation>
+BOOST_CXX14_CONSTEXPR
 OutputIterator transform_exclusive_scan(InputIterator first, InputIterator last,
                                         OutputIterator result, T init,
                                         BinaryOperation bOp, UnaryOperation uOp)

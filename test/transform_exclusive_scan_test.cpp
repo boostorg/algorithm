@@ -27,7 +27,7 @@ int triangle(int n) { return n*(n+1)/2; }
 template <class _Tp>
 struct identity
 {
-    const _Tp& operator()(const _Tp& __x) const { return __x;}
+    BOOST_CXX14_CONSTEXPR const _Tp& operator()(const _Tp& __x) const { return __x;}
 };
 
 
@@ -118,6 +118,23 @@ void basic_tests()
     }
 }
 
+BOOST_CXX14_CONSTEXPR bool constexpr_transform_exclusive_scan_tests() {
+    typedef random_access_iterator<int*> iterator_t;
+
+    const int NUM_ELEMENTS = 3;
+
+    bool status = true;
+    int input[NUM_ELEMENTS] = {3, 3, 3};
+    int output[NUM_ELEMENTS] = {0, 0, 0};
+    ba::transform_exclusive_scan(
+        iterator_t(input), iterator_t(input + NUM_ELEMENTS),
+        iterator_t(output),
+        30,
+        std::plus<int>(), identity<int>());
+    for (size_t i = 0; i < NUM_ELEMENTS; ++i)
+        status &= (output[i] == 30 + (int)(i * 3));
+    return status;
+}
 
 void test_transform_exclusive_scan_init()
 {
@@ -129,6 +146,11 @@ void test_transform_exclusive_scan_init()
     test<random_access_iterator<const int*> >();
     test<const int*>();
     test<      int*>();
+
+    {
+        BOOST_CXX14_CONSTEXPR bool status = constexpr_transform_exclusive_scan_tests();
+        BOOST_CHECK(status == true);
+    }
 }
 
 BOOST_AUTO_TEST_CASE( test_main )
