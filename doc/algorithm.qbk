@@ -106,6 +106,16 @@ Generate an increasing series
 Apply a functor to the elements of a sequence
 [endsect:for_each_n]
 
+[section:transform_inclusive_scan transform_inclusive_scan]
+[*[^[link boost.algorithm.transform_inclusive_scan                   transform_inclusive_scan]    ] ]
+Transform each element in a range then combine adjacent elements to create an output range. Inclusive scaning means that the nth input is present in the nth output.
+[endsect:transform_inclusive_scan]
+
+[section:transform_exclusive_scan transform_exclusive_scan]
+[*[^[link boost.algorithm.transform_exclusive_scan                   transform_exclusive_scan]    ] ]
+Transform each element in a range then combine adjacent elements to create an output range. Exclusive scanning means that the nth input is not present in the nth output.
+[endsect:transform_exclusive_scan]
+
 [endsect:CXX17_inner_algorithms]
 
 [endsect:CXX17]
@@ -234,8 +244,6 @@ Raise a value to an integral power ([^constexpr] since C++14)
 * [*[^[link header.boost.algorithm.cxx17.exclusive_scan_hpp            exclusive_scan]              ] ]
 * [*[^[link header.boost.algorithm.cxx17.inclusive_scan_hpp            inclusive_scan]              ] ]
 * [*[^[link header.boost.algorithm.cxx17.reduce_hpp                    reduce]                      ] ]
-* [*[^[link header.boost.algorithm.cxx17.transform_exclusive_scan_hpp  transform_exclusive_scan]    ] ]
-* [*[^[link header.boost.algorithm.cxx17.transform_inclusive_scan_hpp  transform_inclusive_scan]    ] ]
 * [*[^[link header.boost.algorithm.cxx17.transform_reduce_hpp          transform_reduce]            ] ]
 
 [endsect:not_yet_documented_cxx17_algos]
