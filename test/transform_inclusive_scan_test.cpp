@@ -27,7 +27,7 @@ int triangle(int n) { return n*(n+1)/2; }
 template <class _Tp>
 struct identity
 {
-    const _Tp& operator()(const _Tp& __x) const { return __x;}
+    BOOST_CXX14_CONSTEXPR const _Tp& operator()(const _Tp& __x) const { return __x;}
 };
 
 
@@ -108,6 +108,23 @@ void basic_transform_inclusive_scan_tests()
     }
 }
 
+BOOST_CXX14_CONSTEXPR bool constexpr_transform_inclusive_scan_tests() {
+    typedef random_access_iterator<int*> iterator_t;
+
+    const int NUM_ELEMENTS = 3;
+
+    bool status = true;
+    int input[NUM_ELEMENTS] = {3, 3, 3};
+    int output[NUM_ELEMENTS] = {0, 0, 0};
+    ba::transform_inclusive_scan(
+        iterator_t(input), iterator_t(input + NUM_ELEMENTS),
+        iterator_t(output),
+        std::plus<int>(), identity<int>());
+    for (size_t i = 0; i < NUM_ELEMENTS; ++i)
+        status &= (output[i] == input[0] + (int)(i * 3));
+    return status;
+}
+
 void test_transform_inclusive_scan()
 {
     basic_transform_inclusive_scan_tests();
@@ -119,6 +136,11 @@ void test_transform_inclusive_scan()
     transform_inclusive_scan_test<random_access_iterator<const int*> >();
     transform_inclusive_scan_test<const int*>();
     transform_inclusive_scan_test<      int*>();
+
+    {
+        BOOST_CXX14_CONSTEXPR bool status = constexpr_transform_inclusive_scan_tests();
+        BOOST_CHECK(status == true);
+    }
 }
 
 
@@ -211,6 +233,24 @@ void basic_transform_inclusive_scan_init_tests()
     }
 }
 
+BOOST_CXX14_CONSTEXPR bool constexpr_transform_inclusive_scan_init_tests() {
+    typedef random_access_iterator<int*> iterator_t;
+
+    const int NUM_ELEMENTS = 3;
+
+    bool status = true;
+    int input[NUM_ELEMENTS] = {3, 3, 3};
+    int output[NUM_ELEMENTS] = {0, 0, 0};
+    ba::transform_inclusive_scan(
+        iterator_t(input), iterator_t(input + NUM_ELEMENTS),
+        iterator_t(output),
+        std::plus<int>(), identity<int>(),
+        30);
+    for (size_t i = 0; i < NUM_ELEMENTS; ++i)
+        status &= (output[i] == 30 + (int)((i + 1) * 3));
+    return status;
+}
+
 void test_transform_inclusive_scan_init()
 {
 	basic_transform_inclusive_scan_init_tests();
@@ -223,6 +263,10 @@ void test_transform_inclusive_scan_init()
     transform_inclusive_scan_init_test<const int*>();
     transform_inclusive_scan_init_test<      int*>();
 
+    {
+        BOOST_CXX14_CONSTEXPR bool status = constexpr_transform_inclusive_scan_init_tests();
+        BOOST_CHECK(status == true);
+    }
 }
 
 

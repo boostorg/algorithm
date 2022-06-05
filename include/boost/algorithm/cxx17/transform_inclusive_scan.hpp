@@ -39,6 +39,7 @@ namespace boost { namespace algorithm {
 /// \note This function is part of the C++17 standard library
 template<class InputIterator, class OutputIterator,
          class BinaryOperation, class UnaryOperation, class T>
+BOOST_CXX14_CONSTEXPR
 OutputIterator transform_inclusive_scan(InputIterator first, InputIterator last,
                                         OutputIterator result,
                                         BinaryOperation bOp, UnaryOperation uOp,
@@ -68,6 +69,7 @@ OutputIterator transform_inclusive_scan(InputIterator first, InputIterator last,
 /// \note This function is part of the C++17 standard library
 template<class InputIterator, class OutputIterator,
          class BinaryOperation, class UnaryOperation>
+BOOST_CXX14_CONSTEXPR
 OutputIterator transform_inclusive_scan(InputIterator first, InputIterator last,
                                         OutputIterator result,
                                         BinaryOperation bOp, UnaryOperation uOp)
