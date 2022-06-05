@@ -85,6 +85,35 @@ OutputIterator transform_inclusive_scan(InputIterator first, InputIterator last,
     return result;
 }
 
+/// \fn transform_inclusive_scan ( InputIterator1 first1, InputIterator1 last1, InputIterator2 first2, OutputIterator result, ScanOperation scan_op, TransformOperation trans_op, T init )
+/// \brief Transforms elements from the input ranges with trans_op and then
+/// combines those transformed elements with scan_op such that the n-1th element
+/// and the nth element are combined. Inclusivity means that the nth element is
+/// included in the nth combination. The first value will be used as the init.
+/// \return The updated output iterator
+///
+/// \param first1   The start of the first input sequence
+/// \param last1    The end of the first input sequence
+/// \param first2   The start of the second input sequence
+/// \param result   The output iterator to write the results into
+/// \param scan_op  The operation for combining transformed input elements
+/// \param trans_op The operation for transforming pairs of input elements
+/// \param init     The initial value
+template<class InputIterator1, class InputIterator2, class OutputIterator,
+         class ScanOperation, class TransformOperation, class T>
+BOOST_CXX14_CONSTEXPR
+OutputIterator transform_inclusive_scan(InputIterator1 first1, InputIterator1 last1,
+                                        InputIterator2 first2,
+                                        OutputIterator result,
+                                        ScanOperation scan_op, TransformOperation trans_op,
+                                        T init)
+{
+    for (; first1 != last1; ++first1, ++first2, ++result) {
+        init = scan_op(init, trans_op(*first1, *first2));
+        *result = init;
+        }
+    return result;
+}
 
 }} // namespace boost and algorithm
 
