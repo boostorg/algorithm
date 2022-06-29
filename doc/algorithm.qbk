@@ -216,13 +216,23 @@ See below
 
 [section:copy_until                copy_until                ]
 [*[^[link header.boost.algorithm.cxx11.copy_if_hpp                   copy_until]                  ] ]
-Copy all the elements at the start of the input range that do not satisfy the predicate to the output range
+Copy all the elements from the start of the input range to the output range until the predicate is satisfied
 [endsect:copy_until]
 
 [section:copy_while                copy_while                ]
 [*[^[link header.boost.algorithm.cxx11.copy_if_hpp                   copy_while]                  ] ]
-Copy all the elements at the start of the input range that satisfy the predicate to the output range
+Copy all the elements from the start of the input range to the output range while the predicate is satisfied
 [endsect:copy_while]
+
+[section:copy_if_until             copy_if_until             ]
+[*[^[link header.boost.algorithm.cxx11.copy_if_hpp                   copy_if_until                ] ]
+Copy all elements that satisfy the element predicate from the start of the input range to the output range until the termination predicate is satisfied
+[endsect:copy_if_until]
+
+[section:copy_if_while             copy_if_while             ]
+[*[^[link header.boost.algorithm.cxx11.copy_if_hpp                   copy_if_while                ] ]
+Copy all elements that satisfy the element predicate from the start of the input range to the output range while the termination predicate is satisfied
+[endsect:copy_if_while]
 
 [section:iota_n                    iota_n                    ]
 [*[^[link boost.algorithm.iota_n                                     iota_n]                      ] ]
