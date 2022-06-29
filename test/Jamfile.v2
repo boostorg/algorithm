@@ -69,6 +69,7 @@ alias unit_test_framework
      [ run hex_test2.cpp unit_test_framework         : : : : hex_test2 ]
      [ run hex_test3.cpp unit_test_framework         : : : : hex_test3 ]
      [ run hex_test4.cpp unit_test_framework         : : : : hex_test4 ]
+     [ run mclow.cpp unit_test_framework             : : : : mclow     ]
      [ compile-fail hex_fail1.cpp ]
 
 # Gather tests
