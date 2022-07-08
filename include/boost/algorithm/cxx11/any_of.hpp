@@ -31,10 +31,7 @@ namespace boost { namespace algorithm {
 template<typename InputIterator, typename Predicate> 
 BOOST_CXX14_CONSTEXPR bool any_of ( InputIterator first, InputIterator last, Predicate p ) 
 {
-    for ( ; first != last; ++first )
-        if ( p(*first)) 
-            return true;
-    return false; 
+    return std::find_if(first, last, p) != last;
 } 
 
 /// \fn any_of ( const Range &r, Predicate p )
@@ -61,10 +58,7 @@ BOOST_CXX14_CONSTEXPR bool any_of ( const Range &r, Predicate p )
 template<typename InputIterator, typename V> 
 BOOST_CXX14_CONSTEXPR bool any_of_equal ( InputIterator first, InputIterator last, const V &val ) 
 {
-    for ( ; first != last; ++first )
-        if ( val == *first )
-            return true;
-    return false; 
+    return std::find(first, last, val) != last;
 } 
 
 /// \fn any_of_equal ( const Range &r, const V &val )
