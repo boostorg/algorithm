@@ -1,9 +1,7 @@
 /* 
    Copyright (c) Denis Mikhailov 2022.
-
    Distributed under the Boost Software License, Version 1.0. (See accompanying
    file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
-
     For more information, see http://www.boost.org
 */
 
@@ -135,7 +133,8 @@ void test_move_while (  const std::function<Container()> make_container ) {
         std::cout << "moved: " << mcount << std::endl;
         
         BOOST_CHECK ( is_even()(e.front()) ? mcount != 0 : mcount == 0 );
-        BOOST_CHECK ( v.size () == (size_t) std::distance ( c.begin (), it ));
+        BOOST_CHECK ( v.size () == (size_t) std::distance ( c.begin (), it ) && 
+                      v.size () == mcount );
         BOOST_CHECK ( it == c.end () || !is_even() ( *it ));
         BOOST_CHECK ( ba::all_of ( v.begin (), v.end (), is_even() ));
         BOOST_CHECK ( std::equal ( v.begin (), v.end (), e.begin ()));
@@ -150,7 +149,8 @@ void test_move_while (  const std::function<Container()> make_container ) {
         std::cout << "moved: " << mcount << std::endl;
         
         BOOST_CHECK ( is_even()(e.front()) ? mcount != 0 : mcount == 0 );
-        BOOST_CHECK ( v.size () == (size_t) std::distance ( c.begin (), it ));
+        BOOST_CHECK ( v.size () == (size_t) std::distance ( c.begin (), it ) && 
+                      v.size () == mcount );
         BOOST_CHECK ( it == c.end () || !is_even() ( *it ));
         BOOST_CHECK ( ba::all_of ( v.begin (), v.end (), is_even() ));
         BOOST_CHECK ( std::equal ( v.begin (), v.end (), e.begin ()));
@@ -210,8 +210,9 @@ void test_move_until ( const std::function<Container()> make_container ) {
         
         std::cout << "moved: " << mcount << std::endl;
         
-        BOOST_CHECK ( mcount != 0 );
-        BOOST_CHECK ( v.size () == (size_t) std::distance ( c.begin (), it ));
+        BOOST_CHECK ( is_even()(e.front()) ? mcount == 0 : mcount != 0 );
+        BOOST_CHECK ( v.size () == (size_t) std::distance ( c.begin (), it ) && 
+                      v.size () == mcount );
         BOOST_CHECK ( it == c.end () || is_even() ( *it ));
         BOOST_CHECK ( ba::none_of ( v.begin (), v.end (), is_even() ));
         BOOST_CHECK ( std::equal ( v.begin (), v.end (), e.begin ()));
@@ -225,8 +226,9 @@ void test_move_until ( const std::function<Container()> make_container ) {
         
         std::cout << "moved: " << mcount << std::endl;
         
-        BOOST_CHECK ( mcount != 0 );
-        BOOST_CHECK ( v.size () == (size_t) std::distance ( c.begin (), it ));
+        BOOST_CHECK ( is_even()(e.front()) ? mcount == 0 : mcount != 0 );
+        BOOST_CHECK ( v.size () == (size_t) std::distance ( c.begin (), it ) && 
+                      v.size () == mcount );
         BOOST_CHECK ( it == c.end () || is_even() ( *it ));
         BOOST_CHECK ( ba::none_of ( v.begin (), v.end (), is_even() ));
         BOOST_CHECK ( std::equal ( v.begin (), v.end (), e.begin ()));
@@ -337,35 +339,47 @@ BOOST_CXX14_CONSTEXPR inline bool constexpr_test_move_until() {
     return res;
     }
 
-std::vector<move_test> make_vector_container() {
+std::vector<move_test> make_vector_container(bool is_front_even) {
     std::vector<move_test> v;
-    for ( int i = 5; i < 15; ++i )
+    const int front = is_front_even ? 6 : 5;
+    const int back = is_front_even ? 15 : 14;
+    for ( int i = front; i <= back; ++i )
         v.push_back ( move_test(i) );
     return v;
 }
 
-std::list<move_test> make_list_container() {
+std::list<move_test> make_list_container(bool is_front_even) {
     std::list<move_test> l;
-    for ( int i = 25; i > 15; --i )
+    const int rfront = is_front_even ? 26 : 25;
+    const int rback = is_front_even ? 17 : 16;
+    for ( int i = rfront; i >= rback; --i )
         l.push_back ( move_test(i) );
     return l;
 }
 
 void test_sequence1 () {
-    test_move_while<std::vector<move_test>> ( make_vector_container );
-    test_move_until<std::vector<move_test>> ( make_vector_container );
+    std::cout << "testing with vector.." << std::endl;
+    for (const bool is_front_even : {true, false})
+    {
+        test_move_while<std::vector<move_test>> ( std::bind(&make_vector_container, is_front_even) );
+        test_move_until<std::vector<move_test>> ( std::bind(&make_vector_container, is_front_even) );
+    }
 
     BOOST_CXX14_CONSTEXPR bool constexpr_res_while = constexpr_test_move_while();
     BOOST_CHECK ( constexpr_res_while );
     BOOST_CXX14_CONSTEXPR bool constexpr_res_until = constexpr_test_move_until();
     BOOST_CHECK ( constexpr_res_until );
 
-    test_move_while<std::list<move_test>> ( make_list_container );
-    test_move_until<std::list<move_test>> ( make_list_container );
+    std::cout << "testing with list.." << std::endl;
+    for (const bool is_front_even : {true, false})
+    {
+        test_move_while<std::list<move_test>> ( std::bind(&make_list_container, is_front_even) );
+        test_move_until<std::list<move_test>> ( std::bind(&make_list_container, is_front_even) );
+    }
     
     test_move_while_valid_it();
     test_move_until_valid_it();
-    }
+}
 
 
 BOOST_AUTO_TEST_CASE( test_main )
