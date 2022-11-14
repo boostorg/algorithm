@@ -57,7 +57,7 @@ namespace boost {
         template<typename SequenceT, typename RangeT>
         inline void intersperse_fill(SequenceT& Input, const RangeT& Fill)
         {
-            typename ::boost::range_size<SequenceT>::type counter = 0;
+            BOOST_STRING_TYPENAME ::boost::range_size<SequenceT>::type counter = 0;
             ::boost::find_format_all(       
                 Input,
                 ::boost::token_finder(
@@ -81,7 +81,7 @@ namespace boost {
             const SequenceT& Input,
             const RangeT& Fill)
         {
-            typename ::boost::range_size<SequenceT>::type counter = 0;
+            BOOST_STRING_TYPENAME ::boost::range_size<SequenceT>::type counter = 0;
             return 
                 ::boost::find_format_all_copy(      
                     Input,
