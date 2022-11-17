@@ -87,10 +87,11 @@ void intersperse_fill_test()
 
 void intersperse_generate_test()
 {
-    string test = "test";
+    const string input = "test";
     CharGenerator g1, g2;
-    BOOST_CHECK(intersperse_generate_copy(test, g1) == "t1e2s3t");
+    BOOST_CHECK(intersperse_generate_copy(input, g1) == "t1e2s3t");
 
+    string test = "test";
     intersperse_generate(test, g2);
     BOOST_CHECK(test == "t1e2s3t");
 }
