@@ -62,7 +62,7 @@ namespace {
         return retVal;
         }
     
-    void check_one ( const vec &haystack, const vec &needle, int expected ) {
+    void check_one ( const vec &haystack, const vec &needle, std::ptrdiff_t expected ) {
         
         std::pair<vec::const_iterator, vec::const_iterator> res;
         std::pair<vec::const_iterator, vec::const_iterator> exp;        // the expected result
@@ -117,7 +117,7 @@ BOOST_AUTO_TEST_CASE( test_main )
     std::cout << "---- Middle -----" << std::endl;
     check_one ( c1, p1f, -2 );      //  Don't know answer
     std::cout << "------ End ------" << std::endl;
-    check_one ( c1, p1e, c1.size() - p1e.size ());  
+    check_one ( c1, p1e, static_cast<std::ptrdiff_t>(c1.size() - p1e.size ()));  
     std::cout << "--- Not found ---" << std::endl;
     check_one ( c1, p1n, -1 );      //  Not found
     }

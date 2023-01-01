@@ -112,7 +112,7 @@ void test_sequence1 () {
     std::vector<int> v, v1;
     
     v.clear ();
-    for ( std::size_t i = 5; i < 15; ++i )
+    for ( int i = 5; i < 15; ++i )
         v.push_back ( i );
     v1 = v;
     BOOST_CHECK ( ba::is_permutation ( v.begin (), v.end (), v.begin ()));  // better be a permutation of itself!

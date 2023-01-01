@@ -28,8 +28,8 @@
 namespace ba = boost::algorithm;
 // namespace ba = boost;
 
-BOOST_CXX14_CONSTEXPR bool is_true  ( int v ) { return true; }
-BOOST_CXX14_CONSTEXPR bool is_false ( int v ) { return false; }
+BOOST_CXX14_CONSTEXPR bool is_true  ( int ) { return true; }
+BOOST_CXX14_CONSTEXPR bool is_false ( int ) { return false; }
 BOOST_CXX14_CONSTEXPR bool is_even  ( int v ) { return v % 2 == 0; }
 BOOST_CXX14_CONSTEXPR bool is_odd   ( int v ) { return v % 2 == 1; }
 BOOST_CXX14_CONSTEXPR bool is_zero  ( int v ) { return v == 0; }
