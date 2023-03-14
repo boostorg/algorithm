@@ -111,7 +111,7 @@ namespace boost {
 
             SequenceSequenceT Tmp(itBegin, itEnd);
                         
-            Result.swap(Tmp);
+            Tmp.swap(Result);
             return Result;
         }
 
@@ -185,7 +185,7 @@ namespace boost {
             
             SequenceSequenceT Tmp(itBegin, itEnd);
 
-            Result.swap(Tmp);
+            Tmp.swap(Result);
             return Result;
         }
 
