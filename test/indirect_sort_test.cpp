@@ -1,5 +1,5 @@
 /* 
-   Copyright (c) Marshall Clow 2011-2012.
+   Copyright (c) Marshall Clow 2023.
 
    Distributed under the Boost Software License, Version 1.0. (See accompanying
    file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -24,7 +24,7 @@ typedef std::vector<size_t> Permutation;
 
 // A permutation of size N is a sequence of values in the range [0..N)
 // such that no value appears more than once in the permutation.
-bool isa_permutation(Permutation p, size_t N) {
+bool is_a_permutation(Permutation p, size_t N) {
 	if (p.size() != N) return false;
 
 //	Sort the permutation, and ensure that each value appears exactly once.
@@ -49,7 +49,7 @@ struct indirect_comp {
 template <typename Iter>
 void test_one_sort(Iter first, Iter last) {
 	Permutation perm = boost::algorithm::indirect_sort(first, last);
-	BOOST_CHECK (isa_permutation(perm, std::distance(first, last)));
+	BOOST_CHECK (is_a_permutation(perm, std::distance(first, last)));
 	BOOST_CHECK (boost::algorithm::is_sorted(perm.begin(), perm.end(), indirect_comp<Iter>(first)));
 
 //	Make a copy of the data, apply the permutation, and ensure that it is sorted.
@@ -61,7 +61,7 @@ void test_one_sort(Iter first, Iter last) {
 template <typename Iter, typename Comp>
 void test_one_sort(Iter first, Iter last, Comp comp) {
 	Permutation perm = boost::algorithm::indirect_sort(first, last, comp);
-	BOOST_CHECK (isa_permutation(perm, std::distance(first, last)));
+	BOOST_CHECK (is_a_permutation(perm, std::distance(first, last)));
 	BOOST_CHECK (boost::algorithm::is_sorted(perm.begin(), perm.end(), 
 	                             indirect_comp<Iter, Comp>(first, comp)));
 
@@ -73,7 +73,7 @@ void test_one_sort(Iter first, Iter last, Comp comp) {
 
 
 void test_sort () {
-    BOOST_CXX14_CONSTEXPR int num[] = { 1,3,5,7,9, 2, 4, 6, 8, 10 };
+    int num[] = { 1,3,5,7,9, 2, 4, 6, 8, 10 };
     const int sz = sizeof (num)/sizeof(num[0]);
     int       *first  = &num[0];
     int const *cFirst = &num[0];

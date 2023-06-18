@@ -9,36 +9,66 @@ Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 ]
 
-There are times that you want a sorted version of a sequence, but for some reason or another, you don't really want to sort them.  Maybe the elements in the sequence are non-copyable (or non-movable), or the sequence is const, or they're just really expensive to move around.   An example of this might be a sequence of records from a database.
+There are times that you want a sorted version of a sequence, but for some reason you don't want to modify it.  Maybe the elements in the sequence can't be moved/copied, e.g. the sequence is const, or they're just really expensive to move around.   An example of this might be a sequence of records from a database.
 
-Nevertheless, you might want to sort them.  That's where indirect sorting comes in.  In a "normal" sort, the elements of the sequence to be sorted are shuffled in place.  In indirect sorting, the elements are unchanged, but the sort algorithm returns to you a "permutation" of the elements that, when applied, will leave the elements in the sequence in a sorted order.
+That's where indirect sorting comes in.  In a "normal" sort, the elements of the sequence to be sorted are shuffled in place.  In indirect sorting, the elements are unchanged, but the sort algorithm returns a "permutation" of the elements that, when applied, will put the elements in the sequence in a sorted order.
 
-Say you have a sequence `[first, last)` of 1000 items that are expensive to swap:
+Assume have a sequence `[first, last)` of 1000 items that are expensive to swap:
 ```
 	std::sort(first, last);  // ['O(N ln N)] comparisons and ['O(N ln N)] swaps (of the element type).
 ```
 
 On the other hand, using indirect sorting:
 ```
-	auto permutation = boost::algorithm::indirect_sort(first, last);  // ['O(N lg N)] comparisons and ['O(N lg N)] swaps (of size_t).
-	boost::algorithm::apply_permutation(first, last, perm.begin(), perm.end()); // ['O(N)] swaps (of the element type)
+	auto perm = indirect_sort(first, last);  // ['O(N lg N)] comparisons and ['O(N lg N)] swaps (of size_t).
+	apply_permutation(first, last, perm.begin(), perm.end()); // ['O(N)] swaps (of the element type)
 ```
 
 If the element type is sufficiently expensive to swap, then 10,000 swaps of size_t + 1000 swaps of the element_type could be cheaper than 10,000 swaps of the element_type.
 
 Or maybe you don't need the elements to actually be sorted - you just want to traverse them in a sorted order:
 ```
-	auto permutation = boost::algorithm::indirect_sort(first, last);
+	auto permutation = indirect_sort(first, last);
 	for (size_t idx: permutation)
 		std::cout << first[idx] << std::endl;
 ```
 
 
-More to come here ....
+Assume that instead of an "array of structures", you have a "struct of arrays"
+```
+struct AType {
+	Type0 key;
+	Type1 value1;
+	Type1 value2;
+	};
+
+std::array<AType, 1000> arrayOfStruct;
+```
+
+versus:
+
+```
+template <size_t N>
+struct AType {
+	std::array<Type0, N> key;
+	std::array<Type1, N> value1;
+	std::array<Type2, N> value2;
+	};
+	
+AType<1000> structOfArrays;
+```
+
+Sorting the first one is easy, because each set of fields (`key`, `value1`, `value2`) are part of the same struct.  But with indirect sorting, the second one is easy to sort as well - just sort the keys, then apply the permutation to the keys and the values:
+```
+	auto perm = indirect_sort(std::begin(structOfArrays.key), std::end(structOfArrays.key));
+	apply_permutation(structOfArrays.key.begin(),    structOfArrays.key.end(),    perm.begin(), perm.end());
+	apply_permutation(structOfArrays.value1.begin(), structOfArrays.value1.end(), perm.begin(), perm.end());
+	apply_permutation(structOfArrays.value2.begin(), structOfArrays.value2.end(), perm.begin(), perm.end());
+```
 
 [heading interface]
 
-The function `indirect_sort` a `vector<size_t>` containing the permutation necessary to put the input sequence into a sorted order. One version uses `std::less` to do the comparisons; the other lets the caller pass predicate to do the comparisons. 
+The function `indirect_sort` returns a `vector<size_t>` containing the permutation necessary to put the input sequence into a sorted order. One version uses `std::less` to do the comparisons; the other lets the caller pass predicate to do the comparisons. 
 
 ```
 template <typename RAIterator>
