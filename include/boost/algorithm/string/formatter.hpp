@@ -104,6 +104,26 @@ namespace boost {
             return detail::dissect_formatF<FinderT>(Finder);
         }
 
+        //! Join formatter
+        /*!
+            Constructs a \c join_formatter. Join formatter uses an other range to concatenate parameter 
+            with the range. The joining of parameter and the range is returned 
+            as a result
+
+            \param Other a range used to be concatenated with parameter
+            \return An instance of the \c join_formatter object.
+        */
+        template<typename RangeT>
+        inline detail::join_formatF<
+            iterator_range<
+                BOOST_STRING_TYPENAME range_const_iterator<RangeT>::type> >
+        join_formatter(const RangeT& Other)
+        {
+            return detail::join_formatF<
+                iterator_range<
+                    BOOST_STRING_TYPENAME range_const_iterator<RangeT>::type> >(::boost::as_literal(Other));
+        }
+
 
     } // namespace algorithm
 
@@ -112,6 +132,7 @@ namespace boost {
     using algorithm::identity_formatter;
     using algorithm::empty_formatter;
     using algorithm::dissect_formatter;
+    using algorithm::join_formatter;
 
 } // namespace boost
 

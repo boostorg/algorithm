@@ -16,6 +16,7 @@
 #include <boost/range/begin.hpp>
 #include <boost/range/end.hpp>
 #include <boost/range/const_iterator.hpp>
+#include <boost/range/join.hpp>
 
 #include <boost/algorithm/string/detail/util.hpp>
 
@@ -111,6 +112,28 @@ namespace boost {
                 FinderT m_Finder;
             };
 
+//  joint format functor ----------------------------------------------------//
+
+            // joint format functor
+            template<typename RangeT>
+            struct join_formatF
+            {
+            public:
+                // Construction
+                join_formatF(const RangeT& Other) :
+                    m_Other(Other) {}
+
+                template<typename Range2T>
+                inline joined_range<
+                    const Range2T, const RangeT>
+                operator()(const Range2T& Replace) const
+                {
+                    return ::boost::range::join(Replace, m_Other);
+                }
+
+            private:
+                RangeT m_Other;
+            };
 
         } // namespace detail
     } // namespace algorithm

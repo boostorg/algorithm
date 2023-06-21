@@ -22,6 +22,12 @@ test-suite algorithm/string
             : trim
         ]
       [ run 
+            intersperse_test.cpp unit_test_framework
+          : :
+            :
+            : intersperse
+        ]
+      [ run 
             conv_test.cpp unit_test_framework
           : :
             :
