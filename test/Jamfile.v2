@@ -42,6 +42,7 @@ alias unit_test_framework
      [ run ordered_test.cpp unit_test_framework        : : : : ordered_test ]
      [ run find_if_not_test1.cpp unit_test_framework   : : : : find_if_not_test1 ]
      [ run copy_if_test1.cpp unit_test_framework        : : : : copy_if_test1 ]
+     [ run move_if_test1.cpp unit_test_framework        : : : : move_if_test1 ]
      [ run copy_n_test1.cpp unit_test_framework       : : : : copy_n_test1 ]
      [ run iota_test1.cpp unit_test_framework          : : : : iota_test1 ]
 

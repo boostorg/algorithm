@@ -150,6 +150,23 @@ Copy all elements that satisfy the element predicate from the start of the input
 [endsect:Copy]
 
 
+[section:Move Variations on Move]
+[section:variations_on_move]
+
+[section:move_until                move_until                ]
+[*[^[link header.boost.algorithm.cxx11.move_if_hpp                   move_until]                  ] ]
+Move all the elements from the start of the input range to the output range until the predicate is satisfied
+[endsect:move_until]
+
+[section:move_while                move_while                ]
+[*[^[link header.boost.algorithm.cxx11.move_if_hpp                   move_while]                  ] ]
+Move all the elements from the start of the input range to the output range while the predicate is satisfied
+[endsect:move_while]
+
+[endsect:variations_on_move]
+[endsect:Move]
+
+
 [section:Misc Other Algorithms]
 
 [section:misc_inner_algorithms]
