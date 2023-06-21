@@ -34,7 +34,7 @@ Or maybe you don't need the elements to actually be sorted - you just want to tr
 ```
 
 
-Assume that instead of an "array of structures", you have a "struct of arrays"
+Assume that instead of an "array of structures", you have a "struct of arrays".
 ```
 struct AType {
 	Type0 key;
@@ -70,12 +70,20 @@ Sorting the first one is easy, because each set of fields (`key`, `value1`, `val
 
 The function `indirect_sort` returns a `vector<size_t>` containing the permutation necessary to put the input sequence into a sorted order. One version uses `std::less` to do the comparisons; the other lets the caller pass predicate to do the comparisons. 
 
+There is also a variant called `indirect_stable_sort`; it bears the same relation to `indirect_sort` that `std::stable_sort` does to `std::sort`.
+
 ```
 template <typename RAIterator>
 std::vector<size_t> indirect_sort (RAIterator first, RAIterator last);
 
 template <typename RAIterator, typename BinaryPredicate>
 std::vector<size_t> indirect_sort (RAIterator first, RAIterator last, BinaryPredicate pred);
+
+template <typename RAIterator>
+std::vector<size_t> indirect_stable_sort (RAIterator first, RAIterator last);
+
+template <typename RAIterator, typename BinaryPredicate>
+std::vector<size_t> indirect_stable_sort (RAIterator first, RAIterator last, BinaryPredicate pred);
 ```
 
 [heading Examples]
@@ -86,11 +94,13 @@ std::vector<size_t> indirect_sort (RAIterator first, RAIterator last, BinaryPred
 
 [heading Complexity]
 
-Both of the variants of `indirect_sort` run in ['O(N lg N)] time; they are not more (or less) efficient than `std::sort`. There is an extra layer of indirection on each comparison, but all off the swaps are done on values of type `size_t`
+Both of the variants of `indirect_sort` run in ['O(N lg N)] time; they are not more (or less) efficient than `std::sort`. There is an extra layer of indirection on each comparison, but all of the swaps are done on values of type `size_t`
 
 [heading Exception Safety]
 
 [heading Notes]
+
+In numpy, this algorithm is known as `argsort`.
 
 [endsect]
 
