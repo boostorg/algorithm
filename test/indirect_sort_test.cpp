@@ -78,7 +78,7 @@ void test_one_sort(Iter first, Iter last, Comp comp) {
 }
 
 
-void test_sort () {
+BOOST_AUTO_TEST_CASE(test_sort) {
     int num[] = { 1,3,5,7,9, 2, 4, 6, 8, 10 };
     const int sz = sizeof (num)/sizeof(num[0]);
     int       *first  = &num[0];
@@ -176,7 +176,7 @@ void test_one_stable_sort(Iter first, Iter last, Comp comp) {
 	BOOST_CHECK (boost::algorithm::is_sorted(v.begin(), v.end(), comp));
 }
 
-void test_stable_sort () {
+BOOST_AUTO_TEST_CASE(test_stable_sort) {
 	typedef MyPair<int, long>  Pair;
 	const int sz = 10;
 	Pair vals[sz];
@@ -248,7 +248,7 @@ void test_one_partial_sort(Iter first, Iter middle, Iter last, Comp comp) {
 }
 
 
-void test_partial_sort () {
+BOOST_AUTO_TEST_CASE(test_partial_sort) {
     int num[] = { 1,3,5,7,9, 2, 4, 6, 8, 10 };
     const int sz = sizeof (num)/sizeof(num[0]);
     int       *first  = &num[0];
@@ -323,7 +323,7 @@ void test_one_nth_element(Iter first, Iter nth, Iter last, Comp comp) {
 }
 
 
-void test_nth_element () {
+BOOST_AUTO_TEST_CASE(test_nth_element) {
     int num[] = { 1, 3, 5, 7, 9, 2, 4, 6, 8, 10, 1, 2, 3, 4, 5 };
     const int sz = sizeof (num)/sizeof(num[0]);
     int       *first  = &num[0];
@@ -346,12 +346,3 @@ void test_nth_element () {
 	test_one_nth_element(v.begin(), v.begin() + (sz / 2), v.end());
 	test_one_nth_element(v.begin(), v.begin() + (sz / 2), v.end(), std::greater<int>());
     }
-
-
-BOOST_AUTO_TEST_CASE( test_main )
-{
-  test_sort ();
-  test_stable_sort ();
-  test_partial_sort ();
-  test_nth_element ();
-}
