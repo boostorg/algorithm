@@ -43,10 +43,11 @@ typedef std::vector<size_t> Permutation;
 
                     // ===== sort =====
 
-/// \fn indirect_sort (RAIterator first, RAIterator last, Predicate p)
+/// \fn indirect_sort (RAIterator first, RAIterator last, Predicate pred)
 /// \returns a permutation of the elements in the range [first, last)
 ///     such that when the permutation is applied to the sequence,
-///     the result is sorted according to the predicate pred.
+///     the result is ordered as if 'std::sort(first, last, pred)'
+//      was called on the sequence.
 ///
 /// \param first  The start of the input sequence
 /// \param last   The end of the input sequence
@@ -64,7 +65,8 @@ Permutation indirect_sort (RAIterator first, RAIterator last, Pred pred) {
 /// \fn indirect_sort (RAIterator first, RAIterator last)
 /// \returns a permutation of the elements in the range [first, last)
 ///     such that when the permutation is applied to the sequence,
-///     the result is sorted in non-descending order.
+///     the result is ordered as if 'std::sort(first, last)'
+//      was called on the sequence.
 ///
 /// \param first  The start of the input sequence
 /// \param last   The end of the input sequence
@@ -77,10 +79,11 @@ Permutation indirect_sort (RAIterator first, RAIterator last) {
 
                     // ===== stable_sort =====
 
-/// \fn indirect_stable_sort (RAIterator first, RAIterator last, Predicate p)
+/// \fn indirect_stable_sort (RAIterator first, RAIterator last, Predicate pred)
 /// \returns a permutation of the elements in the range [first, last)
 ///     such that when the permutation is applied to the sequence,
-///     the result is sorted according to the predicate pred.
+///     the result is ordered as if 'std::stable_sort(first, last, pred)'
+//      was called on the sequence.
 ///
 /// \param first  The start of the input sequence
 /// \param last   The end of the input sequence
@@ -98,7 +101,8 @@ Permutation indirect_stable_sort (RAIterator first, RAIterator last, Pred pred) 
 /// \fn indirect_stable_sort (RAIterator first, RAIterator last)
 /// \returns a permutation of the elements in the range [first, last)
 ///     such that when the permutation is applied to the sequence,
-///     the result is sorted in non-descending order.
+///     the result is ordered as if 'std::stable_sort(first, last)'
+//      was called on the sequence.
 ///
 /// \param first  The start of the input sequence
 /// \param last   The end of the input sequence
@@ -111,12 +115,11 @@ Permutation indirect_stable_sort (RAIterator first, RAIterator last) {
 
                     // ===== partial_sort =====
 
-/// \fn indirect_partial_sort (RAIterator first, RAIterator last, Predicate p)
+/// \fn indirect_partial_sort (RAIterator first, RAIterator middle, RAIterator last, Predicate pred)
 /// \returns a permutation of the elements in the range [first, last)
 ///     such that when the permutation is applied to the sequence,
-///     the resulting range [first, middle) is sorted and the range [middle,last)
-///     consists of elements that are "larger" than then ones in [first, middle),
-///     according to the predicate pred.
+///     the result is ordered as if 'std::partial_sort(first, middle, last, pred)'
+//      was called on the sequence.
 ///
 /// \param first  The start of the input sequence
 /// \param middle The end of the range to be sorted
@@ -134,14 +137,14 @@ Permutation indirect_partial_sort (RAIterator first, RAIterator middle,
 	return ret;
 }
 
-/// \fn indirect_partial_sort (RAIterator first, RAIterator last)
+/// \fn indirect_partial_sort (RAIterator first, RAIterator middle, RAIterator last)
 /// \returns a permutation of the elements in the range [first, last)
 ///     such that when the permutation is applied to the sequence,
-///     the resulting range [first, middle) is sorted in non-descending order,
-///     and the range [middle,last) consists of elements that are larger than
-///     then ones in [first, middle).
+///     the result is ordered as if 'std::partial_sort(first, middle, last)'
+//      was called on the sequence.
 ///
 /// \param first  The start of the input sequence
+/// \param middle The end of the range to be sorted
 /// \param last   The end of the input sequence
 ///
 template <typename RAIterator>
@@ -152,10 +155,11 @@ Permutation indirect_partial_sort (RAIterator first, RAIterator middle, RAIterat
 
                     // ===== nth_element =====
 
-/// \fn indirect_nth_element (RAIterator first, RAIterator last, Predicate p)
+/// \fn indirect_nth_element (RAIterator first, RAIterator nth, RAIterator last, Predicate p)
 /// \returns a permutation of the elements in the range [first, last)
 ///     such that when the permutation is applied to the sequence,
-///     the result is sorted according to the predicate pred.
+///     the result is ordered as if 'std::nth_element(first, nth, last, p)'
+//      was called on the sequence.
 ///
 /// \param first  The start of the input sequence
 /// \param nth    The sort partition point in the input sequence
@@ -172,10 +176,11 @@ Permutation indirect_nth_element (RAIterator first, RAIterator nth,
 	return ret;
 }
 
-/// \fn indirect_nth_element (RAIterator first, RAIterator last)
+/// \fn indirect_nth_element (RAIterator first, RAIterator nth, RAIterator last)
 /// \returns a permutation of the elements in the range [first, last)
 ///     such that when the permutation is applied to the sequence,
-///     the result is sorted in non-descending order.
+///     the result is ordered as if 'std::nth_element(first, nth, last)'
+//      was called on the sequence.
 ///
 /// \param first  The start of the input sequence
 /// \param nth    The sort partition point in the input sequence
