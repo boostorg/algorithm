@@ -88,6 +88,10 @@ alias unit_test_framework
    
 # Apply_permutation tests
      [ run apply_permutation_test.cpp unit_test_framework    : : : : apply_permutation_test ]
+
+# Indirect_sort tests
+     [ run indirect_sort_test.cpp unit_test_framework    : : : : indirect_sort_test ]
+
 # Find tests
      [ run find_not_test.cpp unit_test_framework   : : : : find_not_test ]
      [ run find_backward_test.cpp unit_test_framework   : : : : find_backward_test ]
