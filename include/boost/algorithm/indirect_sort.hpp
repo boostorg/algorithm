@@ -18,6 +18,8 @@
 #include <functional>       // for std::less
 #include <vector>           // for std::vector
 
+#include <boost/algorithm/cxx11/iota.hpp>
+
 namespace boost { namespace algorithm {
 
 typedef std::vector<size_t> Permutation;
@@ -37,15 +39,15 @@ namespace detail {
 		Iter      iter_;
 	};
 
-	// Initialize a permutation
-	// it would be nice to use 'iota' here, but that call writes over
+	// Initialize a permutation of size 'size'. [ 0, 1, 2, ... size-1 ]
+	// Note: it would be nice to use 'iota' here, but that call writes over
 	// existing elements - not append them.  I don't want to initialize
 	// the elements of the permutation to zero, and then immediately
 	// overwrite them.
 	void init_permutation (Permutation &p, size_t size) {
 		p.reserve(size);
-		for (size_t i = 0; i < size; ++i)
-			p.push_back(i);
+		boost::algorithm::iota_n(
+		                    std::back_insert_iterator<Permutation>(p), size_t(0), size);
 	}
 }
 
