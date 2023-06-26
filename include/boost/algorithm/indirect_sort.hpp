@@ -18,9 +18,9 @@
 #include <functional>       // for std::less
 #include <vector>           // for std::vector
 
-#include <boost/algorithm/cxx11/iota.hpp>
-
 namespace boost { namespace algorithm {
+
+typedef std::vector<size_t> Permutation;
 
 namespace detail {
 
@@ -37,9 +37,17 @@ namespace detail {
 		Iter      iter_;
 	};
 
+	// Initialize a permutation
+	// it would be nice to use 'iota' here, but that call writes over
+	// existing elements - not append them.  I don't want to initialize
+	// the elements of the permutation to zero, and then immediately
+	// overwrite them.
+	void init_permutation (Permutation &p, size_t size) {
+		p.reserve(size);
+		for (size_t i = 0; i < size; ++i)
+			p.push_back(i);
+	}
 }
-
-typedef std::vector<size_t> Permutation;
 
                     // ===== sort =====
 
@@ -55,8 +63,9 @@ typedef std::vector<size_t> Permutation;
 ///
 template <typename RAIterator, typename Pred>
 Permutation indirect_sort (RAIterator first, RAIterator last, Pred pred) {
-	Permutation ret(std::distance(first, last));
-	boost::algorithm::iota(ret.begin(), ret.end(), size_t(0));
+
+	Permutation ret;
+	detail::init_permutation(ret, std::distance(first, last));
 	std::sort(ret.begin(), ret.end(), 
 	                  detail::indirect_predicate<Pred, RAIterator>(pred, first));
 	return ret;
@@ -91,8 +100,8 @@ Permutation indirect_sort (RAIterator first, RAIterator last) {
 ///
 template <typename RAIterator, typename Pred>
 Permutation indirect_stable_sort (RAIterator first, RAIterator last, Pred pred) {
-	Permutation ret(std::distance(first, last));
-	boost::algorithm::iota(ret.begin(), ret.end(), size_t(0));
+	Permutation ret;
+	detail::init_permutation(ret, std::distance(first, last));
 	std::stable_sort(ret.begin(), ret.end(), 
 	                  detail::indirect_predicate<Pred, RAIterator>(pred, first));
 	return ret;
@@ -129,9 +138,8 @@ Permutation indirect_stable_sort (RAIterator first, RAIterator last) {
 template <typename RAIterator, typename Pred>
 Permutation indirect_partial_sort (RAIterator first, RAIterator middle, 
                                    RAIterator last, Pred pred) {
-	Permutation ret(std::distance(first, last));
-	
-	boost::algorithm::iota(ret.begin(), ret.end(), size_t(0));
+	Permutation ret;
+	detail::init_permutation(ret, std::distance(first, last));
 	std::partial_sort(ret.begin(), ret.begin() + std::distance(first, middle), ret.end(), 
 	                  detail::indirect_predicate<Pred, RAIterator>(pred, first));
 	return ret;
@@ -169,8 +177,8 @@ Permutation indirect_partial_sort (RAIterator first, RAIterator middle, RAIterat
 template <typename RAIterator, typename Pred>
 Permutation indirect_nth_element (RAIterator first, RAIterator nth,
                                   RAIterator last, Pred pred) {
-	Permutation ret(std::distance(first, last));
-	boost::algorithm::iota(ret.begin(), ret.end(), size_t(0));
+	Permutation ret;
+	detail::init_permutation(ret, std::distance(first, last));
 	std::nth_element(ret.begin(), ret.begin() + std::distance(first, nth), ret.end(), 
 	                  detail::indirect_predicate<Pred, RAIterator>(pred, first));
 	return ret;
