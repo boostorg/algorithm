@@ -141,6 +141,7 @@ void classification_test()
     
 #ifndef BOOST_NO_CXX11
     TEST_CLASS( is_blank(), " \t", "\t \n\r" );
+    TEST_CLASS( !is_blank(), "abc\n\v\f\r", "a x\t" );
 #endif
     
     TEST_CLASS( !is_classified(std::ctype_base::space), "...", "..\n\r\t " );
