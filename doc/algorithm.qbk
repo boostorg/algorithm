@@ -253,6 +253,16 @@ Write a sequence of n increasing values to an output iterator
 Raise a value to an integral power ([^constexpr] since C++14)
 [endsect:power]
 
+[section:iterate                   iterate                   ]
+[*[^[link header.boost.algorithm.iterate_hpp                         iterate]                     ] ]
+Store the result of a unary function to each element of a range. This is a generalization of iota.
+[endsect:iterate]
+
+[section:iterate                   iterate                   ]
+[*[^[link header.boost.algorithm.iterate_hpp                         iterate]                     ] ]
+Store the result of a unary function to n element of a range. This is a generalization of iota.
+[endsect:iterate]
+
 [endsect:misc_inner_algorithms]
 
 [endsect:Misc]

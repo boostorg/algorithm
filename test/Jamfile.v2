@@ -41,8 +41,8 @@ alias unit_test_framework
 
      [ run ordered_test.cpp unit_test_framework        : : : : ordered_test ]
      [ run find_if_not_test1.cpp unit_test_framework   : : : : find_if_not_test1 ]
-     [ run copy_if_test1.cpp unit_test_framework        : : : : copy_if_test1 ]
-     [ run copy_n_test1.cpp unit_test_framework       : : : : copy_n_test1 ]
+     [ run copy_if_test1.cpp unit_test_framework       : : : : copy_if_test1 ]
+     [ run copy_n_test1.cpp unit_test_framework        : : : : copy_n_test1 ]
      [ run iota_test1.cpp unit_test_framework          : : : : iota_test1 ]
 
      [ run is_permutation_test1.cpp unit_test_framework         : : : : is_permutation_test1 ]
@@ -89,8 +89,10 @@ alias unit_test_framework
 # Apply_permutation tests
      [ run apply_permutation_test.cpp unit_test_framework    : : : : apply_permutation_test ]
 # Find tests
-     [ run find_not_test.cpp unit_test_framework   : : : : find_not_test ]
+     [ run find_not_test.cpp unit_test_framework        : : : : find_not_test ]
      [ run find_backward_test.cpp unit_test_framework   : : : : find_backward_test ]
+# Iterate tests
+     [ run iterate_test.cpp unit_test_framework : : : : iterate_test ]
    ;
 }
 
