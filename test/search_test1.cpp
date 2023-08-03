@@ -32,7 +32,7 @@ namespace {
 
 //  Check using iterators
     template<typename Container>
-    void check_one_iter ( const Container &haystack, const std::string &needle, int expected ) {
+    void check_one_iter ( const Container &haystack, const std::string &needle, std::ptrdiff_t expected ) {
         typedef typename Container::const_iterator iter_type;
         typedef typename std::pair<iter_type, iter_type> ret_type;
         typedef std::string::const_iterator pattern_type;
@@ -53,7 +53,7 @@ namespace {
 //         iter_type it1r = ret1r.first;
 //         iter_type it2  = ret2.first;
 //         iter_type it3  = ret3.first;
-        const int dist = ret1.first == hEnd ? -1 : std::distance ( hBeg, ret1.first );
+        const std::ptrdiff_t dist = ret1.first == hEnd ? -1 : std::distance ( hBeg, ret1.first );
 
         std::cout << "(Iterators) Pattern is " << needle.length () << ", haysstack is " << haystack.length () << " chars long; " << std::endl;
         try {
@@ -97,7 +97,7 @@ namespace {
 //  Check using pointers
 //    We're assuming that the container implements contiguous storage here.
     template<typename Container>
-    void check_one_pointer ( const Container &haystack, const std::string &needle, int expected ) {
+    void check_one_pointer ( const Container &haystack, const std::string &needle, std::ptrdiff_t expected ) {
         typedef const typename Container::value_type *ptr_type;
         typedef typename std::pair<ptr_type, ptr_type> ret_type;
 
@@ -110,7 +110,7 @@ namespace {
         ret_type ret1 = ba::boyer_moore_search          (hBeg, hEnd, nBeg, nEnd);
         ret_type ret2 = ba::boyer_moore_horspool_search (hBeg, hEnd, nBeg, nEnd);
         ret_type ret3 = ba::knuth_morris_pratt_search   (hBeg, hEnd, nBeg, nEnd);
-        const int dist = ret1.first == hEnd ? -1 : std::distance ( hBeg, ret1.first );
+        const std::ptrdiff_t dist = ret1.first == hEnd ? -1 : std::distance ( hBeg, ret1.first );
 
         std::cout << "(Pointers) Pattern is " << needle.length () << ", haysstack is " << haystack.length () << " chars long; " << std::endl;
         try {
@@ -147,7 +147,7 @@ namespace {
 
 //  Check using objects
     template<typename Container>
-    void check_one_object ( const Container &haystack, const std::string &needle, int expected ) {
+    void check_one_object ( const Container &haystack, const std::string &needle, std::ptrdiff_t expected ) {
         typedef typename Container::const_iterator iter_type;
         typedef typename std::pair<iter_type, iter_type> ret_type;
         typedef std::string::const_iterator pattern_type;
@@ -169,7 +169,7 @@ namespace {
        ret_type retr1r = bm_r         (haystack);
         ret_type ret2   = bmh          (hBeg, hEnd);
         ret_type ret3   = kmp          (hBeg, hEnd);
-        const int dist  = ret1.first == hEnd ? -1 : std::distance ( hBeg, ret1.first );
+        const std::ptrdiff_t dist  = ret1.first == hEnd ? -1 : std::distance ( hBeg, ret1.first );
 
         std::cout << "(Objects) Pattern is " << needle.length () << ", haysstack is " << haystack.length () << " chars long; " << std::endl;
         try {
@@ -224,7 +224,7 @@ namespace {
 
 
     template<typename Container>
-    void check_one ( const Container &haystack, const std::string &needle, int expected ) {
+    void check_one ( const Container &haystack, const std::string &needle, std::ptrdiff_t expected ) {
         check_one_iter ( haystack, needle, expected );
         check_one_pointer ( haystack, needle, expected );
         check_one_object ( haystack, needle, expected );
