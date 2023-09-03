@@ -10,6 +10,8 @@
 #include <vector>
 #include <functional>
 #include <numeric>
+#include <algorithm>
+#include <iterator>
 
 #include <boost/config.hpp>
 #include <boost/algorithm/cxx11/iota.hpp>
@@ -27,13 +29,13 @@ int triangle(int n) { return n*(n+1)/2; }
 template <class _Tp>
 struct identity
 {
-    const _Tp& operator()(const _Tp& __x) const { return __x;}
+    BOOST_CXX14_CONSTEXPR const _Tp& operator()(const _Tp& __x) const { return __x;}
 };
 
 
 template <class Iter1, class BOp, class UOp, class T, class Iter2>
 void
-test(Iter1 first, Iter1 last, BOp bop, UOp uop, T init, Iter2 rFirst, Iter2 rLast)
+test_single_input(Iter1 first, Iter1 last, BOp bop, UOp uop, T init, Iter2 rFirst, Iter2 rLast)
 {
     std::vector<typename std::iterator_traits<Iter1>::value_type> v;
 //  Test not in-place
@@ -49,12 +51,42 @@ test(Iter1 first, Iter1 last, BOp bop, UOp uop, T init, Iter2 rFirst, Iter2 rLas
     BOOST_CHECK(std::equal(v.begin(), v.end(), rFirst));
 }
 
+template <class Iter1, class Iter2, class ScanOperation, class TransformOperation, class T, class Iter3>
+void
+test_dual_input(Iter1 first1, Iter1 last1,
+                Iter2 first2,
+                ScanOperation scan_op, TransformOperation trans_op,
+                T init, Iter3 expected_first, Iter3 expected_last)
+{
+    { // Test not in-place
+        std::vector<typename std::iterator_traits<Iter3>::value_type> output;
+        ba::transform_exclusive_scan(first1, last1, first2, std::back_inserter(output), init, scan_op, trans_op);
+        const typename std::iterator_traits<Iter3>::difference_type result_size = std::distance(expected_first, expected_last);
+        BOOST_CHECK(result_size >= 0);
+        BOOST_CHECK(static_cast<std::size_t>(result_size) == output.size());
+        BOOST_CHECK(std::equal(output.begin(), output.end(), expected_first));
+    }
+    { // Test in-place
+        std::vector<typename std::iterator_traits<Iter3>::value_type> v(first1, last1);
+        ba::transform_exclusive_scan(v.begin(), v.end(), first2, v.begin(), init, scan_op, trans_op);
+        const typename std::iterator_traits<Iter3>::difference_type result_size = std::distance(expected_first, expected_last);
+        BOOST_CHECK(result_size >= 0);
+        BOOST_CHECK(static_cast<std::size_t>(result_size) == v.size());
+        BOOST_CHECK(std::equal(v.begin(), v.end(), expected_first));
+    }
+}
 
 template <class Iter>
 void
 test()
 {
-          int ia[]     = { 1,  3,  5,   7,   9};
+    int ia1[] = { 1, 3, 5, 7,  9};
+    int ia2[] = { 2, 4, 6, 8, 10};
+
+    const unsigned sa = sizeof(ia1) / sizeof(ia1[0]);
+    BOOST_CHECK(sa == sizeof(ia2) / sizeof(ia2[0]));  // just to be sure
+
+    // single input results
     const int pResI0[] = { 0,  1,  4,   9,  16};        // with identity
     const int mResI0[] = { 0,  0,  0,   0,   0};
     const int pResN0[] = { 0, -1, -4,  -9, -16};        // with negate
@@ -63,7 +95,7 @@ test()
     const int mResI2[] = { 2,  2,  6,  30, 210};
     const int pResN2[] = { 2,  1, -2,  -7, -14};        // with negate
     const int mResN2[] = { 2, -2,  6, -30, 210};
-    const unsigned sa = sizeof(ia) / sizeof(ia[0]);
+
     BOOST_CHECK(sa == sizeof(pResI0) / sizeof(pResI0[0]));       // just to be sure
     BOOST_CHECK(sa == sizeof(mResI0) / sizeof(mResI0[0]));       // just to be sure
     BOOST_CHECK(sa == sizeof(pResN0) / sizeof(pResN0[0]));       // just to be sure
@@ -73,15 +105,43 @@ test()
     BOOST_CHECK(sa == sizeof(pResN2) / sizeof(pResN2[0]));       // just to be sure
     BOOST_CHECK(sa == sizeof(mResN2) / sizeof(mResN2[0]));       // just to be sure
 
+    // dual input results
+    const int pResP0[] = {  0,   3,  10,  21,  36};
+    const int pResP2[] = {  2,   5,  12,  23,  38};
+    const int pResM0[] = {  0,  -1,  -2,  -3,  -4};
+    const int pResM2[] = {  2,   1,   0,  -1,  -2};
+    const int mResP0[] = {  0,  -3, -10, -21, -36};
+    const int mResP2[] = {  2,  -1,  -8, -19, -34};
+    const int mResM0[] = {  0,   1,   2,   3,   4};
+    const int mResM2[] = {  2,   3,   4,   5,   6};
+
+    BOOST_CHECK(sa == sizeof(pResP0) / sizeof(pResP0[0]));  // just to be sure
+    BOOST_CHECK(sa == sizeof(pResP2) / sizeof(pResP2[0]));  // just to be sure
+    BOOST_CHECK(sa == sizeof(pResM0) / sizeof(pResM0[0]));  // just to be sure
+    BOOST_CHECK(sa == sizeof(pResM2) / sizeof(pResM2[0]));  // just to be sure
+    BOOST_CHECK(sa == sizeof(mResP0) / sizeof(mResP0[0]));  // just to be sure
+    BOOST_CHECK(sa == sizeof(mResP2) / sizeof(mResP2[0]));  // just to be sure
+    BOOST_CHECK(sa == sizeof(mResM0) / sizeof(mResM0[0]));  // just to be sure
+    BOOST_CHECK(sa == sizeof(mResM2) / sizeof(mResM2[0]));  // just to be sure
+
     for (unsigned int i = 0; i < sa; ++i ) {
-        test(Iter(ia), Iter(ia + i), std::plus<int>(),       identity<int>(),    0, pResI0, pResI0 + i);
-        test(Iter(ia), Iter(ia + i), std::multiplies<int>(), identity<int>(),    0, mResI0, mResI0 + i);
-        test(Iter(ia), Iter(ia + i), std::plus<int>(),       std::negate<int>(), 0, pResN0, pResN0 + i);
-        test(Iter(ia), Iter(ia + i), std::multiplies<int>(), std::negate<int>(), 0, mResN0, mResN0 + i);
-        test(Iter(ia), Iter(ia + i), std::plus<int>(),       identity<int>(),    2, pResI2, pResI2 + i);
-        test(Iter(ia), Iter(ia + i), std::multiplies<int>(), identity<int>(),    2, mResI2, mResI2 + i);
-        test(Iter(ia), Iter(ia + i), std::plus<int>(),       std::negate<int>(), 2, pResN2, pResN2 + i);
-        test(Iter(ia), Iter(ia + i), std::multiplies<int>(), std::negate<int>(), 2, mResN2, mResN2 + i);
+        test_single_input(Iter(ia1), Iter(ia1 + i), std::plus<int>(),       identity<int>(),    0, pResI0, pResI0 + i);
+        test_single_input(Iter(ia1), Iter(ia1 + i), std::multiplies<int>(), identity<int>(),    0, mResI0, mResI0 + i);
+        test_single_input(Iter(ia1), Iter(ia1 + i), std::plus<int>(),       std::negate<int>(), 0, pResN0, pResN0 + i);
+        test_single_input(Iter(ia1), Iter(ia1 + i), std::multiplies<int>(), std::negate<int>(), 0, mResN0, mResN0 + i);
+        test_single_input(Iter(ia1), Iter(ia1 + i), std::plus<int>(),       identity<int>(),    2, pResI2, pResI2 + i);
+        test_single_input(Iter(ia1), Iter(ia1 + i), std::multiplies<int>(), identity<int>(),    2, mResI2, mResI2 + i);
+        test_single_input(Iter(ia1), Iter(ia1 + i), std::plus<int>(),       std::negate<int>(), 2, pResN2, pResN2 + i);
+        test_single_input(Iter(ia1), Iter(ia1 + i), std::multiplies<int>(), std::negate<int>(), 2, mResN2, mResN2 + i);
+
+        test_dual_input(Iter(ia1), Iter(ia1 + i), Iter(ia2), std::plus<int>(), std::plus<int>(), 0, pResP0, pResP0 + i);
+        test_dual_input(Iter(ia1), Iter(ia1 + i), Iter(ia2), std::plus<int>(), std::plus<int>(), 2, pResP2, pResP2 + i);
+        test_dual_input(Iter(ia1), Iter(ia1 + i), Iter(ia2), std::plus<int>(), std::minus<int>(), 0, pResM0, pResM0 + i);
+        test_dual_input(Iter(ia1), Iter(ia1 + i), Iter(ia2), std::plus<int>(), std::minus<int>(), 2, pResM2, pResM2 + i);
+        test_dual_input(Iter(ia1), Iter(ia1 + i), Iter(ia2), std::minus<int>(), std::plus<int>(), 0, mResP0, mResP0 + i);
+        test_dual_input(Iter(ia1), Iter(ia1 + i), Iter(ia2), std::minus<int>(), std::plus<int>(), 2, mResP2, mResP2 + i);
+        test_dual_input(Iter(ia1), Iter(ia1 + i), Iter(ia2), std::minus<int>(), std::minus<int>(), 0, mResM0, mResM0 + i);
+        test_dual_input(Iter(ia1), Iter(ia1 + i), Iter(ia2), std::minus<int>(), std::minus<int>(), 2, mResM2, mResM2 + i);
         }
 }
 
@@ -118,6 +178,38 @@ void basic_tests()
     }
 }
 
+BOOST_CXX14_CONSTEXPR bool constexpr_transform_exclusive_scan_tests() {
+    typedef random_access_iterator<int*> iterator_t;
+
+    const int NUM_ELEMENTS = 3;
+
+    bool status = true;
+    { // Single input range
+        int input[NUM_ELEMENTS] = {3, 3, 3};
+        int output[NUM_ELEMENTS] = {0, 0, 0};
+        ba::transform_exclusive_scan(
+            iterator_t(input), iterator_t(input + NUM_ELEMENTS),
+            iterator_t(output),
+            30,
+            std::plus<int>(), identity<int>());
+        for (size_t i = 0; i < NUM_ELEMENTS; ++i)
+            status &= (output[i] == 30 + (int)(i * 3));
+    }
+    { // Dual input ranges
+        int input1[NUM_ELEMENTS] = {3, 3, 3};
+        int input2[NUM_ELEMENTS] = {1, 1, 1};
+        int output[NUM_ELEMENTS] = {0, 0, 0};
+        ba::transform_exclusive_scan(
+            iterator_t(input1), iterator_t(input1 + NUM_ELEMENTS),
+            iterator_t(input2),
+            iterator_t(output),
+            30,
+            std::plus<int>(), std::minus<int>());
+        for (size_t i = 0; i < NUM_ELEMENTS; ++i)
+            status &= (output[i] == 30 + (int)(i * 2));
+    }
+    return status;
+}
 
 void test_transform_exclusive_scan_init()
 {
@@ -129,6 +221,11 @@ void test_transform_exclusive_scan_init()
     test<random_access_iterator<const int*> >();
     test<const int*>();
     test<      int*>();
+
+    {
+        BOOST_CXX14_CONSTEXPR bool status = constexpr_transform_exclusive_scan_tests();
+        BOOST_CHECK(status == true);
+    }
 }
 
 BOOST_AUTO_TEST_CASE( test_main )
