@@ -11,7 +11,8 @@
         ],
         "maintainers": [
             "Marshall Clow <marshall -at- idio.com>"
-        ]
+        ],
+        "cxxstd": "03"
     },
     {
         "key": "algorithm/minmax",
@@ -26,7 +27,8 @@
         ],
         "maintainers": [
             "Marshall Clow <marshall -at- idio.com>"
-        ]
+        ],
+        "cxxstd": "03"
     },
     {
         "key": "algorithm/string",
@@ -42,6 +44,7 @@
         ],
         "maintainers": [
             "Marshall Clow <marshall -at- idio.com>"
-        ]
+        ],
+        "cxxstd": "03"
     }
 ]

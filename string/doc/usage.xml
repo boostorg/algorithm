@@ -265,7 +265,7 @@
         <title>Find Iterator</title>
 
         <para>
-            An extension to find algorithms it the Find Iterator. Instead of searching for just a one part of a string, 
+            An extension to find algorithms is the Find Iterator. Instead of searching for just a one part of a string, 
             the find iterator allows us to iterate over the substrings matching the specified criteria.
             This facility is using the <link linkend="string_algo.finder_concept">Finder</link> to incrementally
             search the string. 

@@ -25,7 +25,7 @@ void test_short_input1 () {
     std::string s;
     
     try { ba::unhex ( std::string ( "A" ), std::back_inserter(s)); }
-    catch ( const std::exception &ex ) { return; }
+    catch ( const std::exception & ) { return; }
     BOOST_TEST_MESSAGE ( "Failed to catch std::exception in test_short_input1" );
     BOOST_CHECK ( false );
     }
@@ -34,7 +34,7 @@ void test_short_input2 () {
     std::string s;
     
     try { ba::unhex ( std::string ( "A" ), std::back_inserter(s)); }
-    catch ( const ba::hex_decode_error &ex ) { return; }
+    catch ( const ba::hex_decode_error & ) { return; }
     BOOST_TEST_MESSAGE ( "Failed to catch ba::hex_decode_error in test_short_input2" );
     BOOST_CHECK ( false );
     }
@@ -43,7 +43,7 @@ void test_short_input3 () {
     std::string s;
     
     try { ba::unhex ( std::string ( "A" ), std::back_inserter(s)); }
-    catch ( const ba::not_enough_input &ex ) { return; }
+    catch ( const ba::not_enough_input & ) { return; }
     BOOST_TEST_MESSAGE ( "Failed to catch ba::not_enough_input in test_short_input3" );
     BOOST_CHECK ( false );
     }
@@ -53,8 +53,8 @@ void test_short_input4 () {
     std::string s;
     
     try { ba::unhex ( std::string ( "A" ), std::back_inserter(s)); }
-    catch ( const ba::non_hex_input &ex ) { BOOST_CHECK ( false ); }
-    catch ( const ba::not_enough_input &ex ) { return; }
+    catch ( const ba::non_hex_input & ) { BOOST_CHECK ( false ); }
+    catch ( const ba::not_enough_input & ) { return; }
     catch ( ... ) { BOOST_CHECK ( false ); }
     BOOST_CHECK ( false );
     }
@@ -64,8 +64,8 @@ void test_short_input5 () {
     std::string s;
     
     try { ba::unhex ( "A", std::back_inserter(s)); }
-    catch ( const ba::non_hex_input &ex ) { BOOST_CHECK ( false ); }
-    catch ( const ba::not_enough_input &ex ) { return; }
+    catch ( const ba::non_hex_input & ) { BOOST_CHECK ( false ); }
+    catch ( const ba::not_enough_input & ) { return; }
     catch ( ... ) { BOOST_CHECK ( false ); }
     BOOST_CHECK ( false );
     }
@@ -125,8 +125,8 @@ void test_nonhex_input4 () {
     std::string s;
     
     try { ba::unhex ( "P1234FA1234", std::back_inserter(s)); }
-    catch ( const ba::not_enough_input &ex ) { BOOST_CHECK ( false ); }
-    catch ( const ba::non_hex_input &ex ) { return; }
+    catch ( const ba::not_enough_input & ) { BOOST_CHECK ( false ); }
+    catch ( const ba::non_hex_input & ) { return; }
     catch ( ... ) { BOOST_CHECK ( false ); }
     BOOST_CHECK ( false );
     }
