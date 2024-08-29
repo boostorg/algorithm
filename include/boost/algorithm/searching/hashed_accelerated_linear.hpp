@@ -62,7 +62,8 @@ public:
                 break;
             do   // this loop is hot for data read
             {
-                corpus_difference_type const increment = skip[Trait::hash(corpus_last + k)];
+                auto foo = Trait::hash(corpus_last + k);
+                corpus_difference_type increment = skip[foo];
                 k += increment;
             }
             while (k < 0);
@@ -114,7 +115,7 @@ public:
                     }
             }
         }
-        return make_pair(corpus_last, corpus_last);
+        return {corpus_last, corpus_last};
     }
 
 
@@ -122,6 +123,7 @@ public:
     {
         BOOST_ASSERT(pattern_length > 0);
         pattern_difference_type j = 0, t = -1;
+        next_.reserve(pattern_length);
         next_.push_back(-1);
         while (j < pattern_length - 1)
         {
@@ -149,6 +151,7 @@ public:
     hashed_accelerated_linear(PatIter pat_first, PatIter pat_last)
       : pat_first{pat_first}, pat_last{pat_last}, pattern_length{pat_last - pat_first}
     {
+        // TODO: These could be done in parallel, but is it worth starting a new thread for?
         compute_next();
         compute_skip();
     }

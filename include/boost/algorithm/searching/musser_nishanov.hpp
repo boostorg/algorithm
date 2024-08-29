@@ -86,9 +86,8 @@ typename enable_if<
     boost::variant2::variant<HAL, AL>
     select_searcher(PatIter first, PatIter last) const
     {
-        auto const pattern_length = std::distance(first, last);
-        auto const fall_back = pattern_length < Trait::suffix_size
-                            || pattern_length == 1;
+        auto pattern_length = std::distance(first, last);
+        auto fall_back = pattern_length < Trait::suffix_size || pattern_length == 1;
         return fall_back ? boost::variant2::variant<HAL, AL>{AL(first, last)}
                          : boost::variant2::variant<HAL, AL>{HAL(first, last)};
     }
