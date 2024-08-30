@@ -47,7 +47,8 @@ template <typename PatIter, typename CorpusIter, typename Trait>
 class musser_nishanov<PatIter, CorpusIter, Trait, 
 typename disable_if<
     typename boost::mpl::and_<
-        boost::is_base_of<std::random_access_iterator_tag, typename std::iterator_traits<CorpusIter>::iterator_category>,
+        boost::is_base_of<std::random_access_iterator_tag,
+                          typename std::iterator_traits<CorpusIter>::iterator_category>,
         boost::mpl::bool_<Trait::suffix_size>
     >::type 
 >::type>
@@ -73,23 +74,25 @@ template <typename PatIter, typename CorpusIter, typename Trait>
 class musser_nishanov<PatIter, CorpusIter, Trait, 
 typename enable_if<
     typename boost::mpl::and_<
-        boost::is_base_of<std::random_access_iterator_tag, typename std::iterator_traits<CorpusIter>::iterator_category>,
+        boost::is_base_of<std::random_access_iterator_tag,
+                          typename std::iterator_traits<CorpusIter>::iterator_category>,
         boost::mpl::bool_<Trait::suffix_size> 
     >::type 
 >::type>
 {
     using HAL = boost::algorithm::hashed_accelerated_linear<PatIter, CorpusIter, Trait>;
     using AL = boost::algorithm::accelerated_linear<PatIter, CorpusIter>;
+    using SearcherVariant = boost::variant2::variant<HAL, AL>;
 
-    boost::variant2::variant<HAL, AL> searcher;
+    SearcherVariant searcher;
 
-    boost::variant2::variant<HAL, AL>
+    SearcherVariant
     select_searcher(PatIter first, PatIter last) const
     {
         auto pattern_length = std::distance(first, last);
         auto fall_back = pattern_length < Trait::suffix_size || pattern_length == 1;
-        return fall_back ? boost::variant2::variant<HAL, AL>{AL(first, last)}
-                         : boost::variant2::variant<HAL, AL>{HAL(first, last)};
+        return fall_back ? SearcherVariant{AL(first, last)}
+                         : SearcherVariant{HAL(first, last)};
     }
 
 public:
@@ -136,7 +139,8 @@ musser_nishanov_search(CorpusIter corpus_first, CorpusIter corpus_last,
 template <typename patIter, typename CorpusRange>
 typename boost::disable_if_c<
     boost::is_same<CorpusRange, patIter>::value, 
-    std::pair<typename boost::range_iterator<CorpusRange>::type, typename boost::range_iterator<CorpusRange>::type> >
+    std::pair<typename boost::range_iterator<CorpusRange>::type,
+              typename boost::range_iterator<CorpusRange>::type> >
 ::type
 musser_nishanov_search(CorpusRange &corpus, patIter pat_first, patIter pat_last)
 {
@@ -147,7 +151,8 @@ musser_nishanov_search(CorpusRange &corpus, patIter pat_first, patIter pat_last)
 
 
 template <typename PatternRange, typename CorpusRange>
-std::pair<typename boost::range_iterator<CorpusRange>::type, typename boost::range_iterator<CorpusRange>::type>
+std::pair<typename boost::range_iterator<CorpusRange>::type,
+          typename boost::range_iterator<CorpusRange>::type>
 musser_nishanov_search(CorpusRange &corpus, const PatternRange &pattern)
 {
     typedef typename boost::range_iterator<const PatternRange>::type pattern_iterator;
@@ -168,7 +173,8 @@ make_musser_nishanov(const Range &r) {
 
 // This overload permits specification of the corpus iterator type.
 template <typename PatternRange, typename CorpusRange>
-musser_nishanov<typename boost::range_iterator<const PatternRange>::type, typename boost::range_iterator<const CorpusRange>::type>
+musser_nishanov<typename boost::range_iterator<const PatternRange>::type,
+                typename boost::range_iterator<const CorpusRange>::type>
 make_musser_nishanov(const PatternRange &r, const CorpusRange &) {
     typedef typename boost::range_iterator<const PatternRange>::type pattern_iterator;
     typedef typename boost::range_iterator<const CorpusRange>::type corpus_iterator;
@@ -178,7 +184,8 @@ make_musser_nishanov(const PatternRange &r, const CorpusRange &) {
 
 // This overload permits specification of corpus iterator and search trait class.
 template <typename PatternRange, typename CorpusRange, typename Trait>
-musser_nishanov<typename boost::range_iterator<const PatternRange>::type, typename boost::range_iterator<const CorpusRange>::type>
+musser_nishanov<typename boost::range_iterator<const PatternRange>::type,
+                typename boost::range_iterator<const CorpusRange>::type>
 make_musser_nishanov(const PatternRange &r, const CorpusRange &) {
     typedef typename boost::range_iterator<const PatternRange>::type pattern_iterator;
     typedef typename boost::range_iterator<const CorpusRange>::type corpus_iterator;

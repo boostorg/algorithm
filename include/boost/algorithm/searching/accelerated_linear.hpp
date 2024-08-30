@@ -41,10 +41,11 @@ protected:
     pattern_difference_type pattern_length;
 
 private:
-    void compute_next() BOOST_NOEXCEPT
+    void compute_next()
     {
         BOOST_ASSERT(pattern_length > 0);
         pattern_difference_type j = 0, t = -1;
+        next_.reserve(pattern_length);
         next_.push_back(-1);
         while (j < pattern_length - 1)
         {
@@ -62,10 +63,7 @@ public:
         pattern_length(std::distance(pat_first, pat_last))
     {
         if (pattern_length > 0)
-        {
-            next_.reserve(pattern_length);
             compute_next();
-        }
     }
 
     std::pair<CorpusIter, CorpusIter>
@@ -142,7 +140,7 @@ public:
     }
 
     template <typename Range>
-    std::pair<CorpusIter, CorpusIter> operator()(const Range &corpus) const
+    std::pair<CorpusIter, CorpusIter> operator()(Range const &corpus) const
     {
         return (*this)(boost::begin(corpus), boost::end(corpus));
     }
