@@ -50,62 +50,58 @@ public:
         // NOTE: This assignment requires the skip table to be mutable or copied into the
         // function each time.
         skip_[Trait::hash(pat_first + pattern_length - 1)] = corpus_length + 1;
-        corpus_difference_type k = -corpus_length;
         for (;;)
         {
-            k += pattern_length - 1;
-            if (k >= 0)
+            corpus_first += pattern_length - 1;
+            if (corpus_first >= corpus_last)
                 break;
             do   // this loop is hot for data read
             {
-                auto foo = Trait::hash(corpus_last + k);
+                auto foo = Trait::hash(corpus_first);
                 corpus_difference_type increment = skip_[foo];
-                k += increment;
+                corpus_first += increment;
             }
-            while (k < 0);
-            if (k < pattern_length)
+            while (corpus_first < corpus_last);
+            if (corpus_first - corpus_last < pattern_length)
                 return make_pair(corpus_last, corpus_last);
-            k -= adjustment;
+            corpus_first -= adjustment;
 
-            BOOST_ASSERT(k < 0);
-            if (corpus_last[k] != pat_first[0])
-                k += mismatch_shift;
+            BOOST_ASSERT(corpus_first < corpus_last);
+            if (*corpus_first != pat_first[0])
+                corpus_first += mismatch_shift;
             else
             {
                 pattern_difference_type j = 1;
                 for (;;)
                 {
-                    ++k;
-                    if (corpus_last[k] != pat_first[j])
+                    ++corpus_first;
+                    if (*corpus_first != pat_first[j])
                         break;
                     ++j;
                     if (j == pattern_length)
-                        return std::make_pair(corpus_last + k - pattern_length + 1, corpus_last + k + 1);
+                        return std::make_pair(corpus_first - pattern_length + 1, corpus_first + 1);
                 }
 
                 if (mismatch_shift > j)
-                    k += mismatch_shift - j;
+                    corpus_first += mismatch_shift - j;
                 else
-
                     for (;;)
                     {
                         j = next_[j];
                         if (j < 0)
                         {
-                            ++k;
+                            ++corpus_first;
                             break;
                         }
                         if (j == 0)
                             break;
-                        while (corpus_last[k] == pat_first[j])
+                        while (*corpus_first == pat_first[j])
                         {
-                            ++k;
+                            ++corpus_first;
                             ++j;
                             if (j == pattern_length)
-                            {
-                                return make_pair(corpus_last + k - pattern_length, corpus_last + k);
-                            }
-                            if (k == 0)
+                                return make_pair(corpus_first - pattern_length, corpus_first);
+                            if (corpus_first == corpus_last)
                                 return make_pair(corpus_last, corpus_last);
                         }
                     }
