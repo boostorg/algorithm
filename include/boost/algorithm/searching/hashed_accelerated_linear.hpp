@@ -36,13 +36,9 @@ private:
     corpus_difference_type mismatch_shift;
 
 public:
-    // This is the real HAL algorithm.
-    template <typename I>
     std::pair<CorpusIter, CorpusIter>
-    HAL(CorpusIter corpus_first, CorpusIter corpus_last, I skip) const
+    operator()(CorpusIter corpus_first, CorpusIter corpus_last) const
     {
-        BOOST_CONCEPT_ASSERT((boost::Mutable_RandomAccessIterator<I>));
-
         BOOST_ASSERT(pat_first != pat_last);
         BOOST_ASSERT(std::distance(pat_first, pat_last) == pattern_length);
         BOOST_ASSERT(size_t(pattern_length) == next_.size());
@@ -51,9 +47,9 @@ public:
 
         corpus_difference_type const corpus_length = corpus_last - corpus_first;
         corpus_difference_type const adjustment = corpus_length + pattern_length;
-        // NOTE: This assignment requires the skip iterator to be mutable, and
-        // the implementation would be greatly simplified if a way around it could be found.
-        skip[Trait::hash(pat_first + pattern_length - 1)] = corpus_length + 1;
+        // NOTE: This assignment requires the skip table to be mutable or copied into the
+        // function each time.
+        skip_[Trait::hash(pat_first + pattern_length - 1)] = corpus_length + 1;
         corpus_difference_type k = -corpus_length;
         for (;;)
         {
@@ -63,7 +59,7 @@ public:
             do   // this loop is hot for data read
             {
                 auto foo = Trait::hash(corpus_last + k);
-                corpus_difference_type increment = skip[foo];
+                corpus_difference_type increment = skip_[foo];
                 k += increment;
             }
             while (k < 0);
@@ -154,12 +150,6 @@ public:
         // TODO: These could be done in parallel, but is it worth starting a new thread for?
         compute_next();
         compute_skip();
-    }
-
-    std::pair<CorpusIter, CorpusIter>
-    operator()(CorpusIter corpus_first, CorpusIter corpus_last) const
-    {
-        return HAL(corpus_first, corpus_last, boost::begin(skip_));
     }
 };
 
