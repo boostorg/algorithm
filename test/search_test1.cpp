@@ -275,6 +275,8 @@ BOOST_AUTO_TEST_CASE( test_main )
     std::string needle5   ( "NEND" );   //  At the end
     std::string needle6   ( "NOT FOUND" );  // Nowhere
     std::string needle7   ( "NOT FO\340ND" );   // Nowhere
+    std::string needle8   ( "X" );   // Nowhere
+    std::string needle9   ( "W" );   // Somewhere
 
     std::string haystack2 ( "ABC ABCDAB ABCDABCDABDE" );
     std::string needle11  ( "ABCDABD" );
@@ -292,6 +294,8 @@ BOOST_AUTO_TEST_CASE( test_main )
     check_one ( haystack1, needle5, 33 );
     check_one ( haystack1, needle6, -1 );
     check_one ( haystack1, needle7, -1 );
+    check_one ( haystack1, needle8, -1 );
+    check_one ( haystack1, needle9, 2 );
 
     check_one ( needle1, haystack1, -1 );   // cant find long pattern in short corpus
     check_one ( haystack1, haystack1, 0 );  // find something in itself
@@ -300,7 +304,8 @@ BOOST_AUTO_TEST_CASE( test_main )
     check_one ( haystack2, needle11, 15 );
     check_one ( haystack3, needle12, 13 );
 
-    check_one ( haystack1, needle13, 0 );   // find the empty string 
+    check_one ( haystack1, needle13, 0 );   // find the empty string
+    check_one ( haystack4, needle13, -1 );   // empty string in empty haystack (don't crash)
     check_one ( haystack4, needle1, -1 );  // can't find in an empty haystack
 
 //  Mikhail Levin <svarneticist@gmail.com> found a problem, and this was the test
