@@ -18,8 +18,6 @@
 #include <boost/mp11/function.hpp>
 #include <boost/mp11/integral.hpp>
 #include <boost/next_prior.hpp>
-#include <boost/type_traits/is_base_of.hpp>
-#include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <boost/variant2/variant.hpp>
 
@@ -135,7 +133,7 @@ musser_nishanov_search(CorpusIter corpus_first, CorpusIter corpus_last,
 
 template <typename patIter, typename CorpusRange>
 typename boost::disable_if_c<
-    boost::is_same<CorpusRange, patIter>::value, 
+    std::is_same<CorpusRange, patIter>::value,
     std::pair<typename boost::range_iterator<CorpusRange>::type,
               typename boost::range_iterator<CorpusRange>::type> >
 ::type
