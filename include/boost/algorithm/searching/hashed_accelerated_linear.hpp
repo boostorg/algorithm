@@ -57,8 +57,8 @@ public:
                 break;
             do   // this loop is hot for data read
             {
-                auto foo = Trait::hash(corpus_first);
-                auto increment = skip_[foo];
+                auto skip_index = Trait::hash(corpus_first);
+                auto increment = skip_[skip_index];
                 corpus_first += increment;
             }
             while (corpus_first < corpus_last);
