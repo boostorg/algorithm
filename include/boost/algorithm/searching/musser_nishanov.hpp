@@ -15,9 +15,8 @@
 #include <boost/algorithm/searching/accelerated_linear.hpp>
 #include <boost/algorithm/searching/hashed_accelerated_linear.hpp>
 #include <boost/algorithm/searching/detail/mn_traits.hpp>
-#include <boost/mpl/and.hpp>
-#include <boost/mpl/bool.hpp>
-#include <boost/mpl/or.hpp>
+#include <boost/mp11/function.hpp>
+#include <boost/mp11/integral.hpp>
 #include <boost/next_prior.hpp>
 #include <boost/type_traits/is_base_of.hpp>
 #include <boost/type_traits/is_same.hpp>
@@ -25,6 +24,7 @@
 #include <boost/variant2/variant.hpp>
 
 #include <iterator>
+#include <type_traits>
 #include <utility>
 #include <vector>
 
@@ -46,10 +46,10 @@ class musser_nishanov;
 template <typename PatIter, typename CorpusIter, typename Trait>
 class musser_nishanov<PatIter, CorpusIter, Trait, 
 typename disable_if<
-    typename boost::mpl::and_<
-        boost::is_base_of<std::random_access_iterator_tag,
-                          typename std::iterator_traits<CorpusIter>::iterator_category>,
-        boost::mpl::bool_<Trait::suffix_size>
+    typename mp11::mp_and<
+        std::is_base_of<std::random_access_iterator_tag,
+                        typename std::iterator_traits<CorpusIter>::iterator_category>,
+        mp11::mp_to_bool<mp11::mp_value<Trait::suffix_size>>
     >::type 
 >::type>
 {
@@ -73,10 +73,10 @@ public:
 template <typename PatIter, typename CorpusIter, typename Trait>
 class musser_nishanov<PatIter, CorpusIter, Trait, 
 typename enable_if<
-    typename boost::mpl::and_<
-        boost::is_base_of<std::random_access_iterator_tag,
-                          typename std::iterator_traits<CorpusIter>::iterator_category>,
-        boost::mpl::bool_<Trait::suffix_size> 
+    typename mp11::mp_and<
+        std::is_base_of<std::random_access_iterator_tag,
+                        typename std::iterator_traits<CorpusIter>::iterator_category>,
+        mp11::mp_to_bool<mp11::mp_value<Trait::suffix_size>>
     >::type 
 >::type>
 {
