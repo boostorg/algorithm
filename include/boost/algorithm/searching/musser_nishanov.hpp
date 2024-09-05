@@ -31,6 +31,16 @@
 
 namespace boost { namespace algorithm {
 
+namespace detail {
+
+template <typename CorpusIter, typename Trait>
+using hashable = typename mp11::mp_and<
+        std::is_base_of<std::random_access_iterator_tag,
+                        typename std::iterator_traits<CorpusIter>::iterator_category>,
+        mp11::mp_to_bool<std::integral_constant<decltype(Trait::suffix_size), Trait::suffix_size>>
+    >::type;
+}
+
 /**
  * One class, two identities based on corpus iterator and the suffix size trait.
  */
@@ -44,14 +54,8 @@ class musser_nishanov;
  * Musser-Nishanov Accelerated Linear search algorithm.
  */
 template <typename PatIter, typename CorpusIter, typename Trait>
-class musser_nishanov<PatIter, CorpusIter, Trait, 
-typename disable_if<
-    typename mp11::mp_and<
-        std::is_base_of<std::random_access_iterator_tag,
-                        typename std::iterator_traits<CorpusIter>::iterator_category>,
-        mp11::mp_to_bool<mp11::mp_value<Trait::suffix_size>>
-    >::type 
->::type>
+class musser_nishanov<PatIter, CorpusIter, Trait,
+                      typename disable_if<detail::hashable<CorpusIter, Trait>>::type>
 {
     boost::algorithm::accelerated_linear<PatIter, CorpusIter> searcher;
 
@@ -72,13 +76,7 @@ public:
  */
 template <typename PatIter, typename CorpusIter, typename Trait>
 class musser_nishanov<PatIter, CorpusIter, Trait, 
-typename enable_if<
-    typename mp11::mp_and<
-        std::is_base_of<std::random_access_iterator_tag,
-                        typename std::iterator_traits<CorpusIter>::iterator_category>,
-        mp11::mp_to_bool<mp11::mp_value<Trait::suffix_size>>
-    >::type 
->::type>
+typename enable_if<detail::hashable<CorpusIter, Trait>>::type>
 {
     using HAL = boost::algorithm::hashed_accelerated_linear<PatIter, CorpusIter, Trait>;
     using AL = boost::algorithm::accelerated_linear<PatIter, CorpusIter>;
