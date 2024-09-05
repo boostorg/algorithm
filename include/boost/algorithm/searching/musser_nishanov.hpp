@@ -90,6 +90,26 @@ typename enable_if<detail::hashable<CorpusIter, Trait>>::type>
                          : SearcherVariant{HAL(first, last)};
     }
 
+    // A generic lambda written out by hand.
+    class SearcherVisitor
+    {
+        CorpusIter m_first, m_last;
+
+    public:
+        constexpr
+        SearcherVisitor(CorpusIter first, CorpusIter last)
+            : m_first{first}
+            , m_last{last}
+        {}
+
+        template<typename Searcher>
+        constexpr
+        std::pair<CorpusIter, CorpusIter> operator()(Searcher &&s) const
+        {
+            return s(m_first, m_last);
+        }
+    };
+
 public:
     musser_nishanov(PatIter pat_first, PatIter pat_last)
         : searcher{select_searcher(pat_first, pat_last)}
@@ -98,7 +118,7 @@ public:
     std::pair<CorpusIter, CorpusIter>
     operator()(CorpusIter first, CorpusIter last) const
     {
-        return boost::variant2::visit([&](auto const& s){ return s(first, last); }, searcher);
+        return boost::variant2::visit(SearcherVisitor{first, last}, searcher);
     }
 
     template <typename Range>
