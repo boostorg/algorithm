@@ -45,8 +45,8 @@ public:
 
         using std::make_pair;
 
-        corpus_difference_type const corpus_length = corpus_last - corpus_first;
-        corpus_difference_type const adjustment = corpus_length + pattern_length;
+        auto const corpus_length = corpus_last - corpus_first;
+        auto const adjustment = corpus_length + pattern_length;
         // NOTE: This assignment requires the skip table to be mutable or copied into the
         // function each time.
         skip_[Trait::hash(pat_first + pattern_length - 1)] = corpus_length + 1;
@@ -58,7 +58,7 @@ public:
             do   // this loop is hot for data read
             {
                 auto foo = Trait::hash(corpus_first);
-                corpus_difference_type increment = skip_[foo];
+                auto increment = skip_[foo];
                 corpus_first += increment;
             }
             while (corpus_first < corpus_last);
