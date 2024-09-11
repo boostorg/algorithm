@@ -70,12 +70,12 @@ public:
     operator()(CorpusIter corpus_first, CorpusIter corpus_last) const
     {
         BOOST_ASSERT(std::distance(pat_first, pat_last) == pattern_length);
-        BOOST_ASSERT(pattern_length == distance(next_));
+        BOOST_ASSERT(pattern_length == next_.size());
 
         if (pat_first == pat_last)
             return {corpus_first, corpus_first};
 
-        if (distance(next_) == 1)
+        if (pattern_length == 1)
         {
             auto result_first = std::find(corpus_first, corpus_last, *pat_first);
             auto result_last = result_first == corpus_last ? corpus_last : boost::next(result_first);
@@ -123,7 +123,7 @@ public:
                     if (p == pat_last)
                     {
                         CorpusIter succesor = hold;
-                        std::advance(succesor, distance(next_));
+                        std::advance(succesor, pattern_length);
                         while (succesor != corpus_first)
                             ++succesor, ++hold; // TODO: Change to for loop?
                         return {hold, boost::next(hold, pattern_length)};
