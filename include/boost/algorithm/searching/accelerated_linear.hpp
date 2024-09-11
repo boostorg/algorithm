@@ -72,13 +72,12 @@ public:
         BOOST_ASSERT(std::distance(pat_first, pat_last) == pattern_length);
         BOOST_ASSERT(pattern_length == distance(next_));
 
-        using std::find;
         if (pat_first == pat_last)
             return {corpus_first, corpus_first};
 
         if (distance(next_) == 1)
         {
-            CorpusIter const result = find(corpus_first, corpus_last, *pat_first);
+            auto result_first = std::find(corpus_first, corpus_last, *pat_first);
             auto result_last = result_first == corpus_last ? corpus_last : boost::next(result_first);
             return {result_first, result_last};
         }
@@ -88,7 +87,7 @@ public:
 
         while (corpus_first != corpus_last)
         {
-            corpus_first = find(corpus_first, corpus_last, *pat_first);
+            corpus_first = std::find(corpus_first, corpus_last, *pat_first);
             if (corpus_first == corpus_last)
                 return {corpus_last, corpus_last};
             CorpusIter hold = corpus_first;
