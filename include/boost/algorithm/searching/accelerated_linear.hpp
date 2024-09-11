@@ -73,16 +73,14 @@ public:
         BOOST_ASSERT(pattern_length == distance(next_));
 
         using std::find;
-        using std::make_pair;
-
         if (pat_first == pat_last)
-            return make_pair(corpus_first, corpus_first);
+            return {corpus_first, corpus_first};
 
         if (distance(next_) == 1)
         {
             CorpusIter const result = find(corpus_first, corpus_last, *pat_first);
-            return result == corpus_last ? make_pair(corpus_last, corpus_last)
-            : make_pair(result, boost::next(result));
+            auto result_last = result_first == corpus_last ? corpus_last : boost::next(result_first);
+            return {result_first, result_last};
         }
 
         PatIter p1 = pat_first;
@@ -92,18 +90,18 @@ public:
         {
             corpus_first = find(corpus_first, corpus_last, *pat_first);
             if (corpus_first == corpus_last)
-                return make_pair(corpus_last, corpus_last);
+                return {corpus_last, corpus_last};
             CorpusIter hold = corpus_first;
             if (++corpus_first == corpus_last)
-                return make_pair(corpus_last, corpus_last);
+                return {corpus_last, corpus_last};
             PatIter p = p1;
             pattern_difference_type j = 1;
             while (*corpus_first == *p)
             {
                 if (++p == pat_last)
-                    return make_pair(hold, boost::next(hold, pattern_length));
+                    return {hold, boost::next(hold, pattern_length)};
                 if (++corpus_first == corpus_last)
-                    return make_pair(corpus_last, corpus_last);
+                    return {corpus_last, corpus_last};
                 ++j;
             }
 
@@ -129,14 +127,14 @@ public:
                         std::advance(succesor, distance(next_));
                         while (succesor != corpus_first)
                             ++succesor, ++hold; // TODO: Change to for loop?
-                        return make_pair(hold, boost::next(hold, pattern_length));
+                        return {hold, boost::next(hold, pattern_length)};
                     }
                     if (corpus_first == corpus_last)
-                        return make_pair(corpus_last, corpus_last);
+                        return {corpus_last, corpus_last};
                 }
             }
         }
-        return make_pair(corpus_last, corpus_last);
+        return {corpus_last, corpus_last};
     }
 
     template <typename Range>

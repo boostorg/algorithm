@@ -43,8 +43,6 @@ public:
         BOOST_ASSERT(std::distance(pat_first, pat_last) == pattern_length);
         BOOST_ASSERT(size_t(pattern_length) == next_.size());
 
-        using std::make_pair;
-
         auto const corpus_length = corpus_last - corpus_first;
         auto const adjustment = corpus_length + pattern_length;
         // NOTE: This assignment requires the skip table to be mutable or copied into the
@@ -63,7 +61,7 @@ public:
             }
             while (corpus_first < corpus_last);
             if (corpus_first - corpus_last < pattern_length)
-                return make_pair(corpus_last, corpus_last);
+                return {corpus_last, corpus_last};
             corpus_first -= adjustment;
 
             BOOST_ASSERT(corpus_first < corpus_last);
@@ -79,7 +77,7 @@ public:
                         break;
                     ++j;
                     if (j == pattern_length)
-                        return std::make_pair(corpus_first - pattern_length + 1, corpus_first + 1);
+                        return {corpus_first - pattern_length + 1, corpus_first + 1};
                 }
 
                 if (mismatch_shift > j)
@@ -100,9 +98,9 @@ public:
                             ++corpus_first;
                             ++j;
                             if (j == pattern_length)
-                                return make_pair(corpus_first - pattern_length, corpus_first);
+                                return {corpus_first - pattern_length, corpus_first};
                             if (corpus_first == corpus_last)
-                                return make_pair(corpus_last, corpus_last);
+                                return {corpus_last, corpus_last};
                         }
                     }
             }
