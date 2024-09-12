@@ -97,9 +97,10 @@ public:
             pattern_difference_type j = 1;
             while (*corpus_first == *p)
             {
+                ++corpus_first;
                 if (++p == pat_last)
-                    return {hold, boost::next(hold, pattern_length)};
-                if (++corpus_first == corpus_last)
+                    return {hold, corpus_first};
+                if (corpus_first == corpus_last)
                     return {corpus_last, corpus_last};
                 ++j;
             }
@@ -126,7 +127,7 @@ public:
                         std::advance(succesor, pattern_length);
                         while (succesor != corpus_first)
                             ++succesor, ++hold; // TODO: Change to for loop?
-                        return {hold, boost::next(hold, pattern_length)};
+                        return {hold, succesor};
                     }
                     if (corpus_first == corpus_last)
                         return {corpus_last, corpus_last};
