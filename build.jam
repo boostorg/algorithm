@@ -18,7 +18,6 @@ constant boost_dependencies :
     /boost/mpl//boost_mpl
     /boost/range//boost_range
     /boost/regex//boost_regex
-    /boost/static_assert//boost_static_assert
     /boost/throw_exception//boost_throw_exception
     /boost/tuple//boost_tuple
     /boost/type_traits//boost_type_traits
