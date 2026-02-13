@@ -22,6 +22,9 @@ Both routines come in two forms; the first one takes two iterators to define the
 
 The function `all_of` returns true if the predicate returns true for every item in the sequence.  There are two versions; one takes two iterators, and the other takes a range.
 
+This algorithm is `constexpr` when compiled with C++14 or later, provided the compiler supports constexpr evaluation.
+
+
 ``
 namespace boost { namespace algorithm {
 template<typename InputIterator, typename Predicate>
