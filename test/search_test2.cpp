@@ -10,6 +10,7 @@
 #include <boost/algorithm/searching/boyer_moore.hpp>
 #include <boost/algorithm/searching/boyer_moore_horspool.hpp>
 #include <boost/algorithm/searching/knuth_morris_pratt.hpp>
+#include <boost/algorithm/searching/musser_nishanov.hpp>
 
 #define BOOST_TEST_MAIN
 #include <boost/test/unit_test.hpp>
@@ -22,7 +23,7 @@
 #include <vector>
 
 typedef std::vector<char> vec;
-#define NUM_TRIES   100
+#define NUM_TRIES   500
 
 #define runOne(call, refDiff)   { \
     std::clock_t bTime, eTime;                              \
@@ -59,7 +60,25 @@ typedef std::vector<char> vec;
         }                                                   \
     eTime = std::clock ();                                  \
     printRes ( #obj " object", eTime - bTime, refDiff ); }
-    
+
+#define runMNObject(obj, refDiff) { \
+    std::clock_t bTime, eTime;                              \
+    bTime = std::clock ();                                  \
+    boost::algorithm::obj <vec::const_iterator, vec::const_iterator>             \
+                s_o ( needle.begin (), needle.end ());      \
+    for ( i = 0; i < NUM_TRIES; ++i ) {                     \
+        res = s_o ( haystack.begin (), haystack.end ());    \
+        if ( res != exp ) {                                 \
+            std::cout << "On run # " << i << " expected "   \
+            << exp.first - haystack.begin () << " got "           \
+            << res.first - haystack.begin () << std::endl;        \
+            throw std::runtime_error                        \
+            ( "Unexpected result from " #obj " object" );   \
+            }                                               \
+        }                                                   \
+    eTime = std::clock ();                                  \
+    printRes ( #obj " object", eTime - bTime, refDiff ); }
+
 
 
 namespace {
@@ -129,6 +148,8 @@ namespace {
         runObject ( boyer_moore_horspool,        stdDiff );
         runOne    ( knuth_morris_pratt_search,   stdDiff );
         runObject ( knuth_morris_pratt,          stdDiff );
+        runOne    ( musser_nishanov_search,      stdDiff );
+        runMNObject ( musser_nishanov,           stdDiff );
         }
     }
 

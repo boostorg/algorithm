@@ -12,6 +12,7 @@
 #include <boost/algorithm/searching/boyer_moore.hpp>
 #include <boost/algorithm/searching/boyer_moore_horspool.hpp>
 #include <boost/algorithm/searching/knuth_morris_pratt.hpp>
+#include <boost/algorithm/searching/musser_nishanov.hpp>
 
 #define BOOST_TEST_MAIN
 #include <boost/test/unit_test.hpp>
@@ -53,7 +54,9 @@ typedef std::vector<std::string> vec;
 namespace {
 
     vec ReadFromFile ( const char *name ) {
-        std::ifstream in ( name, std::ios_base::binary | std::ios_base::in );
+        std::ifstream in;
+        in.exceptions(std::ifstream::badbit | std::ifstream::failbit);
+        in.open( name, std::ios_base::binary | std::ios_base::in );
         std::string temp;
         vec retVal;
         while ( std::getline ( in, temp ))
@@ -98,7 +101,9 @@ namespace {
         runObject ( boyer_moore_horspool,        stdDiff );
         runOne    ( knuth_morris_pratt_search,   stdDiff );
         runObject ( knuth_morris_pratt,          stdDiff );
-        }
+        runOne    ( musser_nishanov_search,      stdDiff );
+        runObject ( musser_nishanov,             stdDiff );
+    }
         
     }
 
