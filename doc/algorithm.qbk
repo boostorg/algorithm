@@ -120,6 +120,15 @@ Transform each element in a range then combine adjacent elements to create an ou
 
 [endsect:CXX17]
 
+[section:CXX23 C++23 Algorithms]
+
+[section:CXX23_inner_algorithms]
+
+[include find_last.qbk]
+
+[endsect:CXX23_inner_algorithms]
+
+[endsect:CXX23]
 
 [section:Copy Variations on Copy]
 [section:variations_on_copy]
