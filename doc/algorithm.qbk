@@ -233,6 +233,8 @@ Convert a sequence of hexadecimal characters into a sequence of integers or char
 Convert a sequence of integral types into a lower case hexadecimal sequence of characters
 [endsect:hex_lower]
 
+[include indirect_sort.qbk]
+
 [include is_palindrome.qbk]
 
 [include is_partitioned_until.qbk]
