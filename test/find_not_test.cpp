@@ -62,6 +62,15 @@ BOOST_CXX14_CONSTEXPR bool check_constexpr()
     return res;
 }
 
+template<typename Iter>
+struct sentinel
+{
+    friend bool operator==(Iter it, sentinel last) { return it == last.last_; }
+    friend bool operator!=(Iter it, sentinel last) { return it != last.last_; }
+
+    Iter last_;
+};
+
 void test_sequence()
 {
     {
@@ -91,6 +100,39 @@ void test_sequence()
         BOOST_CHECK_EQUAL(dist(ba::find_not(v1, v1.back())), v1.size());
         BOOST_CHECK_EQUAL(dist(ba::find_not(v1, v1.front())), v1.size());
     }
+    // Using sentinel.
+    {
+        std::vector<int> v1;
+        const dist_t<std::vector<int> > dist(v1);
+        sentinel<std::vector<int>::iterator> v1_end;
+
+        for (int i = 5; i < 15; ++i)
+            v1.push_back(i);
+        v1_end = sentinel<std::vector<int>::iterator>{v1.end()};
+
+        BOOST_CHECK_EQUAL(dist(ba::find_not(v1.begin(), v1_end, 0)), 0);
+        BOOST_CHECK_EQUAL(
+            dist(ba::find_not(v1.begin(), v1_end, v1.back())), 0);
+        BOOST_CHECK_EQUAL(
+            dist(ba::find_not(v1.begin(), v1_end, v1.front())), 1);
+
+        BOOST_CHECK_EQUAL(dist(ba::find_not(v1, 0)), 0);
+        BOOST_CHECK_EQUAL(dist(ba::find_not(v1, v1.back())), 0);
+        BOOST_CHECK_EQUAL(dist(ba::find_not(v1, v1.front())), 1);
+
+        v1 = std::vector<int>(10, 2);
+        v1_end = sentinel<std::vector<int>::iterator>{v1.end()};
+
+        BOOST_CHECK_EQUAL(dist(ba::find_not(v1.begin(), v1_end, 0)), 0);
+        BOOST_CHECK_EQUAL(
+            dist(ba::find_not(v1.begin(), v1_end, v1.back())), v1.size());
+        BOOST_CHECK_EQUAL(
+            dist(ba::find_not(v1.begin(), v1_end, v1.front())), v1.size());
+
+        BOOST_CHECK_EQUAL(dist(ba::find_not(v1, 0)), 0);
+        BOOST_CHECK_EQUAL(dist(ba::find_not(v1, v1.back())), v1.size());
+        BOOST_CHECK_EQUAL(dist(ba::find_not(v1, v1.front())), v1.size());
+    }
 
     //  With bidirectional iterators.
     {
@@ -112,6 +154,41 @@ void test_sequence()
         l1.clear();
         for (int i = 0; i < 10; ++i)
             l1.push_back(2);
+        BOOST_CHECK_EQUAL(dist(ba::find_not(l1.begin(), l1.end(), 0)), 0);
+        BOOST_CHECK_EQUAL(
+            dist(ba::find_not(l1.begin(), l1.end(), l1.back())), l1.size());
+        BOOST_CHECK_EQUAL(
+            dist(ba::find_not(l1.begin(), l1.end(), l1.front())), l1.size());
+
+        BOOST_CHECK_EQUAL(dist(ba::find_not(l1, 0)), 0);
+        BOOST_CHECK_EQUAL(dist(ba::find_not(l1, l1.back())), l1.size());
+        BOOST_CHECK_EQUAL(dist(ba::find_not(l1, l1.front())), l1.size());
+    }
+    //  With bidirectional iterator/sentinel.
+    {
+        std::list<int> l1;
+        const dist_t<std::list<int> > dist(l1);
+        sentinel<std::list<int>::iterator> l1_end;
+
+        for (int i = 5; i < 15; ++i)
+            l1.push_back(i);
+        l1_end = sentinel<std::list<int>::iterator>{l1.end()};
+
+        BOOST_CHECK_EQUAL(dist(ba::find_not(l1.begin(), l1.end(), 0)), 0);
+        BOOST_CHECK_EQUAL(
+            dist(ba::find_not(l1.begin(), l1.end(), l1.back())), 0);
+        BOOST_CHECK_EQUAL(
+            dist(ba::find_not(l1.begin(), l1.end(), l1.front())), 1);
+
+        BOOST_CHECK_EQUAL(dist(ba::find_not(l1, 0)), 0);
+        BOOST_CHECK_EQUAL(dist(ba::find_not(l1, l1.back())), 0);
+        BOOST_CHECK_EQUAL(dist(ba::find_not(l1, l1.front())), 1);
+
+        l1.clear();
+        for (int i = 0; i < 10; ++i)
+            l1.push_back(2);
+        l1_end = sentinel<std::list<int>::iterator>{l1.end()};
+
         BOOST_CHECK_EQUAL(dist(ba::find_not(l1.begin(), l1.end(), 0)), 0);
         BOOST_CHECK_EQUAL(
             dist(ba::find_not(l1.begin(), l1.end(), l1.back())), l1.size());
