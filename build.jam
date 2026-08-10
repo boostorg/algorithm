@@ -33,6 +33,7 @@ explicit
     [ alias all : boost_algorithm test
         example
         minmax/example minmax/test
+        performance
         string/example string/test
         ]
     ;

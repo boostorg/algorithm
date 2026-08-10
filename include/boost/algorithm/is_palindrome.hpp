@@ -20,6 +20,7 @@
 #include <cstring>
 
 #include <boost/config.hpp>
+#include <boost/iterator/reverse_iterator.hpp>
 #include <boost/range/begin.hpp>
 #include <boost/range/end.hpp>
 
@@ -38,26 +39,9 @@ namespace boost {  namespace algorithm {
 template <typename BidirectionalIterator, typename Predicate>
 bool is_palindrome(BidirectionalIterator begin, BidirectionalIterator end, Predicate p)
 {
-    if(begin == end)
-    {
-        return true;
-    }
-
-    --end;
-    while(begin != end)
-    {
-        if(!p(*begin, *end))
-        {
-            return false;
-        }
-        ++begin;
-        if(begin == end)
-        {
-            break;
-        }
-        --end;
-    }
-    return true;
+    BidirectionalIterator midpoint = begin;
+    std::advance(midpoint, std::distance(begin, end) / 2);
+    return std::equal(begin, midpoint, boost::make_reverse_iterator(end), p);
 }
 
 /// \fn is_palindrome ( BidirectionalIterator begin, BidirectionalIterator end )
