@@ -75,14 +75,15 @@ namespace boost {
             Constructs an \c empty_formatter. Empty formatter always returns an empty
             sequence. 
 
-            \param - container used to select a correct value_type for the
-                         resulting empty_container<>.
+            The argument is not used, it only selects a correct value_type for
+            the resulting empty_container<>.
+
             \return An instance of the \c empty_formatter object.
         */
         template<typename RangeT>
         inline detail::empty_formatF< 
             BOOST_STRING_TYPENAME range_value<RangeT>::type>
-        empty_formatter(const RangeT&)
+        empty_formatter(const RangeT& /*Input*/)
         {
             return detail::empty_formatF<
                 BOOST_STRING_TYPENAME range_value<RangeT>::type>();
