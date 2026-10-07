@@ -120,9 +120,26 @@ void test_reduce()
     test<const int*>();
 }
 
+void test_mixed_types()
+{
+    const int input[] = {1, 2, 3};
+    BOOST_CHECK_EQUAL(ba::reduce(input, input + 3, 0.5), 6.5);
+    BOOST_CHECK_EQUAL(ba::reduce(input, 0.5), 6.5);
+    BOOST_CHECK_EQUAL(ba::reduce(input, input, 0.5), 0.5);
+    BOOST_CHECK_EQUAL(ba::reduce(input, input + 1, 0.5), 1.5);
+
+    const unsigned char small[] = {100, 100, 100};
+    BOOST_CHECK_EQUAL(ba::reduce(small, small + 3, 1000U), 1300U);
+    BOOST_CHECK_EQUAL(ba::reduce(small, 1000U), 1300U);
+
+    const double fractions[] = {0.5, 0.5, 0.5};
+    BOOST_CHECK_EQUAL(ba::reduce(fractions, fractions + 3, -1), 0);
+}
+
 BOOST_AUTO_TEST_CASE( test_main )
 {
   test_reduce();
   test_reduce_init();
   test_reduce_init_op();
+  test_mixed_types();
 }
