@@ -408,7 +408,10 @@ namespace boost {
             of the matches (in a compatible structure like std::string) or
             a reference to it (e.g. using the iterator range class).
             Examples of such a container are \c std::vector<std::string>
-            or \c std::list<boost::iterator_range<std::string::iterator>>
+            or \c std::list<boost::iterator_range<std::string::const_iterator>>
+
+            The input is accessed as a const range, so \c std::string inputs
+            require result ranges with \c std::string::const_iterator iterators.
 
             \param Result A container that can hold copies of references to the substrings.
             \param Input A container which will be searched.
@@ -449,7 +452,10 @@ namespace boost {
             of the matches (in a compatible structure like std::string) or
             a reference to it (e.g. using the iterator range class).
             Examples of such a container are \c std::vector<std::string>
-            or \c std::list<boost::iterator_range<std::string::iterator>>
+            or \c std::list<boost::iterator_range<std::string::const_iterator>>
+
+            The input is accessed as a const range, so \c std::string inputs
+            require result ranges with \c std::string::const_iterator iterators.
     
             \param Result A container that can hold copies of references to the substrings.          
             \param Input A container which will be searched.
