@@ -12,7 +12,7 @@
 #ifndef BOOST_ALGORITHM_EXCLUSIVE_SCAN_HPP
 #define BOOST_ALGORITHM_EXCLUSIVE_SCAN_HPP
 
-#include <functional>     // for std::plus
+#include <boost/algorithm/cxx17/detail/plus.hpp> // 2026-10-08
 #include <iterator>       // for std::iterator_traits
 
 #include <boost/config.hpp>
@@ -44,8 +44,9 @@ template<class InputIterator, class OutputIterator, class T>
 OutputIterator exclusive_scan(InputIterator first, InputIterator last,
                               OutputIterator result, T init)
 {
-	typedef typename std::iterator_traits<InputIterator>::value_type VT;
-    return boost::algorithm::exclusive_scan(first, last, result, init, std::plus<VT>());
+    // 2026-10-08: Add the original operand types in the shared implementation.
+    return boost::algorithm::exclusive_scan(first, last, result, init,
+                                           detail::plus<T>());
 }
 
 }} // namespace boost and algorithm

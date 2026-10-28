@@ -53,6 +53,31 @@ void basic_tests_init()
 
 }
 
+void test_mixed_types()
+{
+    const int input[] = {1, 2, 3};
+    double output[3] = {};
+    const double expected[] = {0.5, 1.5, 3.5};
+    BOOST_CHECK(ba::exclusive_scan(input, input + 3, output, 0.5) == output + 3);
+    BOOST_CHECK_EQUAL_COLLECTIONS(output, output + 3, expected, expected + 3);
+
+    const unsigned char small[] = {100, 100, 100};
+    unsigned int wide[3] = {};
+    const unsigned int wide_expected[] = {1000, 1100, 1200};
+    ba::exclusive_scan(small, small + 3, wide, 1000U);
+    BOOST_CHECK_EQUAL_COLLECTIONS(wide, wide + 3, wide_expected, wide_expected + 3);
+
+    const double fractions[] = {0.5, 0.5, 0.5};
+    int integral[3] = {};
+    const int integral_expected[] = {-1, 0, 0};
+    ba::exclusive_scan(fractions, fractions + 3, integral, -1);
+    BOOST_CHECK_EQUAL_COLLECTIONS(integral, integral + 3,
+                                  integral_expected, integral_expected + 3);
+
+    BOOST_CHECK(ba::exclusive_scan(input, input, output, 0.5) == output);
+    BOOST_CHECK_EQUAL(output[0], 0.5);
+}
+
 void test_exclusive_scan_init()
 {
 	basic_tests_init();
@@ -69,4 +94,5 @@ BOOST_AUTO_TEST_CASE( test_main )
 {
   test_exclusive_scan_init();
   test_exclusive_scan_init_op();
+  test_mixed_types();
 }
