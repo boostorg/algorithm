@@ -5,12 +5,12 @@
    file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 */
 
-/// \file  transform_reduce.hpp
-/// \brief Combine the (transformed) elements of a sequence (or two) into a single value.
+/// \file  transform_inclusive_scan.hpp
+/// \brief Compute the running (inclusive) combination of the transformed elements of a sequence.
 /// \author Marshall Clow
 
-#ifndef BOOST_ALGORITHM_TRANSFORM_REDUCE_HPP
-#define BOOST_ALGORITHM_TRANSFORM_REDUCE_HPP
+#ifndef BOOST_ALGORITHM_TRANSFORM_INCLUSIVE_SCAN_HPP
+#define BOOST_ALGORITHM_TRANSFORM_INCLUSIVE_SCAN_HPP
 
 #include <functional>     // for std::plus
 #include <iterator>       // for std::iterator_traits
@@ -86,4 +86,4 @@ OutputIterator transform_inclusive_scan(InputIterator first, InputIterator last,
 
 }} // namespace boost and algorithm
 
-#endif // BOOST_ALGORITHM_TRANSFORM_REDUCE_HPP
+#endif // BOOST_ALGORITHM_TRANSFORM_INCLUSIVE_SCAN_HPP
