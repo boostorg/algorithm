@@ -5,8 +5,8 @@
    file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 */
 
-/// \file  transform_reduce.hpp
-/// \brief Combine the (transformed) elements of a sequence (or two) into a single value.
+/// \file  inclusive_scan.hpp
+/// \brief Compute the running (inclusive) combination of the elements of a sequence.
 /// \author Marshall Clow
 
 #ifndef BOOST_ALGORITHM_INCLUSIVE_SCAN_HPP
